@@ -3908,11 +3908,11 @@ index 587ab1b..1cfeba6 100644
  mx6slevk                     arm         armv7       mx6slevk            freescale      mx6		mx6slevk:IMX_CONFIG=board/freescale/mx6slevk/imximage.cfg,MX6SL,SYS_USE_SPINOR
  mx6slevk_spinor           arm         armv7       mx6slevk            freescale      mx6		mx6slevk:IMX_CONFIG=board/freescale/mx6slevk/imximage.cfg,MX6SL,SYS_BOOT_SPINOR
  mx6slevkandroid          arm         armv7       mx6slevk            freescale      mx6		mx6slevk:IMX_CONFIG=board/freescale/mx6slevk/imximage.cfg,MX6SL,SYS_USE_SPINOR,ANDROID_SUPPORT
-+mx6s_icore                    arm         armv7       mx6_icore       engicam      mx6		mx6_icore:IMX_CONFIG=board/engicam/mx6_icore/mx6solo.cfg,MX6SOLO,DEFAULT_FDT_FILE="imx6dl-icore.dtb",DDR_MB=256,SYS_BOOT_NAND,SYS_NOSMP="nosmp"
++mx6s_icore                    arm         armv7       mx6_icore       engicam      mx6		mx6_icore:IMX_CONFIG=board/engicam/mx6_icore/mx6solo.cfg,MX6SOLO,DEFAULT_FDT_FILE="imx6dl-icore.dtb",DDR_MB=256,SYS_NOSMP="nosmp"
 +mx6s_icore_512MB              arm         armv7       mx6_icore       engicam      mx6		mx6_icore:IMX_CONFIG=board/engicam/mx6_icore/mx6solo.cfg,MX6SOLO,DEFAULT_FDT_FILE="imx6dl-icore.dtb",DDR_MB=512,SYS_BOOT_NAND,SYS_NOSMP="nosmp"
 +mx6dl_icore                   arm         armv7       mx6_icore       engicam      mx6		mx6_icore:IMX_CONFIG=board/engicam/mx6_icore/mx6dl.cfg,MX6DL,DEFAULT_FDT_FILE="imx6dl-icore.dtb",DDR_MB=512,SYS_BOOT_NAND,SYS_NOSMP="nosmp"
-+mx6d_icore                    arm         armv7       mx6_icore       engicam      mx6		mx6_icore:IMX_CONFIG=board/engicam/mx6_icore/mx6q.cfg,MX6Q,DEFAULT_FDT_FILE="imx6q-icore.dtb",DDR_MB=512,SYS_BOOT_NAND,SYS_NOSMP="nosmp"
-+mx6q_icore                    arm         armv7       mx6_icore       engicam      mx6		mx6_icore:IMX_CONFIG=board/engicam/mx6_icore/mx6q.cfg,MX6Q,DEFAULT_FDT_FILE="imx6q-icore.dtb",DDR_MB=1024,SYS_BOOT_NAND,SYS_NOSMP="nosmp"
++mx6d_icore                    arm         armv7       mx6_icore       engicam      mx6		mx6_icore:IMX_CONFIG=board/engicam/mx6_icore/mx6q.cfg,MX6Q,DEFAULT_FDT_FILE="imx6q-icore.dtb",DDR_MB=512,SYS_NOSMP="nosmp"
++mx6q_icore                    arm         armv7       mx6_icore       engicam      mx6		mx6_icore:IMX_CONFIG=board/engicam/mx6_icore/mx6q.cfg,MX6Q,DEFAULT_FDT_FILE="imx6q-icore.dtb",DDR_MB=1024,SYS_NOSMP="nosmp"
  eco5pk                       arm         armv7       eco5pk              8dtech         omap3
  nitrogen6dl                  arm         armv7       nitrogen6x          boundary       mx6		nitrogen6x:IMX_CONFIG=board/boundary/nitrogen6x/nitrogen6dl.cfg,MX6DL,DDR_MB=1024
  nitrogen6dl2g                arm         armv7       nitrogen6x          boundary       mx6		nitrogen6x:IMX_CONFIG=board/boundary/nitrogen6x/nitrogen6dl2g.cfg,MX6DL,DDR_MB=2048
@@ -4486,7 +4486,7 @@ index 0000000..db7ec73
 +#define CONFIG_CONSOLE_DEV		"ttymxc3"
 +#define CONFIG_MMCROOT			"/dev/mmcblk0p2"
 +
-+#define CONFIG_SYS_USE_NAND
++//#define CONFIG_SYS_USE_NAND
 +
 +#include "mx6_icore_common.h"
 +#include <asm/imx-common/gpio.h>
