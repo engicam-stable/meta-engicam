@@ -1,7 +1,7 @@
 From bef88e93584c7d99ada83a43688f53b7af39971c Mon Sep 17 00:00:00 2001
 From: Engicam <support@engicam.com>
 Date: Fri, 30 May 2014 19:55:52 +0200
-Subject: [PATCH 2/2] Added iomux for sdhc2 and uart3
+Subject: [PATCH 2/5] Added iomux for sdhc2 and uart3
 
 ---
  arch/arm/boot/dts/imx6qdl-icore.dtsi |   63 +-

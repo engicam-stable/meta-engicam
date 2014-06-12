@@ -1,0 +1,25 @@
+From e9e4410a4c05d56d0357a6779242217e86e8adee Mon Sep 17 00:00:00 2001
+From: Engicam <support@engicam.com>
+Date: Wed, 11 Jun 2014 11:53:20 +0200
+Subject: [PATCH 4/5] Added i.Core M6 hardware revision management part2
+
+---
+ arch/arm/boot/dts/imx6qdl-icore.dtsi |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm/boot/dts/imx6qdl-icore.dtsi b/arch/arm/boot/dts/imx6qdl-icore.dtsi
+index 44d984a..f32b408 100644
+--- a/arch/arm/boot/dts/imx6qdl-icore.dtsi
++++ b/arch/arm/boot/dts/imx6qdl-icore.dtsi
+@@ -375,7 +375,7 @@
+ 	vbus-supply = <&reg_usb_otg_vbus>;
+ 	pinctrl-names = "default", "rev_c";
+ 	pinctrl-0 = <&pinctrl_usbotg_2>;
+-	pinctrl-0 = <&pinctrl_usbotg_3>;
++	pinctrl-1 = <&pinctrl_usbotg_3>;
+ 	disable-over-current;
+ 	ver-gpios = <&gpio7 2 0>;
+ 	status = "okay";
+-- 
+1.7.9.5
+
