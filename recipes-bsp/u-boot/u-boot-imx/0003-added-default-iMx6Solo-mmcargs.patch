@@ -1,0 +1,97 @@
+From c166e92213d62d8f222196903546da4196c7c4e1 Mon Sep 17 00:00:00 2001
+From: user <Your Email>
+Date: Fri, 13 Jun 2014 17:14:04 +0200
+Subject: [PATCH 3/3] added default iMx6Solo mmcargs
+
+---
+ include/configs/mx6_icore_common.h |   67 +++++++++++++++++++++++++++++++++++-
+ 1 file changed, 66 insertions(+), 1 deletion(-)
+
+diff --git a/include/configs/mx6_icore_common.h b/include/configs/mx6_icore_common.h
+index a449c79..78496d0 100644
+--- a/include/configs/mx6_icore_common.h
++++ b/include/configs/mx6_icore_common.h
+@@ -176,6 +176,71 @@
+ 		"bootm ${loadaddr} - ${fdt_addr} \0" \
+ 	"bootcmd=run bootcmd_sata \0"
+ #else
++#ifdef CONFIG_MX6SOLO
++#define CONFIG_EXTRA_ENV_SETTINGS \
++	CONFIG_MFG_ENV_SETTINGS \
++	"script=boot.scr\0" \
++	"uimage=uImage\0" \
++	"fdt_file=" CONFIG_DEFAULT_FDT_FILE "\0" \
++	"fdt_addr=0x18000000\0" \
++	"boot_fdt=try\0" \
++	"ip_dyn=yes\0" \
++	"console=" CONFIG_CONSOLE_DEV "\0" \
++	"fdt_high=0xffffffff\0"	  \
++	"initrd_high=0xffffffff\0" \
++	CONFIG_MMC_DEV_SET \
++	"\0" \
++	"mmcpart=" __stringify(CONFIG_SYS_MMC_IMG_LOAD_PART) "\0" \
++	"mmcroot=" CONFIG_MMCROOT " rootwait rw\0" \
++	"smp=" CONFIG_SYS_NOSMP "\0"\
++	"mmcargs=setenv bootargs console=${console},${baudrate} ${smp} " \
++		"root=${mmcroot}  cma=96MB gpumem=16MB video=mxcfb0:dev=lcd,Amp-WD\0" \
++	"loadbootscript=" \
++		"fatload mmc ${mmcdev}:${mmcpart} ${loadaddr} ${script};\0" \
++	"bootscript=echo Running bootscript from mmc ...; " \
++		"source\0" \
++	"loaduimage=fatload mmc ${mmcdev}:${mmcpart} ${loadaddr} ${uimage}\0" \
++	"loadfdt=fatload mmc ${mmcdev}:${mmcpart} ${fdt_addr} ${fdt_file}\0" \
++	"mmcboot=echo Booting from mmc ...; " \
++		"run mmcargs; " \
++		"if test ${boot_fdt} = yes || test ${boot_fdt} = try; then " \
++			"if run loadfdt; then " \
++				"bootm ${loadaddr} - ${fdt_addr}; " \
++			"else " \
++				"if test ${boot_fdt} = try; then " \
++					"bootm; " \
++				"else " \
++					"echo WARN: Cannot load the DT; " \
++				"fi; " \
++			"fi; " \
++		"else " \
++			"bootm; " \
++		"fi;\0" \
++	"netargs=setenv bootargs console=${console},${baudrate} ${smp} " \
++		"root=/dev/nfs " \
++		"ip=dhcp nfsroot=${serverip}:${nfsroot},v3,tcp\0" \
++	"netboot=echo Booting from net ...; " \
++		"run netargs; " \
++		"if test ${ip_dyn} = yes; then " \
++			"setenv get_cmd dhcp; " \
++		"else " \
++			"setenv get_cmd tftp; " \
++		"fi; " \
++		"${get_cmd} ${uimage}; " \
++		"if test ${boot_fdt} = yes || test ${boot_fdt} = try; then " \
++			"if ${get_cmd} ${fdt_addr} ${fdt_file}; then " \
++				"bootm ${loadaddr} - ${fdt_addr}; " \
++			"else " \
++				"if test ${boot_fdt} = try; then " \
++					"bootm; " \
++				"else " \
++					"echo WARN: Cannot load the DT; " \
++				"fi; " \
++			"fi; " \
++		"else " \
++			"bootm; " \
++		"fi;\0"
++#else
+ #define CONFIG_EXTRA_ENV_SETTINGS \
+ 	CONFIG_MFG_ENV_SETTINGS \
+ 	"script=boot.scr\0" \
+@@ -239,7 +304,7 @@
+ 		"else " \
+ 			"bootm; " \
+ 		"fi;\0"
+-
++#endif
+ #define CONFIG_BOOTCOMMAND \
+ 	"mmc dev ${mmcdev};" \
+ 	"if mmc rescan; then " \
+-- 
+1.7.9.5
+

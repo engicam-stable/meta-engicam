@@ -1,7 +1,7 @@
 From e9e4410a4c05d56d0357a6779242217e86e8adee Mon Sep 17 00:00:00 2001
 From: Engicam <support@engicam.com>
 Date: Wed, 11 Jun 2014 11:53:20 +0200
-Subject: [PATCH 4/5] Added i.Core M6 hardware revision management part2
+Subject: [PATCH 4/6] Added i.Core M6 hardware revision management part2
 
 ---
  arch/arm/boot/dts/imx6qdl-icore.dtsi |    2 +-

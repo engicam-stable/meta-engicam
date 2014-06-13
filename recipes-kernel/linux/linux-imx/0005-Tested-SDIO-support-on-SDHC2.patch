@@ -1,7 +1,7 @@
 From 10fd906b0f566325715279c6c4086c35d96f37b6 Mon Sep 17 00:00:00 2001
 From: Engicam <support@engicam.com>
 Date: Wed, 11 Jun 2014 18:38:58 +0200
-Subject: [PATCH 5/5] Tested SDIO support on SDHC2
+Subject: [PATCH 5/6] Tested SDIO support on SDHC2
 
 ---
  arch/arm/boot/dts/imx6dl-icore.dts   |   67 ++++++++++++++++++++++++++++++++++
