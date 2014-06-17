@@ -1,7 +1,7 @@
 From 2bb81a9d8eb394e57cb82fe01834eff4098cef38 Mon Sep 17 00:00:00 2001
 From: Engicam <support@engicam.com>
 Date: Fri, 13 Jun 2014 16:17:17 +0200
-Subject: [PATCH 6/6] Added defconfig for i.Core
+Subject: [PATCH 6/9] Added defconfig for i.Core
 
 ---
  arch/arm/configs/icore-defconfig | 3242 ++++++++++++++++++++++++++++++++++++++

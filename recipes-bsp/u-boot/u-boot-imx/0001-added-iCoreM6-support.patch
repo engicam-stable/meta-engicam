@@ -1,7 +1,7 @@
 From e229beafd4f1fa1cc3459687a5d07838ceb61ea8 Mon Sep 17 00:00:00 2001
 From: user <Your Email>
 Date: Wed, 4 Jun 2014 16:46:04 +0200
-Subject: [PATCH] added iCoreM6 support
+Subject: [PATCH 1/4] added iCoreM6 support
 
 ---
  arch/arm/include/asm/arch-mx6/mx6q_pins.h   |    2 +-
@@ -18,6 +18,7 @@ Subject: [PATCH] added iCoreM6 support
  board/engicam/mx6_icore_rqs/mx6_icore_rqs.c | 1005 +++++++++++++++++++++++++++
  board/engicam/mx6_icore_rqs/u-boot.lds      |   74 ++
  boards.cfg                                  |    5 +
+ build_u-boot.sh                             |   10 +
  common/main.c                               |   54 ++
  drivers/net/fec_mxc.c                       |    8 +-
  include/configs/_mx6s_icore.h               |  366 ++++++++++
@@ -3908,14 +3909,30 @@ index 587ab1b..1cfeba6 100644
  mx6slevk                     arm         armv7       mx6slevk            freescale      mx6		mx6slevk:IMX_CONFIG=board/freescale/mx6slevk/imximage.cfg,MX6SL,SYS_USE_SPINOR
  mx6slevk_spinor           arm         armv7       mx6slevk            freescale      mx6		mx6slevk:IMX_CONFIG=board/freescale/mx6slevk/imximage.cfg,MX6SL,SYS_BOOT_SPINOR
  mx6slevkandroid          arm         armv7       mx6slevk            freescale      mx6		mx6slevk:IMX_CONFIG=board/freescale/mx6slevk/imximage.cfg,MX6SL,SYS_USE_SPINOR,ANDROID_SUPPORT
-+mx6s_icore                    arm         armv7       mx6_icore       engicam      mx6		mx6_icore:IMX_CONFIG=board/engicam/mx6_icore/mx6solo.cfg,MX6SOLO,DEFAULT_FDT_FILE="imx6dl-icore.dtb",DDR_MB=256,SYS_NOSMP="nosmp"
++mx6s_icore                    arm         armv7       mx6_icore       engicam      mx6		mx6_icore:IMX_CONFIG=board/engicam/mx6_icore/mx6solo.cfg,MX6SOLO,DEFAULT_FDT_FILE="imx6dl-icore.dtb",DDR_MB=256,SYS_BOOT_NAND,SYS_NOSMP="nosmp"
 +mx6s_icore_512MB              arm         armv7       mx6_icore       engicam      mx6		mx6_icore:IMX_CONFIG=board/engicam/mx6_icore/mx6solo.cfg,MX6SOLO,DEFAULT_FDT_FILE="imx6dl-icore.dtb",DDR_MB=512,SYS_BOOT_NAND,SYS_NOSMP="nosmp"
 +mx6dl_icore                   arm         armv7       mx6_icore       engicam      mx6		mx6_icore:IMX_CONFIG=board/engicam/mx6_icore/mx6dl.cfg,MX6DL,DEFAULT_FDT_FILE="imx6dl-icore.dtb",DDR_MB=512,SYS_BOOT_NAND,SYS_NOSMP="nosmp"
-+mx6d_icore                    arm         armv7       mx6_icore       engicam      mx6		mx6_icore:IMX_CONFIG=board/engicam/mx6_icore/mx6q.cfg,MX6Q,DEFAULT_FDT_FILE="imx6q-icore.dtb",DDR_MB=512,SYS_NOSMP="nosmp"
-+mx6q_icore                    arm         armv7       mx6_icore       engicam      mx6		mx6_icore:IMX_CONFIG=board/engicam/mx6_icore/mx6q.cfg,MX6Q,DEFAULT_FDT_FILE="imx6q-icore.dtb",DDR_MB=1024,SYS_NOSMP="nosmp"
++mx6d_icore                    arm         armv7       mx6_icore       engicam      mx6		mx6_icore:IMX_CONFIG=board/engicam/mx6_icore/mx6q.cfg,MX6Q,DEFAULT_FDT_FILE="imx6q-icore.dtb",DDR_MB=512,SYS_BOOT_NAND,SYS_NOSMP="nosmp"
++mx6q_icore                    arm         armv7       mx6_icore       engicam      mx6		mx6_icore:IMX_CONFIG=board/engicam/mx6_icore/mx6q.cfg,MX6Q,DEFAULT_FDT_FILE="imx6q-icore.dtb",DDR_MB=1024,SYS_BOOT_NAND,SYS_NOSMP="nosmp"
  eco5pk                       arm         armv7       eco5pk              8dtech         omap3
  nitrogen6dl                  arm         armv7       nitrogen6x          boundary       mx6		nitrogen6x:IMX_CONFIG=board/boundary/nitrogen6x/nitrogen6dl.cfg,MX6DL,DDR_MB=1024
  nitrogen6dl2g                arm         armv7       nitrogen6x          boundary       mx6		nitrogen6x:IMX_CONFIG=board/boundary/nitrogen6x/nitrogen6dl2g.cfg,MX6DL,DDR_MB=2048
+diff --git a/build_u-boot.sh b/build_u-boot.sh
+new file mode 100644
+index 0000000..99c6821
+--- /dev/null
++++ b/build_u-boot.sh
+@@ -0,0 +1,10 @@
++#!/bin/bash
++export ARCH=arm
++export CROSS_COMPILE=/opt/freescale/usr/local/gcc-4.4.4-glibc-2.11.1-multilib-1.0/arm-fsl-linux-gnueabi/bin/arm-none-linux-gnueabi- 
++export PATH=$PATH:/opt/freescale/usr/local/gcc-4.4.4-glibc-2.11.1-multilib-1.0/arm-fsl-linux-gnueabi/bin
++make
++read dest < icore_config
++mv u-boot.bin $dest.bin
++echo
++echo
++echo $dest.bin "done"
 diff --git a/common/main.c b/common/main.c
 index 145ded1..b0246c1 100644
 --- a/common/main.c
@@ -4020,7 +4037,8 @@ index 2f46482..4871c8a 100644
 +
  		if (speed == _1000BASET)
  			ecr |= FEC_ECNTRL_SPEED;
- 		else if (speed != _100BASET) 
+ 		else if (speed != _100BASET)
+
 diff --git a/include/configs/_mx6s_icore.h b/include/configs/_mx6s_icore.h
 new file mode 100644
 index 0000000..c90d674
@@ -4486,7 +4504,7 @@ index 0000000..db7ec73
 +#define CONFIG_CONSOLE_DEV		"ttymxc3"
 +#define CONFIG_MMCROOT			"/dev/mmcblk0p2"
 +
-+//#define CONFIG_SYS_USE_NAND
++#define CONFIG_SYS_USE_NAND
 +
 +#include "mx6_icore_common.h"
 +#include <asm/imx-common/gpio.h>

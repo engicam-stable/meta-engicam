@@ -1,7 +1,7 @@
 From c166e92213d62d8f222196903546da4196c7c4e1 Mon Sep 17 00:00:00 2001
 From: user <Your Email>
 Date: Fri, 13 Jun 2014 17:14:04 +0200
-Subject: [PATCH 3/3] added default iMx6Solo mmcargs
+Subject: [PATCH 3/4] added default iMx6Solo mmcargs
 
 ---
  include/configs/mx6_icore_common.h |   67 +++++++++++++++++++++++++++++++++++-

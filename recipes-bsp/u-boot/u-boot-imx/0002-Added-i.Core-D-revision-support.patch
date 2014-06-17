@@ -1,7 +1,7 @@
 From 2ead76df2f3036e6b306f5846b88a1dea0273612 Mon Sep 17 00:00:00 2001
 From: Engicam <support@engicam.com>
 Date: Tue, 10 Jun 2014 15:39:07 +0200
-Subject: [PATCH 2/2] Added i.Core D revision support
+Subject: [PATCH 2/4] Added i.Core D revision support
 
 ---
  board/engicam/mx6_icore/mx6_icore.c |    2 +-

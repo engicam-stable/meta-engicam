@@ -7,7 +7,9 @@ SRC_URI += "file://0003-Added-i.Core-M6-hardware-revision-management.patch"
 SRC_URI += "file://0004-Added-i.Core-M6-hardware-revision-management-part2.patch"
 SRC_URI += "file://0005-Tested-SDIO-support-on-SDHC2.patch"
 SRC_URI += "file://0006-Added-defconfig-for-i.Core.patch"
-
+SRC_URI += "file://0007-Tested-ADV7180-video-in-on-i.Core-M6-starterkit.patch"
+SRC_URI += "file://0008-ADV7180-video-in-on-i.Core-part-2.patch"
+SRC_URI += "file://0009-Tested-SGTL5000-driver-on-i.Core-M6.patch"
 
 FSL_KERNEL_DEFCONFIG="icore-defconfig"
 
