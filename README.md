@@ -14,13 +14,13 @@ set mmcargs 'setenv bootargs console=${console},${baudrate} ${smp} root=${mmcroo
 
 
 
-Engicam Machines:
+Engicam machines:
 
 icorem6dual 
 icorem6duallite 
 icorem6quad
 icorem6solo
-icorem6solo256
+icorem6solo512
 
 
 Engicam images:
