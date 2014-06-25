@@ -28,6 +28,7 @@ Engicam images:
 engicam-image-minimal-mtdutils <tested>
 engicam-image-minimal-nand     <to be tested>
 
-		
+for nand boot:		
+set bootargs 'console=ttymxc3,115200 ubi.mtd=3 root=ubi0:rootfs rootfstype=ubifs mtdparts=gpmi-nand:4m(boot),8m(kernel),1m(dtb),-(rootfs)'
 
 

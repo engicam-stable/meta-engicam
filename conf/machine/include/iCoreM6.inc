@@ -8,3 +8,26 @@ SERIAL_CONSOLE = "115200 ttymxc3"
 MACHINE_FIRMWARE_append_mx6 = " linux-firmware-ath6k"
 
 MACHINE_FEATURES += " pci wifi bluetooth"
+
+IMAGE_FSTYPES = "tar.bz2 ext3 sdcard ubifs"
+
+UBINIZE_ARGS = "-m 2048 -p 128KiB -s 2048"
+MKUBIFS_ARGS = "-m 2048 -e 126976 -c 1944"
+
+
+# do ubiattach /dev/ubi_ctrl -m 4
+# From dmesg:
+# UBI: smallest flash I/O unit:    2048
+# UBI: logical eraseblock size:    129024 bytes
+# from ubiattach stdout:
+# UBI device number 0, total 1996 LEBs
+#MKUBIFS_ARGS = "-m 2048 -e 129024 -c 1996"
+
+# do ubiattach /dev/ubi_ctrl -m 4
+# from dmesg:
+# UBI: smallest flash I/O unit:    2048
+# UBI: physical eraseblock size:   131072 bytes (128 KiB)
+# UBI: sub-page size:              512
+#UBINIZE_ARGS = "-m 2048 -p 128KiB -s 512"
+
+
