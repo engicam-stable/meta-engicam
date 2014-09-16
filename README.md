@@ -13,12 +13,12 @@ rqsm6dual/rqsm6duallight/rqsm6quad/rqsm6solo
 
 Engicam images:
 
-engicam-dev-fb-qt5			<tested>
-engicam-dev-fb-qt5-demo			<tested>
-engicam-image-minimal-nand		<tested>
-engicam-image-minimal-mtdutils		<tested>
-engicam-image-gstreamer			<tested>
-core-image-minimal			<tested>
+engicam-dev-fb-qt5			image for qt developping
+engicam-dev-fb-qt5-demo			image with qt demo
+engicam-image-minimal-nand		minimal image for nand
+engicam-image-minimal-mtdutils		minimal image with mtdutils
+engicam-image-gstreamer			gstreamer default image
+core-image-minimal			minimal iCore general image
 
 #Before start
 Before start remind to place the floder to this path in the virtual machine or to replace your meta-engicam previus folder
@@ -32,7 +32,7 @@ cp /home/user/yocto_daisy/fsl-community-bsp/ sources/meta-engicam/tools/engicam-
 
 #Flash on sdcard:
 
-sudo dd if=<imagename>.sdcard of=/dev/sd<sdcard letter>  bs=1M && sync
+sudo dd if=imagename.sdcard of=/dev/sdXX  bs=1M && sync
 
 example:
 sudo dd if=engicam-image-gstreamer-icorem6solo.sdcard of=/dev/sdb  bs=1M && sync
@@ -59,7 +59,7 @@ Or following this instruction for having additional details about the writing pr
 
 pad the uboot image with the dd command:
 
-dd if= <u-boot file> of=/mnt/u-boot_my.imx bs=512 seek=2 
+dd if= u-boot.bin of=/mnt/u-boot_my.imx bs=512 seek=2 
 
 and flash it:
 flash_erase /dev/mtd0 0 0
@@ -68,11 +68,11 @@ kobs-ng init -v /mnt/u-boot_my.imx
 
 #kernel programming:
 flash_erase /dev/mtd1 0 0
-nandwrite /dev/mtd1 -p <uImage file> 
+nandwrite /dev/mtd1 -p uImage
 
 #kernel device tree programming:
 flash_erase /dev/mtd2 0 0
-nandwrite /dev/mtd2 -p  <device tree file>
+nandwrite /dev/mtd2 -p  device_tree_file.dtb
 
 #rootfs programming:  
 ubiformat /dev/mtd3
@@ -80,7 +80,7 @@ ubiattach /dev/ubi_ctrl -m 3
 ubimkvol /dev/ubi0 -N rootfs -s240000000
 mkdir /rootfs
 mount -t ubifs ubi0:rootfs /rootfs
-tar xvf <rootfs.tar.bz2 file> -C /rootfs 
+tar xvf rootfs.tar.bz2 -C /rootfs 
 sync
 
 reboot the system by nand
