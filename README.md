@@ -20,6 +20,15 @@ engicam-image-minimal-mtdutils		<tested>
 engicam-image-gstreamer			<tested>
 core-image-minimal			<tested>
 
+#Before start
+Before start remind to place the floder to this path in the virtual machine or to replace your meta-engicam previus folder
+
+/home/user/yocto_daisy/fsl-community-bsp/sources/meta-engicam
+
+After that remind to replace our engicam configuration script 
+
+cp /home/user/yocto_daisy/fsl-community-bsp/ sources/meta-engicam/tools/engicam-setup-environment /home/user/yocto_daisy/fsl-community-bsp/
+
 
 #Flash on sdcard:
 
