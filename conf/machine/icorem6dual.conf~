@@ -12,6 +12,12 @@ KERNEL_DEVICETREE = "imx6q-icore.dtb"
 PREFERRED_PROVIDER_u-boot = "u-boot-imx"
 PREFERRED_PROVIDER_virtual/bootloader = "u-boot-imx"
 
+#UBOOT_MACHINE = "mx6d_icore_config"
+
+UBOOT_CONFIG ??= "nand"
 UBOOT_CONFIG[sd] = "mx6d_icore_sd_config,sdcard" 
 UBOOT_CONFIG[nand] = "mx6d_icore_config,ubifs"
+
+ # build all vpu firmware packages into the image
+MACHINE_FIRMWARE_append_mx6 = " firmware-imx-vpu-imx6q firmware-imx-vpu-imx6d"
 

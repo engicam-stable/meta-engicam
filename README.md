@@ -28,13 +28,21 @@ Engicam images:
 engicam-image-minimal-mtdutils <tested>
 engicam-image-minimal-nand     <tested>
 
-for nand boot:	 	
-set bootargs 'console=ttymxc3,115200 ubi.mtd=3 root=ubi0:rootfs rootfstype=ubifs mtdparts= -nand:4m(boot),8m(kernel),1m(dtb),-(rootfs)'
+for nand boot:
+set bootargs 'console=ttymxc3,115200 ubi.mtd=3 root=ubi0:rootfs rootfstype=ubifs cma=96MB gpumem=16MB video=mxcfb0:dev=lcd,Amp-WD mtdparts= -nand:4m(boot),8m(kernel),1m(dtb),-(rootfs)'
 
 
-Flash on nand :
+#Flash on sdcard:
 
-1. create a sdcard for nand programming with command:
+sudo dd if=<imagename>.sdcard of=/dev/sd<sdcard letter>  bs=1M && sync
+
+example:
+sudo dd if=engicam-image-gstreamer-icorem6solo.sdcard of=/dev/sdb  bs=1M && sync
+
+
+#Flash on nand :
+
+create a sdcard for nand programming with command:
 
 bitbake engicam-image-minimal-mtdutils
 
@@ -46,7 +54,7 @@ after that, create a nand flash image , es. bitbake engicam-image-minimal-nand (
 
 2.
 
-#programming u-boot
+#programming u-boot:
 
 pad the uboot image with the dd command:
 
@@ -61,7 +69,7 @@ kobs-ng init -v /mnt/u-boot_my.imx
 flash_erase /dev/mtd1 0 0
 nandwrite /dev/mtd1 -p <uImage file> 
 
-#device tree programming
+#kernel device tree programming:
 flash_erase /dev/mtd2 0 0
 nandwrite /dev/mtd2 -p  <device tree file>
 
@@ -76,6 +84,6 @@ sync
 
 reboot the system and change the u-boot bootargs varibale:
 
-set  bootargs 'console=ttymxc3,115200 ubi.mtd=3  root=ubi0:rootfs rootfstype=ubifs mtdparts=gpmi-nand:4m(boot),8m(kernel),1m(dtb),-(rootfs)'
+set  bootargs 'console=ttymxc3,115200 ubi.mtd=3  root=ubi0:rootfs rootfstype=ubifs video=mxcfb0:dev=lcd,Amp-WD mtdparts=gpmi-nand:4m(boot),8m(kernel),1m(dtb),-(rootfs)'
 
 

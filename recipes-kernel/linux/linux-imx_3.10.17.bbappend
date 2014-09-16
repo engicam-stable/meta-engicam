@@ -1,6 +1,6 @@
 FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
 SRC_URI += "file://defconfig"
-SRC_URI += "file://icore-defconfig"
+#SRC_URI += "file://icore-defconfig"
 SRC_URI += "file://0001-Added-i.Core-M6-support.patch"
 SRC_URI += "file://0002-Added-iomux-for-sdhc2-and-uart3.patch"
 SRC_URI += "file://0003-Added-i.Core-M6-hardware-revision-management.patch"
@@ -10,6 +10,8 @@ SRC_URI += "file://0006-Added-defconfig-for-i.Core.patch"
 SRC_URI += "file://0007-Tested-ADV7180-video-in-on-i.Core-M6-starterkit.patch"
 SRC_URI += "file://0008-ADV7180-video-in-on-i.Core-part-2.patch"
 SRC_URI += "file://0009-Tested-SGTL5000-driver-on-i.Core-M6.patch"
+SRC_URI += "file://0010-Added-support-for-new-openframe-LCD.patch"
+SRC_URI += "file://0011-added-capacitive-openframe-edt-ft5x06-touch-controller.patch"
 
-FSL_KERNEL_DEFCONFIG="icore-defconfig"
+#FSL_KERNEL_DEFCONFIG="icore-defconfig"
 

@@ -1,0 +1,38 @@
+From c57b72ce0031102cd0720c97545c15eb72a056b8 Mon Sep 17 00:00:00 2001
+From: Matteo Manetti <matteo_manetti@libero.it>
+Date: Wed, 10 Sep 2014 11:03:01 +0200
+Subject: [PATCH] modified default value for iCoreM6D/Q cma value
+
+---
+ include/configs/common_parameter.h | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/include/configs/common_parameter.h b/include/configs/common_parameter.h
+index ab4d918..6bb1505 100644
+--- a/include/configs/common_parameter.h
++++ b/include/configs/common_parameter.h
+@@ -24,6 +24,12 @@
+ 		#define CONFIG_BOOTCMD	"bootcmd=run bootcmd_mmc\0"
+ 	#endif
+ 
++	#ifdef CONFIG_MX6SOLO
++		#define EXTRA_OPTION_SOLO	" cma=96MB gpumem=16MB "
++	#else
++		#define EXTRA_OPTION_SOLO	" "
++	#endif
++
+ 	/* Common parameter
+ 	 * For all modules SODIMM and QSEVEN
+ 	 */
+@@ -33,7 +39,7 @@
+ 		"lcd_panel=Amp-WD\0" 			\
+ 		"nfsroot=nfs_icore\0"			\
+ 		"loadfdt=fatload mmc ${mmcdev}:${mmcpart} ${fdt_addr} ${fdt_file}\0"											\
+-		"bootargs=set bootargs console=" CONFIG_CONSOLE_DEV ",115200 cma=96MB gpumem=16MB engi_board=${board} video=${video_type},${lcd_panel} mtdparts=gpmi-nand:4m(boot),8m(kernel),1m(dtb),-(rootfs)\0"		\
++		"bootargs=set bootargs console=" CONFIG_CONSOLE_DEV ",115200" EXTRA_OPTION_SOLO "engi_board=${board} video=${video_type},${lcd_panel} mtdparts=gpmi-nand:4m(boot),8m(kernel),1m(dtb),-(rootfs)\0"		\
+ 		"bootargs_net=setenv bootargs ${bootargs} root=/dev/nfs ip=dhcp nfsroot=${serverip}:${nfsroot},v3,tcp\0" 						\
+ 		"bootargs_mmc=setenv bootargs ${bootargs} root=/dev/mmcblk0p2 rootwait rw\0" 										\
+ 		"bootcmd_mmc=run bootargs;  run bootargs_mmc; run loadfdt; fatload mmc 0:1 ${loadaddr} uImage; bootm ${loadaddr} - ${fdt_addr};\0"			\
+-- 
+1.9.1
+

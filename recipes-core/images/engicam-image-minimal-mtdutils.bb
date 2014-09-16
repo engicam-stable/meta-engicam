@@ -10,5 +10,8 @@ UBOOT_CONFIG = "sd"
 
 FSL_KERNEL_DEFCONFIG="icore-defconfig"
 
-IMAGE_OVERHEAD_FACTOR = "100.0"
+IMAGE_OVERHEAD_FACTOR = "200.0"
+
+IMAGE_INSTALL += "engicam-mtd-script"
+
 

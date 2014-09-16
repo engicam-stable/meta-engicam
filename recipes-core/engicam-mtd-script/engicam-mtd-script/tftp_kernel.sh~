@@ -1,0 +1,6 @@
+tftp -g -r uImage -l uImage $serverip
+echo Programming kernel
+flash_eraseall /dev/mtd1
+nandwrite /dev/mtd1 -p uImage
+rm uImage
+sync
