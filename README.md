@@ -13,12 +13,12 @@ rqsm6dual/rqsm6duallight/rqsm6quad/rqsm6solo
 
 Engicam images:
 
-engicam-dev-fb-qt5			image for qt developping
-engicam-dev-fb-qt5-demo			image with qt demo
-engicam-image-minimal-nand		minimal image for nand
-engicam-image-minimal-mtdutils		minimal image with mtdutils
-engicam-image-gstreamer			gstreamer default image
-core-image-minimal			minimal iCore general image
+engicam-dev-fb-qt5
+engicam-dev-fb-qt5-demo
+engicam-image-minimal-nand
+engicam-image-minimal-mtdutils
+engicam-image-gstreamer
+core-image-minimal
 
 #Before start
 Before start remind to place the floder to this path in the virtual machine or to replace your meta-engicam previus folder
