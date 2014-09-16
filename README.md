@@ -3,33 +3,22 @@ meta-engicam
 
 yocto engicam meta layer
 
-for icoreM6solo starterkit:
+Default parameter built for engicam starterkit. Image available for SODIMM and RQS6Q7 standards modules. Please refer to engicam board user manual for setup a different board.
 
-set mmcargs 'setenv bootargs console=${console},${baudrate} ${smp} root=${mmcroot} cma=96MB gpumem=16MB video=mxcfb0:dev=lcd,Amp-WD'
+Engicam availbale machine are:
 
-for icoreM6duallite/icorem6dual/icorem6duad starterkit:
-
-set mmcargs 'setenv bootargs console=${console},${baudrate} ${smp} root=${mmcroot} video=mxcfb0:dev=lcd,Amp-WD'
-
-
-
-
-Engicam machines:
-
-icorem6dual 
-icorem6duallite 
-icorem6quad
-icorem6solo
-icorem6solo512
+icoreM6duallite/icorem6dual/icorem6quad/icorem6solo/icorem6solo512
+rqsm6dual/rqsm6duallight/rqsm6quad/rqsm6solo
 
 
 Engicam images:
 
-engicam-image-minimal-mtdutils <tested>
-engicam-image-minimal-nand     <tested>
-
-for nand boot:
-set bootargs 'console=ttymxc3,115200 ubi.mtd=3 root=ubi0:rootfs rootfstype=ubifs cma=96MB gpumem=16MB video=mxcfb0:dev=lcd,Amp-WD mtdparts= -nand:4m(boot),8m(kernel),1m(dtb),-(rootfs)'
+engicam-dev-fb-qt5			<tested>
+engicam-dev-fb-qt5-demo			<tested>
+engicam-image-minimal-nand		<tested>
+engicam-image-minimal-mtdutils		<tested>
+engicam-image-gstreamer			<tested>
+core-image-minimal			<tested>
 
 
 #Flash on sdcard:
@@ -42,17 +31,20 @@ sudo dd if=engicam-image-gstreamer-icorem6solo.sdcard of=/dev/sdb  bs=1M && sync
 
 #Flash on nand :
 
-create a sdcard for nand programming with command:
+create and write an sdcard for nand programming with command:
 
 bitbake engicam-image-minimal-mtdutils
+sudo dd if=engicam-image-minimal-mtdutils.sdcard of=/dev/sdb  bs=1M && sync
 
-boot it and set the u-boot variable:
- 
-set mmcargs 'setenv bootargs console=${console},${baudrate} ${smp} root=${mmcroot}  cma=96MB gpumem=16MB video=mxcfb0:dev=lcd,Amp-WD mtdparts=gpmi-nand:4m(boot),8m(kernel),1m(dtb),-(rootfs)'
+after that, create a nand flash image , es. bitbake engicam-image-minimal-nand (remenber to set the UBOOT_CONFIG = "nand" on the machine file) and copy the files u-boot.bin, uImage, .dtb and rootfs.tar.bz2 in the sd card filesystem partition 
 
-after that, create a nand flash image , es. bitbake engicam-image-minimal-nand (remenber to set the UBOOT_CONFIG = "nand" on the machine file)
+boot the board by sdcard, at hte end of the boot run the program script:
 
-2.
+prboot.sh
+prkernel.sh
+prfs.sh
+
+Or following this instruction for having additional details about the writing procedure
 
 #programming u-boot:
 
@@ -82,8 +74,18 @@ mount -t ubifs ubi0:rootfs /rootfs
 tar xvf <rootfs.tar.bz2 file> -C /rootfs 
 sync
 
-reboot the system and change the u-boot bootargs varibale:
+reboot the system by nand
 
-set  bootargs 'console=ttymxc3,115200 ubi.mtd=3  root=ubi0:rootfs rootfstype=ubifs video=mxcfb0:dev=lcd,Amp-WD mtdparts=gpmi-nand:4m(boot),8m(kernel),1m(dtb),-(rootfs)'
+#u-boot bootcmd SODIMM
+In the u-boot bootloader are available two default bootargs and bootcmd for run the kernel and read the filesystem from SD card or NAND memory. 
+Type from the u-boot promt the command "run bootcmd_mmc" from read fs and kernel from the SD card or type run "bootcmd_ubi for" for read fs and kernel from nand.
 
+If you build your YOCTO image in sd configuration you will atuomatically read it form sd otherwhise you will automatically read it from nand memory. But if you would like to switch you can stop in the u-boot prompt and switch between the two mode.
+
+#u-boot bootcmd RQS6Q7
+At the same time on RQS7Q7 modules you can switch between external SD card and internal eMMC memory. You can switch between the two mode by type in u-boot promt this two command "run bootcmd_mmc" and "run bootcmd_emmc"
+If you open or close the jumper you will automatically boot from external sd if you close the jumper and if you keep the jumper open by internal eMMC memory.
+
+============
+For all other information please refer to Engicam YOCTO BSP manual
 
