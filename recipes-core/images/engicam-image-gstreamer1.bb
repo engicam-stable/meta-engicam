@@ -1,4 +1,5 @@
-require core-image-minimal.bb
+inherit core-image
+inherit distro_features_check
 
 DESCRIPTION = "Engicam Small image capable of booting a device with support for the \
 Minimal MTD Utilities, which let the user interact with the MTD subsystem in \
@@ -18,6 +19,9 @@ IMAGE_INSTALL += " \
 
 UBOOT_CONFIG = "sd"
 
+LICENSE = "MIT"
+
+
 SOC_EXTRA_IMAGE_FEATURES ?= "tools-testapps"
 
 IMAGE_INSTALL_append = " mtd-utils imx-kobs "
@@ -28,14 +32,12 @@ EXTRA_IMAGE_FEATURES += " \
     nfs-server \
     tools-debug \
     tools-profile \
+    ssh-server-dropbear \
 "
 
 IMAGE_INSTALL += " \
-    packagegroup-core-basic \
-    packagegroup-fsl-gstreamer \
-    packagegroup-fsl-gstreamer-streamer \
-    packagegroup-fsl-tools-testapps \
-    packagegroup-fsl-tools-benchmark \
+    packagegroup-fslc-gstreamer1.0-full \
+    gstreamer1.0-plugins-imx-meta \    
     gpu-viv-bin-mx6q \
     alsa-utils \
     alsa-tools \
@@ -46,8 +48,12 @@ IMAGE_INSTALL += " \
     imx-lib \
     imx-test \
     imx-vpu \
+    tslib \
 "	
 
-export IMAGE_BASENAME = "engicam-image-gstreamer"
+
+CONFLICT_DISTRO_FEATURES = "x11 wayland"
+
+export IMAGE_BASENAME = "engicam-image-gstreamer1"
 
 
