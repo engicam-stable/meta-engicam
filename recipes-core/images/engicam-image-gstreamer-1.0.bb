@@ -1,9 +1,7 @@
 inherit core-image
 inherit distro_features_check
 
-DESCRIPTION = "Engicam Small image capable of booting a device with support for the \
-Minimal MTD Utilities, which let the user interact with the MTD subsystem in \
-the kernel to perform operations on flash devices."
+DESCRIPTION = "Engicam default image with gstreamer version 1.0"
 
 IMAGE_INSTALL_append = " mtd-utils imx-kobs "
 
@@ -54,6 +52,6 @@ IMAGE_INSTALL += " \
 
 CONFLICT_DISTRO_FEATURES = "x11 wayland"
 
-export IMAGE_BASENAME = "engicam-image-gstreamer1"
+export IMAGE_BASENAME = "engicam-image-gstreamer-1.0"
 
 

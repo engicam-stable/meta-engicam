@@ -1,4 +1,4 @@
-DESCRIPTION = "Engicam QT5 demo image for Frame Buffer"
+DESCRIPTION = "Engicam image with QT5 demo image for Frame Buffer"
 
 LICENSE = "MIT"
 
