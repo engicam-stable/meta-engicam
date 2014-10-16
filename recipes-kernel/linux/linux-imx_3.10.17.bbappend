@@ -12,4 +12,5 @@ SRC_URI += "file://0009-Tested-SGTL5000-driver-on-i.Core-M6.patch"
 SRC_URI += "file://0010-Added-support-for-new-openframe-LCD.patch"
 SRC_URI += "file://0011-added-capacitive-openframe-edt-ft5x06-touch-controller.patch"
 SRC_URI += "file://0012-add-support-for-rqs-modules.patch"
+SRC_URI += "file://0013-add-support-rs485.patch"
 

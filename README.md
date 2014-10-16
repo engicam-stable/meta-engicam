@@ -29,6 +29,16 @@ After that remind to replace our engicam configuration script
 
 cp /home/user/yocto_daisy/fsl-community-bsp/ sources/meta-engicam/tools/engicam-setup-environment /home/user/yocto_daisy/fsl-community-bsp/
 
+#Building an image
+Create or open an existing build environment
+
+MACHINE=<icoreM6 machine name> sources engicam-setup-environment <build directory>
+
+Accept the license and then build the image
+
+bitbake <image name>
+
+The result of building process will be added in tmp/deploy/images/<machine name>
 
 #Flash on sdcard:
 
@@ -38,7 +48,7 @@ example:
 sudo dd if=engicam-image-gstreamer-icorem6solo.sdcard of=/dev/sdb  bs=1M && sync
 
 
-#Flash on nand :
+#Flash on nand
 
 create and write an sdcard for nand programming with command:
 
@@ -55,7 +65,7 @@ prfs.sh
 
 Or following this instruction for having additional details about the writing procedure
 
-#programming u-boot:
+#programming u-boot
 
 pad the uboot image with the dd command:
 
@@ -66,15 +76,15 @@ flash_erase /dev/mtd0 0 0
 kobs-ng init -v /mnt/u-boot_my.imx
 
 
-#kernel programming:
+#kernel programming
 flash_erase /dev/mtd1 0 0
 nandwrite /dev/mtd1 -p uImage
 
-#kernel device tree programming:
+#kernel device tree programming
 flash_erase /dev/mtd2 0 0
 nandwrite /dev/mtd2 -p  device_tree_file.dtb
 
-#rootfs programming:  
+#rootfs programming: 
 ubiformat /dev/mtd3
 ubiattach /dev/ubi_ctrl -m 3
 ubimkvol /dev/ubi0 -N rootfs -s240000000
