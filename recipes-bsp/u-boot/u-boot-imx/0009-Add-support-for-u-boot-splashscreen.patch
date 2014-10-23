@@ -1,24 +1,3 @@
-From a363a48cf911fb6f34821ed7547e66bb7982c8c9 Mon Sep 17 00:00:00 2001
-From: Matteo Manetti <matteo_manetti@libero.it>
-Date: Thu, 11 Sep 2014 10:46:59 +0200
-Subject: [PATCH] Add support for u-boot splashscreen
-
----
- arch/arm/include/asm/arch-mx6/mx6dl_pins.h |  56 +++++++-------
- arch/powerpc/config.mk                     |   0
- board/engicam/mx6_icore/mx6_icore.c        | 119 ++++++++++++++++++++++-------
- board/exmeritus/hww1u1a/tlb.c              |   0
- board/fads/Makefile                        |   0
- common/env_sata.c                          |   0
- tools/Makefile                             |   3 +
- tools/logos/Engicam.bmp                    | Bin 0 -> 60214 bytes
- 8 files changed, 121 insertions(+), 57 deletions(-)
- mode change 100755 => 100644 arch/powerpc/config.mk
- mode change 100755 => 100644 board/exmeritus/hww1u1a/tlb.c
- mode change 100755 => 100644 board/fads/Makefile
- mode change 100644 => 100755 common/env_sata.c
- create mode 100755 tools/logos/Engicam.bmp
-
 diff --git a/arch/arm/include/asm/arch-mx6/mx6dl_pins.h b/arch/arm/include/asm/arch-mx6/mx6dl_pins.h
 index 3dd3bfe..3ae8b0b 100644
 --- a/arch/arm/include/asm/arch-mx6/mx6dl_pins.h

@@ -1,0 +1,854 @@
+diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+index 5693f77..24ba54c 100644
+--- a/arch/arm/boot/dts/Makefile
++++ b/arch/arm/boot/dts/Makefile
+@@ -117,6 +117,8 @@ dtb-$(CONFIG_ARCH_MXC) += \
+ 	imx6q-icore-rqs.dtb \
+ 	imx6dl-icore.dtb \
+ 	imx6q-icore.dtb \
++	imx6dl-ofres.dtb \
++	imx6q-ofres.dtb \
+ 	imx6dl-sabreauto.dtb \
+ 	imx6dl-sabreauto-ecspi.dtb \
+ 	imx6dl-sabreauto-flexcan1.dtb \
+diff --git a/arch/arm/boot/dts/imx6dl-icore.dts b/arch/arm/boot/dts/imx6dl-icore.dts
+index 87dcfb5..5e75896 100644
+--- a/arch/arm/boot/dts/imx6dl-icore.dts
++++ b/arch/arm/boot/dts/imx6dl-icore.dts
+@@ -12,7 +12,7 @@
+ #include "imx6qdl-icore.dtsi"
+ 
+ / {
+-	model = "Engicam i.CoreM6 DualLite/Solo SOM";
++	model = "Engicam i.CoreM6 DualLite/Solo starterkit";
+ 	compatible = "fsl,imx6-icore", "fsl,imx6dl";
+ };
+ 
+@@ -118,7 +118,7 @@
+ 		pinctrl_edt_ft5x06:  edt-ft5x06grp  {
+ 			fsl,pins = <
+ 				MX6QDL_PAD_CSI0_DAT12__GPIO5_IO30 0x1b0b0 /*interrupt*/ 
+-				MX6QDL_PAD_CSI0_DAT14__GPIO6_IO00 0x1b0b0 /*reset*/
++				MX6QDL_PAD_CSI0_DAT14__GPIO6_IO00 0x1b0b0 /*reset edt*/
+ 			>;
+ 		};
+ 	};
+diff --git a/arch/arm/boot/dts/imx6dl-ofres.dts b/arch/arm/boot/dts/imx6dl-ofres.dts
+new file mode 100644
+index 0000000..9d02885
+--- /dev/null
++++ b/arch/arm/boot/dts/imx6dl-ofres.dts
+@@ -0,0 +1,98 @@
++/*
++ * Copyright (C) 2013 Freescale Semiconductor, Inc.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++/dts-v1/;
++
++#include "imx6dl.dtsi"
++#include "imx6qdl-ofres.dtsi"
++
++/ {
++	model = "Engicam i.CoreM6 DualLite/Solo resistive openframe";
++	compatible = "fsl,imx6-icore", "fsl,imx6dl";
++};
++
++&ldb {
++	ipu_id = <0>;
++	sec_ipu_id = <0>;
++};
++
++&mxcfb1 {
++	status = "okay";
++};
++
++&mxcfb2 {
++	status = "okay";
++};
++
++/* To be enabled for PCI peripheral.
++   Please enable also the PCI support kernel options:
++   CONFIG_PCI and PCI_IMX6
++&pcie {
++	status = "okay";
++};
++*/
++
++&i2c1 {
++
++	max11801@48 {
++		compatible = "maxim,max11801";
++		reg = <0x48>;
++		interrupt-parent = <&gpio3>;
++		interrupts = <31 2>;
++		work-mode = <0>;/*DCM mode*/
++	};
++
++};
++
++&i2c2 {
++
++	hdmi: edid@50 {
++		compatible = "fsl,imx6-hdmi-i2c";
++		reg = <0x50>;
++	};
++
++};
++
++
++&i2c3 {
++
++	codec: sgtl5000@0a {
++		compatible = "fsl,sgtl5000";
++		reg = <0x0a>;
++		clocks = <&clks 201>;
++		VDDA-supply = <&reg_2p5v>;
++		VDDIO-supply = <&reg_3p3v>;
++		VDDD-supply = <&reg_1p8v>;
++	};
++};
++
++&iomuxc {
++
++	pinctrl-assert-gpios = <&gpio1 2 GPIO_ACTIVE_HIGH>;
++	
++	hog {
++		pinctrl_hog: hoggrp {
++			fsl,pins = <
++				MX6QDL_PAD_GPIO_2__GPIO1_IO02 0x1f059
++				MX6QDL_PAD_EIM_D19__GPIO3_IO19 0x1f059 /* not used pin for ADV7180 driver compatibility */
++			>;
++		};
++	};
++};
++
++&iomuxc {
++	touchpanel{
++		pinctrl_edt_ft5x06:  edt-ft5x06grp  {
++			fsl,pins = <
++				MX6QDL_PAD_CSI0_DAT12__GPIO5_IO30 0x1b0b0 /*interrupt*/ 
++				MX6QDL_PAD_CSI0_DAT14__GPIO6_IO00 0x1b0b0 /*reset edt*/
++			>;
++		};
++	};
++};
++
+diff --git a/arch/arm/boot/dts/imx6q-icore.dts b/arch/arm/boot/dts/imx6q-icore.dts
+index 2211dcc..2f7ce37 100644
+--- a/arch/arm/boot/dts/imx6q-icore.dts
++++ b/arch/arm/boot/dts/imx6q-icore.dts
+@@ -12,7 +12,7 @@
+ #include "imx6qdl-icore.dtsi"
+ 
+ / {
+-	model = "Engicam i.CoreM6 Quad/Dual SOM";
++	model = "Engicam i.CoreM6 Quad/Dual starterkit";
+ 	compatible = "fsl,imx6-icore", "fsl,imx6q";
+ };
+ 
+@@ -121,7 +121,7 @@
+ 		pinctrl_edt_ft5x06:  edt-ft5x06grp  {
+ 			fsl,pins = <
+ 				MX6QDL_PAD_CSI0_DAT12__GPIO5_IO30 0x1b0b0 /*interrupt*/ 
+-				MX6QDL_PAD_CSI0_DAT14__GPIO6_IO00 0x1b0b0 /*reset*/
++				MX6QDL_PAD_CSI0_DAT14__GPIO6_IO00 0x1b0b0 /*reset edt*/
+ 			>;
+ 		};
+ 	};
+diff --git a/arch/arm/boot/dts/imx6q-ofres.dts b/arch/arm/boot/dts/imx6q-ofres.dts
+new file mode 100644
+index 0000000..08dd6ed
+--- /dev/null
++++ b/arch/arm/boot/dts/imx6q-ofres.dts
+@@ -0,0 +1,100 @@
++/*
++ * Copyright (C) 2013 Freescale Semiconductor, Inc.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++/dts-v1/;
++
++#include "imx6q.dtsi"
++#include "imx6qdl-ofres.dtsi"
++
++/ {
++	model = "Engicam i.CoreM6 Quad/Dual resistive openframe";
++	compatible = "fsl,imx6-icore", "fsl,imx6q";
++};
++
++&ldb {
++	ipu_id = <0>;
++	sec_ipu_id = <0>;
++};
++
++&mxcfb1 {
++	status = "okay";
++};
++
++&mxcfb2 {
++	status = "okay";
++};
++
++&sata {
++	status = "okay";
++};
++
++/* To be enabled for PCI peripheral.
++   Please enable also the PCI support kernel options:
++   CONFIG_PCI and PCI_IMX6
++&pcie {
++	status = "okay";
++};
++*/
++
++&i2c1 {
++
++	max11801@48 {
++		compatible = "maxim,max11801";
++		reg = <0x48>;
++		interrupt-parent = <&gpio3>;
++		interrupts = <31 2>;
++		work-mode = <0>;/*DCM mode*/
++	};
++
++};
++
++&i2c2 {
++
++	hdmi: edid@50 {
++		compatible = "fsl,imx6-hdmi-i2c";
++		reg = <0x50>;
++	};
++
++};
++
++ &i2c3 {
++
++	codec: sgtl5000@0a {
++		compatible = "fsl,sgtl5000";
++		reg = <0x0a>;
++		clocks = <&clks 201>;
++		VDDA-supply = <&reg_2p5v>;
++		VDDIO-supply = <&reg_3p3v>;
++		VDDD-supply = <&reg_1p8v>;
++	};
++};
++
++&iomuxc {
++
++	pinctrl-assert-gpios = <&gpio1 2 GPIO_ACTIVE_HIGH>;
++	
++	hog {
++		pinctrl_hog: hoggrp {
++			fsl,pins = <
++				MX6QDL_PAD_GPIO_2__GPIO1_IO02 0x1f059
++				MX6QDL_PAD_EIM_D19__GPIO3_IO19 0x1f059 /* not used pin for ADV7180 driver compatibility */
++			>;
++		};
++	};
++};
++
++&iomuxc {
++	touchpanel{
++		pinctrl_edt_ft5x06:  edt-ft5x06grp  {
++			fsl,pins = <
++				MX6QDL_PAD_CSI0_DAT12__GPIO5_IO30 0x1b0b0 /*interrupt*/ 
++				MX6QDL_PAD_CSI0_DAT14__GPIO6_IO00 0x1b0b0 /*reset edt*/
++			>;
++		};
++	};
++};
+diff --git a/arch/arm/boot/dts/imx6qdl-ofres.dtsi b/arch/arm/boot/dts/imx6qdl-ofres.dtsi
+new file mode 100644
+index 0000000..0c4521d
+--- /dev/null
++++ b/arch/arm/boot/dts/imx6qdl-ofres.dtsi
+@@ -0,0 +1,383 @@
++/*
++ * Copyright 2012 Freescale Semiconductor, Inc.
++ * Copyright 2011 Linaro Ltd.
++ *
++ * The code contained herein is licensed under the GNU General Public
++ * License. You may obtain a copy of the GNU General Public License
++ * Version 2 or later at the following locations:
++ *
++ * http://www.opensource.org/licenses/gpl-license.html
++ * http://www.gnu.org/copyleft/gpl.html
++ */
++
++/ {
++	aliases {
++		mxcfb0 = &mxcfb1;
++		mxcfb1 = &mxcfb2;
++		mxcfb2 = &mxcfb3;
++		mxcfb3 = &mxcfb4;
++	};
++
++	memory {
++		reg = <0x10000000 0x80000000>;
++	};
++
++	backlight {
++		compatible = "pwm-backlight";
++		pwms = <&pwm3 0 100000>;
++		brightness-levels = <0 4 8 16 32 64 128 255>;
++		default-brightness-level = <7>;
++	};
++
++	clocks {
++		codec_osc: anaclk2 {
++			compatible = "fixed-clock";
++			#clock-cells = <0>;
++			clock-frequency = <24000000>;
++		};
++	};
++
++	mxcfb1: fb@0 {
++		compatible = "fsl,mxc_sdc_fb";
++		disp_dev = "ldb";
++		interface_pix_fmt = "RGB666";
++		mode_str ="LDB-XGA";
++		default_bpp = <16>;
++		int_clk = <0>;
++		late_init = <0>;
++		status = "disabled";
++	};
++
++	mxcfb2: fb@1 {
++		compatible = "fsl,mxc_sdc_fb";
++		disp_dev = "hdmi";
++		interface_pix_fmt = "RGB24";
++		mode_str ="1920x1080M@60";
++		default_bpp = <24>;
++		int_clk = <0>;
++		late_init = <0>;
++		status = "disabled";
++	};
++
++	mxcfb3: fb@2 {
++		compatible = "fsl,mxc_sdc_fb";
++		disp_dev = "lcd";
++		interface_pix_fmt = "RGB565";
++		mode_str ="Amp-WD";
++		default_bpp = <16>;
++		int_clk = <0>;
++		late_init = <0>;
++		status = "okay";
++	};
++
++	mxcfb4: fb@3 {
++		compatible = "fsl,mxc_sdc_fb";
++		disp_dev = "ldb";
++		interface_pix_fmt = "RGB666";
++		mode_str ="HIT-LVDS";
++		default_bpp = <16>;
++		int_clk = <0>;
++		late_init = <0>;
++		status = "disabled";
++	};
++
++	lcd@0 {
++		compatible = "fsl,lcd";
++		ipu_id = <0>;
++		disp_id = <0>;
++		default_ifmt = "RGB565";
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_ipu1_5>;
++		status = "okay";
++	};
++
++	regulators {
++		compatible = "simple-bus";
++
++		reg_usb_h1_vbus: usb_h1_vbus {
++			compatible = "regulator-fixed";
++			regulator-name = "usb_h1_vbus";
++			regulator-min-microvolt = <5000000>;
++			regulator-max-microvolt = <5000000>;
++//			gpio = <&max7310_b 7 GPIO_ACTIVE_HIGH>;
++//			enable-active-high;
++			regulator-always-on;
++		};
++
++		reg_usb_otg_vbus: usb_otg_vbus {
++			compatible = "regulator-fixed";
++			regulator-name = "usb_otg_vbus";
++			regulator-min-microvolt = <5000000>;
++			regulator-max-microvolt = <5000000>;
++//			gpio = <&max7310_c 1 GPIO_ACTIVE_HIGH>;
++//			enable-active-high;
++			regulator-always-on;
++		};
++
++		reg_3p3v: 3p3v {
++			compatible = "regulator-fixed";
++			regulator-name = "3P3V";
++			regulator-min-microvolt = <3300000>;
++			regulator-max-microvolt = <3300000>;
++			regulator-always-on;
++		};
++
++		reg_2p5v: 2p5v {
++			compatible = "regulator-fixed";
++			regulator-name = "2P5V";
++			regulator-min-microvolt = <2500000>;
++			regulator-max-microvolt = <2500000>;
++			regulator-always-on;
++		};
++
++		reg_1p8v: 1p8v {
++			compatible = "regulator-fixed";
++			regulator-name = "1P8V";
++			regulator-min-microvolt = <1800000>;
++			regulator-max-microvolt = <1800000>;
++			regulator-always-on;
++		};
++
++		reg_sd3_vmmc: sd3_vmmc{
++			compatible = "regulator-fixed";
++			regulator-name = "P3V3_SDa_SWITCHED";
++			regulator-min-microvolt = <3300000>;
++			regulator-max-microvolt = <3300000>;
++			gpio = <&gpio7 8 GPIO_ACTIVE_HIGH>;
++			enable-active-high;
++			/* remove below line to enable this regulator */
++			status="disabled";
++		};
++	};
++
++	sound {
++		compatible = "fsl,imx6q-icore-sgtl5000",
++			     "fsl,imx-audio-sgtl5000";
++		model = "imx6q-icore-sgtl5000";
++		ssi-controller = <&ssi1>;
++		audio-codec = <&codec>;
++		audio-routing =
++			"MIC_IN", "Mic Jack",
++			"Mic Jack", "Mic Bias",
++			"Headphone Jack", "HP_OUT";
++		mux-int-port = <1>;
++		mux-ext-port = <4>;
++	};
++
++	sound-hdmi {
++		compatible = "fsl,imx6q-audio-hdmi",
++			     "fsl,imx-audio-hdmi";
++		model = "imx-audio-hdmi";
++		hdmi-controller = <&hdmi_audio>;
++	};
++
++	v4l2_cap_0 {
++		compatible = "fsl,imx6q-v4l2-capture";
++		ipu_id = <0>;
++		csi_id = <0>;
++		mclk_source = <0>;
++		status = "okay";
++	};
++
++	v4l2_out {
++		compatible = "fsl,mxc_v4l2_output";
++		status = "okay";
++	};
++};
++
++&audmux {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_audmux_4>;
++	status = "okay";
++};
++
++&fec {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_enet_4>;
++	phy-mode = "rmii";
++	status = "okay";
++};
++
++&gpc {
++	fsl,cpu_pupscr_sw2iso = <0xf>;
++	fsl,cpu_pupscr_sw = <0xf>;
++	fsl,cpu_pdnscr_iso2sw = <0x1>;
++	fsl,cpu_pdnscr_iso = <0x1>;
++};
++
++&hdmi_audio {
++	status = "okay";
++};
++
++&hdmi_cec {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_hdmi_cec_1>;
++	status = "okay";
++};
++
++&hdmi_core {
++	ipu_id = <0>;
++	disp_id = <1>;
++	status = "okay";
++};
++
++&hdmi_video {
++	fsl,phy_reg_vlev = <0x0294>;
++	fsl,phy_reg_cksymtx = <0x800d>;
++	status = "okay";
++};
++
++&i2c1 {
++	status = "okay";
++	clock-frequency = <100000>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_i2c1_1>;
++
++};
++
++&i2c2 {
++	clock-frequency = <100000>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_i2c2_3>;
++	status = "okay";
++
++};
++
++
++&i2c3 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_i2c3_4>;
++//	pinctrl-assert-gpios = <&gpio5 4 GPIO_ACTIVE_HIGH>;
++	status = "okay";
++};
++
++&iomuxc {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_hog>;
++
++	hog {
++		pinctrl_hog: hoggrp {
++			fsl,pins = <
++				MX6QDL_PAD_SD3_CMD__GPIO7_IO02 0x1f059
++			>;
++		};
++	};
++};
++
++&iomuxc {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_lvds>;
++	lvdsreset-delay = <30>;
++	lvdsreset-pin = <&gpio6 0 GPIO_ACTIVE_LOW>;
++	lvds {
++		pinctrl_lvds: lvdsgrp {
++			fsl,pins = <
++				MX6QDL_PAD_CSI0_DAT14__GPIO6_IO00 0x1f059 // LVDS reset
++			>;
++		};
++	};
++};
++
++&flexcan1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_flexcan1_1>;
++	status = "okay"; 
++};
++
++&flexcan2 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_flexcan2_1>;
++	status = "okay";
++};
++
++&ldb {
++	ipu_id = <1>;
++	disp_id = <0>;
++	ext_ref = <1>;
++	mode = "sep0";
++	sec_ipu_id = <1>;
++	sec_disp_id = <1>;
++	status = "okay";
++};
++
++&pcie {
++	status = "okay";
++};
++
++&pwm3 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_pwm3_1>;
++	status = "okay";
++};
++
++&ssi1 {
++	fsl,mode = "i2s-slave";
++	status = "okay";
++};
++
++&uart1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_uart1_2>;
++	status = "okay";
++};
++
++&uart2 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_uart2_1>;
++	status = "okay";
++};
++
++&uart3 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_uart3_2>;
++        fsl,uart-has-rtscts;
++	uart-rs485-mode;
++        rs485-rts-delay = <0 150>;
++	rs485_rts_enable = <&gpio3 23 GPIO_ACTIVE_LOW>;
++	status = "okay";
++};
++
++&uart4 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_uart4_1>;
++	status = "okay";
++};
++
++&gpmi {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_gpmi_nand_1>;
++	status = "okay"; 
++};
++
++&usbh1 {
++	vbus-supply = <&reg_usb_h1_vbus>;
++	disable-over-current;
++	status = "okay";
++};
++
++&usbotg {
++	vbus-supply = <&reg_usb_otg_vbus>;
++	pinctrl-names = "default", "rev_c";
++	pinctrl-0 = <&pinctrl_usbotg_2>;
++	pinctrl-1 = <&pinctrl_usbotg_3>;
++	disable-over-current;
++	ver-gpios = <&gpio7 2 0>;
++	status = "okay";
++};
++
++&usdhc1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_usdhc1_2>;
++	cd-gpios = <&gpio1 1 0>;
++	no-1-8-v;
++	status = "okay";
++};
++
++&usdhc2 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_usdhc2_2>;
++	no-1-8-v;
++	non-removable;
++	status = "okay";
++};
++
+diff --git a/drivers/video/backlight/pwm_bl.c b/drivers/video/backlight/pwm_bl.c
+index 1fea627..367451a 100644
+--- a/drivers/video/backlight/pwm_bl.c
++++ b/drivers/video/backlight/pwm_bl.c
+@@ -93,6 +93,27 @@ static const struct backlight_ops pwm_backlight_ops = {
+ 	.check_fb	= pwm_backlight_check_fb,
+ };
+ 
++static struct backlight_device *bl_mem=NULL;
++static int dft_brightness_mem=0;
++
++/* This fuction will be used to enable the backlight after poweron the fb*/
++void pwm_backlight_enable (bool bStatus)
++{
++	if(bl_mem!=NULL)
++	{
++		if(bStatus)
++		{
++			bl_mem->props.brightness = dft_brightness_mem;
++			backlight_update_status(bl_mem);
++		}
++		else
++		{
++			bl_mem->props.brightness = 0;
++		}
++	}
++}
++EXPORT_SYMBOL(pwm_backlight_enable);
++
+ #ifdef CONFIG_OF
+ static int pwm_backlight_parse_dt(struct device *dev,
+ 				  struct platform_pwm_backlight_data *data)
+@@ -236,6 +257,7 @@ static int pwm_backlight_probe(struct platform_device *pdev)
+ 	props.max_brightness = data->max_brightness;
+ 	bl = backlight_device_register(dev_name(&pdev->dev), &pdev->dev, pb,
+ 				       &pwm_backlight_ops, &props);
++	bl_mem=bl; /* Get a pointer copy for use it on lvds-reset*/
+ 	if (IS_ERR(bl)) {
+ 		dev_err(&pdev->dev, "failed to register backlight\n");
+ 		ret = PTR_ERR(bl);
+@@ -249,8 +271,9 @@ static int pwm_backlight_probe(struct platform_device *pdev)
+ 		data->dft_brightness = data->max_brightness;
+ 	}
+ 
++	dft_brightness_mem=data->dft_brightness;
+ 	bl->props.brightness = data->dft_brightness;
+-	backlight_update_status(bl);
++	pwm_backlight_enable(false);
+ 
+ 	platform_set_drvdata(pdev, bl);
+ 	return 0;
+diff --git a/drivers/video/mxc/mxc_ipuv3_fb.c b/drivers/video/mxc/mxc_ipuv3_fb.c
+index e5b8733..55d2b57 100644
+--- a/drivers/video/mxc/mxc_ipuv3_fb.c
++++ b/drivers/video/mxc/mxc_ipuv3_fb.c
+@@ -48,6 +48,7 @@
+ #include <linux/slab.h>
+ #include <linux/string.h>
+ #include <linux/uaccess.h>
++#include <linux/of_gpio.h>
+ 
+ #include "mxc_dispdrv.h"
+ 
+@@ -133,6 +134,73 @@ enum {
+ 	BOTH_OFF
+ };
+ 
++/* LVDS enabled control */
++static void mxcfb_lvds_power (bool bStatus)
++{
++	static bool bGpioInizialized=false;
++	static bool bGpioValid=false;
++	static int gpio_pointer = 0;
++	static u32 lvds_delay=20;
++
++	// Inizializing the GPIO from device tree
++	if(!bGpioInizialized)
++	{
++		struct device_node *np = NULL;
++		struct platform_device *pdev = NULL;
++		u32 lvds_delay_array[2];
++		bGpioInizialized=true;
++
++		/* Load the resource from device tree */
++		np = of_find_node_by_path("/soc/aips-bus@02000000/iomuxc@020e0000");
++		pdev = of_find_device_by_node(np);
++
++		if (!pdev) 
++		{
++			printk("Can't find lvds-reset dts node\n");
++			return;
++		}
++
++		gpio_pointer = of_get_named_gpio(np, "lvdsreset-pin", 0);
++
++		/* Get delay value */
++		if (of_property_read_u32_array(np, "lvdsreset-delay", lvds_delay_array, 1) == 0)
++		{
++			lvds_delay=lvds_delay_array[0];
++		}
++
++		/* Set the GPIO */
++		if(gpio_is_valid(gpio_pointer) && !gpio_request_one(gpio_pointer, GPIOF_DIR_OUT, "lvdsreset-pin") )
++		{
++			bGpioValid=true;
++		}
++
++	}
++
++	// Move the GPIO
++	if(bGpioInizialized && bGpioValid)
++	{
++		static bool bFirstTime=true;
++		static bool bPreviusStatus=false;
++
++		// If there is no change with the previus status the fuction end
++		if(bPreviusStatus==bStatus && bFirstTime==false)
++	 		return;
++		bFirstTime=false;
++		bPreviusStatus=bStatus;
++
++		gpio_direction_output(gpio_pointer, 0);
++		if(bStatus)
++		{
++			mdelay(lvds_delay);
++			gpio_direction_output(gpio_pointer, 1);
++		}
++		else
++		{
++			gpio_direction_output(gpio_pointer, 0);
++		}
++	}
++}
++
+ static bool g_dp_in_use[2];
+ LIST_HEAD(fb_alloc_list);
+ 
+@@ -1379,6 +1447,8 @@ static int mxcfb_blank(int blank, struct fb_info *info)
+ 	case FB_BLANK_VSYNC_SUSPEND:
+ 	case FB_BLANK_HSYNC_SUSPEND:
+ 	case FB_BLANK_NORMAL:
++		if(info->node==0)
++			mxcfb_lvds_power(false);
+ 		if (mxc_fbi->dispdrv && mxc_fbi->dispdrv->drv->disable)
+ 			mxc_fbi->dispdrv->drv->disable(mxc_fbi->dispdrv);
+ 		ipu_disable_channel(mxc_fbi->ipu, mxc_fbi->ipu_ch, true);
+@@ -1390,6 +1460,8 @@ static int mxcfb_blank(int blank, struct fb_info *info)
+ 		info->var.activate = (info->var.activate & ~FB_ACTIVATE_MASK) |
+ 				FB_ACTIVATE_NOW | FB_ACTIVATE_FORCE;
+ 		ret = mxcfb_set_par(info);
++		if(info->node==0)
++			mxcfb_lvds_power(true);
+ 		break;
+ 	}
+ 	if (!ret)
+@@ -2332,6 +2404,8 @@ static int mxcfb_get_of_property(struct platform_device *pdev,
+ 	return err;
+ }
+ 
++extern void pwm_backlight_enable (bool bStatus);
++
+ /*!
+  * Probe routine for the framebuffer driver. It is called during the
+  * driver binding process.      The following functions are performed in
+@@ -2354,6 +2428,12 @@ static int mxcfb_probe(struct platform_device *pdev)
+ 		dev_err(&pdev->dev, "can not get alias id\n");
+ 		return pdev->id;
+ 	}
++	
++	if(pdev->id==0)
++	{
++		pwm_backlight_enable(false);
++		mxcfb_lvds_power(false);
++	}
+ 
+ 	plat_data = devm_kzalloc(&pdev->dev, sizeof(struct
+ 					ipuv3_fb_platform_data), GFP_KERNEL);
+@@ -2375,6 +2455,7 @@ static int mxcfb_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	ret = mxcfb_option_setup(pdev, fbi);
++
+ 	if (ret)
+ 		goto get_fb_option_failed;
+ 
+@@ -2485,6 +2566,12 @@ static int mxcfb_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		dev_err(&pdev->dev, "Error %d on creating file for disp "
+ 				    " device propety\n", ret);
++	if(pdev->id==0)
++	{
++		mxcfb_lvds_power(true);
++		mdelay(20);
++		pwm_backlight_enable(true);
++	}
+ 
+ 	return 0;
+ 

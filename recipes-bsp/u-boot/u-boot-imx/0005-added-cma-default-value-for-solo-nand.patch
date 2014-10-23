@@ -1,12 +1,3 @@
-From 8228d5c8a7af39e4ddb2646fc18ae23a38b1ad8e Mon Sep 17 00:00:00 2001
-From: user <Your Email>
-Date: Mon, 16 Jun 2014 17:42:10 +0200
-Subject: [PATCH 5/5] added cma default value for solo nand
-
----
- include/configs/mx6_icore_common.h |   13 +++++++++++++
- 1 file changed, 13 insertions(+)
-
 diff --git a/include/configs/mx6_icore_common.h b/include/configs/mx6_icore_common.h
 index 78496d0..1e219b9 100644
 --- a/include/configs/mx6_icore_common.h

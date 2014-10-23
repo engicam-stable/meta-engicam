@@ -10,6 +10,7 @@ SRC_URI = "file://prboot.sh \
            file://prkernel.sh \
            file://tftp_boot.sh \
            file://tftp_kernel.sh \
+           file://tftp_fs.sh \
 	   file://copyright"
 
 
@@ -21,6 +22,7 @@ do_install () {
 	install -m 0755 ${WORKDIR}/prkernel.sh ${D}${bindir}/prkernel.sh 
 	install -m 0755 ${WORKDIR}/tftp_boot.sh ${D}${bindir}/tftp_boot.sh 
 	install -m 0755 ${WORKDIR}/tftp_kernel.sh ${D}${bindir}/tftp_kernel.sh
+	install -m 0755 ${WORKDIR}/tftp_fs.sh ${D}${bindir}/tftp_fs.sh
 }
 
 

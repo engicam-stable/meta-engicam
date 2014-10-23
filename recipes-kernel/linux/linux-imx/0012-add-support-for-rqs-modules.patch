@@ -1,24 +1,3 @@
-From b4996355be25c7277869bf3a7356fc937b0f48e5 Mon Sep 17 00:00:00 2001
-From: Matteo Manetti <matteo_manetti@libero.it>
-Date: Thu, 11 Sep 2014 17:43:22 +0200
-Subject: [PATCH] add support for rqs modules
-
----
- arch/arm/boot/dts/Makefile               |   2 +
- arch/arm/boot/dts/imx6dl-icore-rqs.dts   |  78 +++++++
- arch/arm/boot/dts/imx6dl-icore.dts       |   8 +
- arch/arm/boot/dts/imx6q-icore-rqs.dts    |  95 ++++++++
- arch/arm/boot/dts/imx6q-icore.dts        |  14 +-
- arch/arm/boot/dts/imx6qdl-icore-rqs.dtsi | 366 +++++++++++++++++++++++++++++++
- arch/arm/boot/dts/imx6qdl.dtsi           | 108 +++++++--
- arch/arm/mach-imx/clk-imx6q.c            |   6 +-
- arch/arm/mach-imx/mach-imx6q.c           | 102 +++++++--
- drivers/pci/host/pci-imx6.c              |   6 +-
- 10 files changed, 748 insertions(+), 37 deletions(-)
- create mode 100644 arch/arm/boot/dts/imx6dl-icore-rqs.dts
- create mode 100644 arch/arm/boot/dts/imx6q-icore-rqs.dts
- create mode 100644 arch/arm/boot/dts/imx6qdl-icore-rqs.dtsi
-
 diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
 index ed4518d..b7d68f1 100644
 --- a/arch/arm/boot/dts/Makefile

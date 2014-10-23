@@ -1,14 +1,3 @@
-From fc18eba13d0a15350f55607c8bf852ee3037398d Mon Sep 17 00:00:00 2001
-From: Matteo Manetti <matteo_manetti@libero.it>
-Date: Tue, 9 Sep 2014 11:01:00 +0200
-Subject: [PATCH] added capacitive openframe edt-ft5x06 touch controller
-
----
- arch/arm/boot/dts/imx6dl-icore.dts     |  19 ++
- arch/arm/boot/dts/imx6q-icore.dts      |  23 +-
- drivers/input/touchscreen/edt-ft5x06.c | 545 ++++++++++++++++++++++++---------
- 3 files changed, 437 insertions(+), 150 deletions(-)
-
 diff --git a/arch/arm/boot/dts/imx6dl-icore.dts b/arch/arm/boot/dts/imx6dl-icore.dts
 index cb232a0..23d5ca3 100644
 --- a/arch/arm/boot/dts/imx6dl-icore.dts
