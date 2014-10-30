@@ -67,6 +67,8 @@ boost cmake zlib glib-2.0 glive \
     engicam-startup \ 
     engicam-mtd-script \
     psplash \
+    iproute2 \
+    cantest \
 	mtd-utils imx-kobs mtd-utils-ubifs \
     "
 

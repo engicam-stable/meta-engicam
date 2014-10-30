@@ -16,4 +16,7 @@ IMAGE_INSTALL += " \
     ${SOC_IMAGE_INSTALL} \
     cpufrequtils \
     engicam-mtd-script \
+    iproute2 \
+    canutils \
+    cantest \
     "
