@@ -15,4 +15,5 @@ SRC_URI += "file://0012-add-support-for-rqs-modules.patch"
 SRC_URI += "file://0013-add-support-rs485.patch"
 SRC_URI += "file://0014-adv7180_icoreq.patch"
 SRC_URI += "file://0015-ofres-lvds_reset.patch"
+SRC_URI += "file://0016-ldb_lowfreq.patch"
 

@@ -1,0 +1,42 @@
+diff --git a/arch/arm/mach-imx/clk-imx6q.c b/arch/arm/mach-imx/clk-imx6q.c
+index a5310a6..e2f5642 100644
+--- a/arch/arm/mach-imx/clk-imx6q.c
++++ b/arch/arm/mach-imx/clk-imx6q.c
+@@ -18,6 +18,7 @@
+ #include <linux/io.h>
+ #include <linux/of.h>
+ #include <linux/of_address.h>
++#include <linux/of_device.h>
+ #include <linux/of_irq.h>
+ 
+ #include "clk.h"
+@@ -258,6 +259,8 @@ static void init_ldb_clks(enum mx6q_clks new_parent)
+ static void __init imx6q_clocks_init(struct device_node *ccm_node)
+ {
+ 	struct device_node *np;
++	bool ldb_freq_less_than_38mhz=false;
++	struct device_node *np_freq = NULL;
+ 	void __iomem *base;
+ 	int i, irq;
+ 	int ret;
+@@ -651,8 +654,19 @@ static void __init imx6q_clocks_init(struct device_node *ccm_node)
+ 		clk_prepare_enable(clk[usbphy2_gate]);
+ 	}
+ 
++	/* check the frequency parent setted in dtb */
++	np_freq = of_find_node_by_name(NULL, "ldb");
++	if (of_get_property(np_freq, "clock_less_38mhz", NULL))
++	{
++		ldb_freq_less_than_38mhz=true;
++	}
++
+ 	/* ipu clock initialization */
+-	init_ldb_clks(pll2_pfd0_352m);
++	if(ldb_freq_less_than_38mhz)
++		init_ldb_clks(pll5_video_div);
++	else
++		init_ldb_clks(pll2_pfd0_352m);
++
+ 	clk_set_parent(clk[ipu1_di0_pre_sel], clk[pll5_video_div]);
+ 	clk_set_parent(clk[ipu1_di1_pre_sel], clk[pll5_video_div]);
+ 	clk_set_parent(clk[ipu2_di0_pre_sel], clk[pll5_video_div]);
