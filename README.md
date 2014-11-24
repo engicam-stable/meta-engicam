@@ -106,5 +106,30 @@ At the same time on RQS7Q7 modules you can switch between external SD card and i
 If you open or close the jumper you will automatically boot from external sd if you close the jumper and if you keep the jumper open by internal eMMC memory.
 
 ============
+#Nand flash programming from u-boot
+
+set mtdids 'nand0=gpmi-nand'
+set mtdparts 'mtdparts=gpmi-nand:4m(boot),8m(kernel),1m(dtb),-(rootfs)'
+
+#uImage
+tftp 12000000 iMX6/uImage
+nand erase 0x00400000 0x00800000
+nand write 12000000 0x00400000 0x00800000
+
+#DTB:
+tftp 12000000 iMX6/uImage.dtb
+nand erase 0x00c00000 0x00100000
+nand write 12000000 0x00c00000 0x00100000
+
+
+#FS:
+tftp 12000000 iMX6/filesystem.ubifs
+ubi part rootfs
+ubi create rootfs
+ubi write 12000000 rootfs ${filesize}
+ubifsmount ubi0:rootfs
+ubifsls
+
+============
 For all other information please refer to Engicam YOCTO BSP manual
 
