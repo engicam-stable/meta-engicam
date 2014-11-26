@@ -1,6 +1,6 @@
 require core-image-minimal.bb
 
-DESCRIPTION = "Engicam Small minimal image writable on NAND memory"
+DESCRIPTION = "Engicam minimal image for using wf111 module"
 
 
 IMAGE_INSTALL_append += " mtd-utils imx-kobs mtd-utils-ubifs"
@@ -16,9 +16,10 @@ SOC_IMAGE_INSTALL_mx6 = "gpu-viv-bin-mx6q gpu-viv-g2d fsl-gpu-sdk"
 
 IMAGE_INSTALL += " \
     ${SOC_IMAGE_INSTALL} \
-    cpufrequtils \
     engicam-mtd-script \
     iproute2 \
-    canutils \
     cantest \
+    wf111-driver \
+    wireless-tools \
+    wpa-supplicant \
     "

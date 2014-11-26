@@ -1,0 +1,11 @@
+set mtdids 'nand0=gpmi-nand'
+set mtdparts 'mtdparts=gpmi-nand:4m(boot),8m(kernel),1m(dtb),-(rootfs)'
+
+#FS:
+nand erase.part rootfs
+tftp 12000000 rootfs.ubifs       
+ubi part rootfs
+ubi create rootfs
+ubi write 12000000 rootfs ${filesize}
+ubifsmount ubi0:rootfs
+ubifsls

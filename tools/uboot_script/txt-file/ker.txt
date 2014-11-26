@@ -1,0 +1,7 @@
+set mtdids 'nand0=gpmi-nand'
+set mtdparts 'mtdparts=gpmi-nand:4m(boot),8m(kernel),1m(dtb),-(rootfs)'
+
+#uImage
+tftp 12000000 uImage
+nand erase 0x00400000 0x00800000
+nand write 12000000 0x00400000 0x00800000
