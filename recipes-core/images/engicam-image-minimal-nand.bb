@@ -11,6 +11,8 @@ FSL_KERNEL_DEFCONFIG="icore-defconfig"
 
 UBOOT_CONFIG = "nand"
 
+IMAGE_FSTYPES = "tar.bz2 sdcard ubifs"
+
 SOC_IMAGE_INSTALL = ""
 SOC_IMAGE_INSTALL_mx6 = "gpu-viv-bin-mx6q gpu-viv-g2d fsl-gpu-sdk"
 

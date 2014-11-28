@@ -4,7 +4,7 @@ LICENSE = "MIT"
 
 inherit core-image
 
-
+IMAGE_FSTYPES = "tar.bz2 sdcard ubifs"
 
 EXTRA_IMAGE_FEATURES = "debug-tweaks ssh-server-openssh tools-debug"
 

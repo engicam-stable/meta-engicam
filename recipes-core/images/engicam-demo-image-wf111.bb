@@ -9,6 +9,8 @@ EXTRA_IMAGE_FEATURES = "debug-tweaks ssh-server-openssh tools-debug"
 
 FSL_KERNEL_DEFCONFIG="icore-defconfig"
 
+IMAGE_FSTYPES = "tar.bz2 sdcard ubifs"
+
 UBOOT_CONFIG = "nand"
 
 SOC_IMAGE_INSTALL = ""

@@ -117,7 +117,7 @@ index 1e219b9..1c2d6e2 100644
 -#ifdef CONFIG_SYS_BOOT_NAND
  #define CONFIG_MFG_NAND_PARTITION "mtdparts=gpmi-nand:4m(boot),8m(kernel),1m(dtb),-(rootfs) "
 +
-+#ifdef CONFIG_MX6SOLO
++#if (defined(CONFIG_MX6SOLO) || defined(CONFIG_MX6DL))
 +	#define SHOW_ENGICAM_NOTE        "Note:    iCore6S/DL default U-Boot\n"
  #else
 -#define CONFIG_MFG_NAND_PARTITION ""

@@ -1590,7 +1590,7 @@ index 20459db..71f15f3 100644
 +	phy_write(phydev, MDIO_DEVAD_NONE, 0x0d, 0x0002);
 +	phy_write(phydev, MDIO_DEVAD_NONE, 0x0e, 0x0006);
 +	phy_write(phydev, MDIO_DEVAD_NONE, 0x0d, 0x4002);
-+	phy_write(phydev, MDIO_DEVAD_NONE, 0x0e, 0xa777);
++	phy_write(phydev, MDIO_DEVAD_NONE, 0x0e, 0x4111);
  
 -struct fsl_esdhc_cfg usdhc_cfg[3] = {
 -       {USDHC3_BASE_ADDR, 1},
@@ -1609,13 +1609,13 @@ index 20459db..71f15f3 100644
 +	phy_write(phydev, MDIO_DEVAD_NONE, 0x0d, 0x0002);
 +	phy_write(phydev, MDIO_DEVAD_NONE, 0x0e, 0x0004);
 +	phy_write(phydev, MDIO_DEVAD_NONE, 0x0d, 0x4002);
-+	phy_write(phydev, MDIO_DEVAD_NONE, 0x0e, 0x0099);
++	phy_write(phydev, MDIO_DEVAD_NONE, 0x0e, 0x004A);
 +
 +       //write register 8 addr 2 clock skew
 +	phy_write(phydev, MDIO_DEVAD_NONE, 0x0d, 0x0002);
 +	phy_write(phydev, MDIO_DEVAD_NONE, 0x0e, 0x0008);
 +	phy_write(phydev, MDIO_DEVAD_NONE, 0x0d, 0x4002);
-+	phy_write(phydev, MDIO_DEVAD_NONE, 0x0e, 0x027E);
++	phy_write(phydev, MDIO_DEVAD_NONE, 0x0e, 0x0273);
 +
 +}
 +

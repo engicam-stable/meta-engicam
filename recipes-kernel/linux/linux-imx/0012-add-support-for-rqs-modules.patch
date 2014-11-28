@@ -832,16 +832,16 @@ index 8aa5165..bf64a95 100644
 +	printk("Init ksz9031rn PHY\n");
 +
 +	//write register 6 addr 2 TXD[0:3] skew
-+	mmd_write_reg(dev, 2, 6, 0xa777);
++	mmd_write_reg(dev, 2, 6, 0x4111);
 +
 +	//write register 5 addr 2 RXD[0:3] skew
 +	mmd_write_reg(dev, 2, 5, 0x47a7);
 +
 +	//write register 4 addr 2 RX_DV TX_EN skew
-+	mmd_write_reg(dev, 2, 4, 0x0099);
++	mmd_write_reg(dev, 2, 4, 0x004A);
 +
 +	//write register 8 addr 2 RX_CLK GTX_CLK skew
-+	mmd_write_reg(dev, 2, 8, 0x027E);
++	mmd_write_reg(dev, 2, 8, 0x0273);
  
  	return 0;
  }
