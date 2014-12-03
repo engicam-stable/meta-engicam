@@ -4355,7 +4355,7 @@ index 0000000..7376b14
 +#define CONFIG_MFG_NAND_PARTITION ""
 +#endif
 +
-+#ifdef CONFIG_MX6SOLO
++#if (defined(CONFIG_MX6SOLO) || defined(CONFIG_MX6DL))
 +	#define SHOW_ENGICAM_NOTE        "Note:    RQS6-Q7 6S/DL default U-Boot\n"
 +#else
 +	#define SHOW_ENGICAM_NOTE        "Note:    RQS6-Q7 Q/D default U-Boot\n"
