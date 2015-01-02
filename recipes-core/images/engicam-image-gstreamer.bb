@@ -45,6 +45,8 @@ IMAGE_INSTALL += " \
     libfslparser \
     libfslvpuwrap \
     firmware-imx \
+    engicam-emmc-script \
+    engicam-mtd-script \
     imx-lib \
     imx-test \
     imx-vpu \

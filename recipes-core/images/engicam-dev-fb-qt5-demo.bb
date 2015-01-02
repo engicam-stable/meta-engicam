@@ -47,6 +47,7 @@ IMAGE_INSTALL_append = " \
     psplash \
     cinematicexperience \
     engicam-mtd-script \
+    engicam-emmc-script \
     mtd-utils imx-kobs mtd-utils-ubifs \
     "
 

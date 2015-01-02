@@ -19,6 +19,7 @@ SOC_IMAGE_INSTALL_mx6 = "gpu-viv-bin-mx6q gpu-viv-g2d fsl-gpu-sdk"
 IMAGE_INSTALL += " \
     ${SOC_IMAGE_INSTALL} \
     engicam-mtd-script \
+    engicam-emmc-script \
     iproute2 \
     cantest \
     wf111-driver \

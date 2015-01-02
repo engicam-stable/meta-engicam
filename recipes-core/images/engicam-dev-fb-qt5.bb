@@ -67,6 +67,7 @@ boost cmake zlib glib-2.0 glive \
     default-psw \
     engicam-startup \ 
     engicam-mtd-script \
+    engicam-emmc-script \
     psplash \
     iproute2 \
     cantest \

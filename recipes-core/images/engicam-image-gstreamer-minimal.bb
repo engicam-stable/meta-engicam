@@ -46,6 +46,7 @@ IMAGE_INSTALL += " \
     imx-vpu \
     cpufrequtils \
     engicam-mtd-script \
+    engicam-emmc-script \
     iproute2 \
     canutils \
     cantest \	

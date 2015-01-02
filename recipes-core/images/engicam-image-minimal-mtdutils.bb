@@ -8,12 +8,14 @@ IMAGE_FSTYPES = "tar.bz2 sdcard ubifs"
  
 IMAGE_INSTALL_append += " mtd-utils imx-kobs mtd-utils-ubifs"
 
+EXTRA_IMAGE_FEATURES = "debug-tweaks ssh-server-openssh tools-debug"
+
 UBOOT_CONFIG = "sd"
 
 FSL_KERNEL_DEFCONFIG="icore-defconfig"
 
 IMAGE_OVERHEAD_FACTOR = "200.0"
 
-IMAGE_INSTALL += "engicam-mtd-script"
+IMAGE_INSTALL += "engicam-mtd-script engicam-emmc-script"
 
 
