@@ -176,6 +176,8 @@ fi
 # Handle EULA setting
 if [ -z "$EULA" ] && ! grep -q '^ACCEPT_FSL_EULA\s*=' conf/local.conf; then
     EULA='ask'
+else
+    EULA="1";
 fi
 
 if [ "$EULA" = "ask" ]; then

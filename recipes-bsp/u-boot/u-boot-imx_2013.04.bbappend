@@ -13,6 +13,7 @@ SRC_URI += "file://0011-SDHC1-pad-improvment.patch"
 SRC_URI += "file://0012-backlight-improvment.patch"
 SRC_URI += "file://0013-tftp-ubi-improvment.patch"
 SRC_URI += "file://0014-Add-new-board-ofcap.patch"
+SRC_URI += "file://0015-LTIB-support-rqs-improvment.patch"
 SRC_URI += "file://Engicam.bmp"
 
 do_patch_prepend() {

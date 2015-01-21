@@ -51,6 +51,7 @@ boost cmake zlib glib-2.0 glive \
     qtmultimedia-examples \
     qtmultimedia-qmlplugins \
     qtsvg \
+    qtquick1 \
     qtsvg-plugins \
     qtimageformats-plugins \
     qtsystems \
@@ -71,7 +72,7 @@ boost cmake zlib glib-2.0 glive \
     psplash \
     iproute2 \
     cantest \
-	mtd-utils imx-kobs mtd-utils-ubifs \
+    mtd-utils imx-kobs mtd-utils-ubifs \
     "
 
 DISTRO_FEATURES_remove = "x11 wayland"

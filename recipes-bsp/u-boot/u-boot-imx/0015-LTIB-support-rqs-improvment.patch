@@ -1,0 +1,411 @@
+diff --git a/board/engicam/mx6_icore/mx6_icore.c b/board/engicam/mx6_icore/mx6_icore.c
+index 6777dad..a0a7d39 100644
+--- a/board/engicam/mx6_icore/mx6_icore.c
++++ b/board/engicam/mx6_icore/mx6_icore.c
+@@ -834,10 +834,17 @@ int board_early_init_f(void)
+ 	return 0;
+ }
+ 
++#define MACH_TYPE_MX6Q_SABRELITE       3769
++
+ int board_init(void)
+ {
+ 	/* address of boot parameters */
+ 	gd->bd->bi_boot_params = PHYS_SDRAM + 0x100;
++	
++	/* For kernel 3.0.35 */
++	gd->bd->bi_dram[0].start = PHYS_SDRAM;
++	gd->bd->bi_dram[0].size = ((ulong)CONFIG_DDR_MB * 1024 * 1024);
++	gd->bd->bi_arch_number = MACH_TYPE_MX6Q_SABRELITE;
+ 
+ 	return 0;
+ }
+diff --git a/board/engicam/mx6_icore_rqs/mx6_icore_rqs.c b/board/engicam/mx6_icore_rqs/mx6_icore_rqs.c
+index a0d9be1..a53bc42 100644
+--- a/board/engicam/mx6_icore_rqs/mx6_icore_rqs.c
++++ b/board/engicam/mx6_icore_rqs/mx6_icore_rqs.c
+@@ -260,7 +260,9 @@ iomux_v3_cfg_t const usdhc1_pads[] = {
+ 	MX6_PAD_SD1_DAT3__USDHC1_DAT3	| MUX_PAD_CTRL(USDHC1_PAD_CTRL),
+ 
+ 	/*CD pin*/
+-	MX6_PAD_GPIO_1__GPIO_1_1 | MUX_PAD_CTRL(NO_PAD_CTRL),
++	MX6_PAD_GPIO_1__GPIO_1_1 	| MUX_PAD_CTRL(NO_PAD_CTRL),
++	/* nPWE_EN */
++	MX6_PAD_GPIO_4__GPIO_1_4 	| MUX_PAD_CTRL(NO_PAD_CTRL),
+ 
+ };
+ 
+@@ -338,9 +340,9 @@ static void setup_iomux_uart(void)
+ #define USDHC1_CD_GPIO	IMX_GPIO_NR(1, 1)
+ 
+ struct fsl_esdhc_cfg usdhc_cfg[3] = {
+-       {USDHC4_BASE_ADDR, 1},
+-       {USDHC3_BASE_ADDR, 1},
+-       {USDHC1_BASE_ADDR, 1},
++       {USDHC4_BASE_ADDR, 1},	//eMMC
++       {USDHC3_BASE_ADDR, 1},	//SD
++       {USDHC1_BASE_ADDR, 1},	//WiFi
+ };
+ 
+ // Returns:
+@@ -395,7 +397,6 @@ int board_mmc_getcd(struct mmc *mmc)
+ int board_mmc_init(bd_t *bis)
+ {
+ 	int i;
+-
+ 	/*
+ 	* According to the board_mmc_init() the following map is done:
+ 	* (U-boot device node)    (Physical Port)
+@@ -533,9 +534,8 @@ int setup_sata(void)
+ }
+ #endif
+ 
+-int mx6_rgmii_rework(struct phy_device *phydev)
+-{
+-//	printf("Configuring skew for i.Core RQS\n");  
++void mx6_rgmii_rework(struct phy_device *phydev)
++ {
+       //write register 6 addr 2 TXD[0:3] skew
+ 	phy_write(phydev, MDIO_DEVAD_NONE, 0x0d, 0x0002);
+ 	phy_write(phydev, MDIO_DEVAD_NONE, 0x0e, 0x0006);
+@@ -650,7 +650,7 @@ static struct display_info_t const displays[] = {{
+ 		.yres           = 480,
+ 		.pixclock       = 30000,
+ 		.left_margin    = 30,
+-		.right_margin   = 30,
++		.right_margin   = 	int ret;30,
+ 		.upper_margin   = 5,
+ 		.lower_margin   = 5,
+ 		.hsync_len      = 64,
+@@ -828,13 +828,6 @@ int board_eth_init(bd_t *bis)
+ {
+ 	int ret;
+ 
+-/* TBD RQS
+-	enable_enet_clock();
+-
+-	gpio_direction_output(ENET_PHY_RST, 0);
+-	udelay(10000);
+-	gpio_set_value(ENET_PHY_RST, 1);
+-*/
+ 	ret = cpu_eth_init(bis);
+ 	if (ret)
+ 		printf("FEC MXC: %s:failed\n", __func__);
+@@ -872,11 +865,18 @@ void board_set_backlight (int status)
+ 	/* To be defined for RQS modules */
+ }
+ 
++#define MACH_TYPE_MX6Q_SABRELITE       3769
++
+ int board_init(void)
+ {
+ 	/* address of boot parameters */
+ 	gd->bd->bi_boot_params = PHYS_SDRAM + 0x100;
+ 
++	/* For kernel 3.0.35 */
++	gd->bd->bi_dram[0].start = PHYS_SDRAM;
++	gd->bd->bi_dram[0].size = ((ulong)CONFIG_DDR_MB * 1024 * 1024);
++	gd->bd->bi_arch_number = MACH_TYPE_MX6Q_SABRELITE;
++	
+ 	setup_iomux_enet();
+ 
+ 	return 0;
+@@ -892,7 +892,6 @@ static const struct boot_mode board_boot_modes[] = {
+ 
+ int board_late_init(void)
+ {
+-	int ret;
+ #ifdef CONFIG_CMD_BMODE
+ 	add_board_boot_modes(board_boot_modes);
+ #endif
+@@ -904,9 +903,6 @@ int board_late_init(void)
+ 	/*setup i2c info 2*/
+ 	setup_i2c(2, CONFIG_SYS_I2C_SPEED,
+ 					CONFIG_SYS_I2C_SLAVE + 1, &i2c_pad_info2);
+-
+-	if (ret)
+-		return -1;
+ #endif
+ 
+ #ifdef CONFIG_ENV_IS_IN_MMC
+@@ -1039,6 +1035,11 @@ void board_recovery_setup(void)
+ int checkboard(void)
+ {
+ 	rqs_init_module_version();
++
++        //enable SD3 PWR
++	gpio_direction_output(IMX_GPIO_NR(1, 4), 0);
++	gpio_set_value(IMX_GPIO_NR(1, 4), 0);
++
+ #if defined CONFIG_MX6Q
+ 	printf("Board: MX6Q-RQS-i.Core Revision %s\n", icore_module_vers_str[icore_module_vers]);
+ #elif defined CONFIG_MX6D
+diff --git a/common/main.c b/common/main.c
+index 6d613f3..4b1df0c 100644
+--- a/common/main.c
++++ b/common/main.c
+@@ -60,7 +60,7 @@
+ DECLARE_GLOBAL_DATA_PTR;
+ 
+ 
+-#define SHOW_ENGICAM_VERSION     "Version: Engicam Yocto U-Boot 1.02\n"
++#define SHOW_ENGICAM_VERSION     "Version: Engicam Yocto U-Boot 1.03\n"
+ 
+ 
+ /*
+diff --git a/include/configs/common_parameter.h b/include/configs/common_parameter.h
+index 2b2e778..f02d400 100644
+--- a/include/configs/common_parameter.h
++++ b/include/configs/common_parameter.h
+@@ -31,6 +31,20 @@
+ 	#else
+ 		#define EXTRA_OPTION_SOLO	" "
+ 	#endif
++	
++	#define YOCTO_BOOTCMD_MMC_ICORE	"run bootargs; run bootargsy_mmc; run loadfdt; fatload mmc 0:1 ${loadaddr} uImage; bootm ${loadaddr} - ${fdt_addr}"
++	#define YOCTO_BOOTCMD_MMC_RQS	"run bootargs; run bootargsy_mmc; set mmcdev 1; run loadfdt; fatload mmc 1:1 ${loadaddr} uImage; bootm ${loadaddr} - ${fdt_addr}"
++	#define YOCTO_BOOTCMD_EMMC	"run bootargs; run bootargsy_emmc; set mmcdev 0; run loadfdt; fatload mmc 0:1 ${loadaddr} uImage; bootm ${loadaddr} - ${fdt_addr}"
++	#define YOCTO_BOOTCMD_UBI	"run bootargs; run bootargsy_ubi; nand read ${loadaddr} 0x400000 0x700000;nand read ${fdt_addr} 0xc00000 0x100000;bootm ${loadaddr} - ${fdt_addr}"	
++	#define YOCTO_BOOTCMD_NET	"run bootargs; run bootargsy_net; tftp uImage; tftp ${fdt_addr} uImage.dtb; bootm ${loadaddr} - ${fdt_addr}"
++	#define YOCTO_MODE		"yocto_mode=set mode YOCTO_MODE; set bootcmd_net ${bootcmdy_net}; set bootcmd_mmc ${bootcmdy_mmc};"
++	
++	#define LTIB_BOOTCMD_MMC_ICORE	"run bootargs; run bootargsl_mmc; mmc dev 0; mmc read ${loadaddr} 0x800 0x2000;bootm"
++	#define LTIB_BOOTCMD_MMC_RQS	"run bootargs; run bootargsl_mmc; mmc dev 1; mmc read ${loadaddr} 0x800 0x2000;bootm"
++	#define LTIB_BOOTCMD_EMMC	"run bootargs; run bootargsl_emmc; mmc dev 0; mmc read ${loadaddr} 0x800 0x2000;bootm"
++	#define LTIB_BOOTCMD_UBI	"run bootargs; run bootargsl_ubi; nand read ${loadaddr} 0x400000 0x700000;bootm"	
++	#define LTIB_BOOTCMD_NET	"run bootargs; run bootargsl_net; tftp uImage; bootm"
++	#define LTIB_MODE		"ltib_mode=set mode LTIB_MODE; set bootcmd_net ${bootcmdl_net}; set bootcmd_mmc ${bootcmdl_mmc};"
+ 
+ 	/* Common parameter
+ 	 * For all modules SODIMM and QSEVEN
+@@ -43,19 +57,32 @@
+ 		"fdt_file=" CONFIG_DEFAULT_FDT_FILE "\0"\
+ 		CONFIG_BOOTCMD				\
+ 		"loadfdt=fatload mmc ${mmcdev}:${mmcpart} ${fdt_addr} ${fdt_file}\0"											\
+-		"bootargs=set bootargs console=" CONFIG_CONSOLE_DEV ",115200" EXTRA_OPTION_SOLO "engi_board=${board} video=${video_type},${lcd_panel} mtdparts=gpmi-nand:4m(boot),8m(kernel),1m(dtb),-(rootfs)\0"		\
+-		"bootargs_net=setenv bootargs ${bootargs} root=/dev/nfs ip=dhcp nfsroot=${serverip}:${nfsroot},v3,tcp\0" 						\
+-		"bootargs_mmc=setenv bootargs ${bootargs} root=/dev/mmcblk0p2 rootwait rw\0" 										\
+-		"bootcmd_mmc=run bootargs;  run bootargs_mmc; run loadfdt; fatload mmc 0:1 ${loadaddr} uImage; bootm ${loadaddr} - ${fdt_addr};\0"			\
+-		"bootcmd_net=run bootargs; run bootargs_net; tftp uImage; tftp ${fdt_addr} uImage.dtb; bootm ${loadaddr} - ${fdt_addr}\0"				\
++		"mtdparts_yocto=mtdparts=gpmi-nand:4m(boot),8m(kernel),1m(dtb),-(rootfs)\0"										\
++		"bootargs=set bootargs console=" CONFIG_CONSOLE_DEV ",115200" EXTRA_OPTION_SOLO "engi_board=${board} video=${video_type},${lcd_panel}\0"		\
++		"bootargsy_net=setenv bootargs ${bootargs} ${mtdparts_yocto} root=/dev/nfs ip=dhcp nfsroot=${serverip}:${nfsroot},v3,tcp\0" 				\
++		"bootargsl_net=setenv bootargs ${bootargs} root=/dev/nfs ip=dhcp nfsroot=${serverip}:${nfsroot},v3,tcp\0" 						\
++		"bootcmd_net="  YOCTO_BOOTCMD_NET "\0"															\
++		"bootcmdy_net=" YOCTO_BOOTCMD_NET "\0"															\
++		"bootcmdl_net=" LTIB_BOOTCMD_NET "\0" 															\
++		"mode=YOCTO_MODE\0"																	\
+ 
+ 	/* Customized parameter
+ 	 * Customized parameter for SODIMM iCore modules
+ 	 */
+ 	#define	EXTRA_ENV_SETTINGS_ICORE 		\
+ 		COMMON_PARAMETER 			\
+-		"bootcmd_ubi=run bootargs; run bootargs_ubi; nand read ${loadaddr} 0x400000 0x700000;nand read ${fdt_addr} 0xc00000 0x100000;bootm ${loadaddr} - ${fdt_addr}\0" 		\
+-		"bootargs_ubi=setenv bootargs ${bootargs} ubi.mtd=3 root=ubi0:rootfs rootfstype=ubifs\0"				\
++		"bootargsy_ubi=setenv bootargs ${bootargs} ${mtdparts_yocto} ubi.mtd=3 root=ubi0:rootfs rootfstype=ubifs\0"			\
++		"bootargsl_ubi=setenv bootargs ${bootargs} ubi.mtd=2 root=ubi0:rootfs rootfstype=ubifs rootwait rw\0"				\
++		"bootargsy_mmc=setenv bootargs ${bootargs} ${mtdparts_yocto} root=/dev/mmcblk0p2 rootwait rw\0" 				\
++		"bootargsl_mmc=setenv bootargs ${bootargs} root=/dev/mmcblk0p1 rootwait rw\0" 							\
++		"bootcmd_mmc="  YOCTO_BOOTCMD_MMC_ICORE "\0"											\
++		"bootcmd_ubi="  YOCTO_BOOTCMD_UBI 	"\0" 											\
++		"bootcmdy_mmc=" YOCTO_BOOTCMD_MMC_ICORE "\0"											\
++		"bootcmdy_ubi=" YOCTO_BOOTCMD_UBI 	"\0" 											\
++		"bootcmdl_mmc=" LTIB_BOOTCMD_MMC_ICORE 	"\0" 											\
++		"bootcmdl_ubi=" LTIB_BOOTCMD_UBI 	"\0" 											\
++		LTIB_MODE  " set bootcmd_ubi ${bootcmdl_ubi}\0" 										\
++		YOCTO_MODE " set bootcmd_ubi ${bootcmdy_ubi}\0"											\
+ 		"video_type=mxcfb0:dev=lcd\0"		\
+ 		"erase=nand erase 1c0000 4000\0"	\
+ 		"board=SK.RES\0"			\
+@@ -65,11 +92,22 @@
+ 	 */
+ 	#define	EXTRA_ENV_SETTINGS_RQS 			\
+ 		COMMON_PARAMETER 			\
+-		"bootcmd_emmc=run bootargs; run bootargs_emmc; mmc dev 1; mmc read ${loadaddr} 0x800 0x2000;bootm\0"					\
+-		"bootargs_emmc=setenv bootargs ${bootargs} root=/dev/mmcblk0p1 rootwait rw\0" 								\
+-		"video_type=mxcfb0:dev=ldb,LDB-XGA,if=RGB666 video=mxcfb0:dev=hdmi,1920x1080M@60,if=RGB24\0"						\
++		"bootargsy_emmc=setenv bootargs ${bootargs} root=/dev/mmcblk1p2 rootwait rw\0" 						\
++		"bootargsl_emmc=setenv bootargs ${bootargs} root=/dev/mmcblk0p1 rootwait rw\0" 						\
++		"bootargsy_mmc=setenv bootargs ${bootargs} root=/dev/mmcblk0p2 rootwait rw\0" 						\
++		"bootargsl_mmc=setenv bootargs ${bootargs} root=/dev/mmcblk1p1 rootwait rw\0" 						\
++		"bootcmd_mmc="   YOCTO_BOOTCMD_MMC_RQS 	"\0"										\
++		"bootcmd_emmc="  YOCTO_BOOTCMD_EMMC 	"\0"										\
++		"bootcmdy_mmc="  YOCTO_BOOTCMD_MMC_RQS 	"\0"										\
++		"bootcmdy_emmc=" YOCTO_BOOTCMD_EMMC 	"\0"										\
++		"bootcmdl_mmc="  LTIB_BOOTCMD_MMC_RQS 	"\0" 										\
++		"bootcmdl_emmc=" LTIB_BOOTCMD_EMMC 	"\0"										\
++		LTIB_MODE  " set bootcmd_emmc ${bootcmdl_emmc}\0" 									\
++		YOCTO_MODE " set bootcmd_emmc ${bootcmdy_emmc}\0"									\
++		"video_type=mxcfb0:dev=ldb,LDB-XGA,if=RGB666 video=mxcfb0:dev=hdmi,1920x1080M@60,if=RGB24\0"				\
+ 		"erase=mmc dev 1; mmc erase 400 1\0"	\
+ 		"board=SK.Q7\0"				\
++		"mmcpart=1\0"				\
+ 
+ 
+ 	// Additional defines
+diff --git a/include/configs/mx6_icore_common.h b/include/configs/mx6_icore_common.h
+index 8749dda..a628f6f 100644
+--- a/include/configs/mx6_icore_common.h
++++ b/include/configs/mx6_icore_common.h
+@@ -193,134 +193,14 @@
+ #else
+ #ifdef CONFIG_MX6SOLO
+ #define CONFIG_EXTRA_ENV_SETTINGS \
+-	CONFIG_MFG_ENV_SETTINGS \
+-	"script=boot.scr\0" \
+-	"uimage=uImage\0" \
+-	"fdt_file=" CONFIG_DEFAULT_FDT_FILE "\0" \
++	EXTRA_ENV_SETTINGS_ICORE \
+ 	"fdt_addr=0x18000000\0" \
+-	"boot_fdt=try\0" \
+-	"ip_dyn=yes\0" \
+-	"console=" CONFIG_CONSOLE_DEV "\0" \
+-	"fdt_high=0xffffffff\0"	  \
+-	"initrd_high=0xffffffff\0" \
+-	CONFIG_MMC_DEV_SET \
+-	"\0" \
+-	"mmcpart=" __stringify(CONFIG_SYS_MMC_IMG_LOAD_PART) "\0" \
+-	"mmcroot=" CONFIG_MMCROOT " rootwait rw\0" \
+-	"smp=" CONFIG_SYS_NOSMP "\0"\
+-	"mmcargs=setenv bootargs console=${console},${baudrate} ${smp} " \
+-		"root=${mmcroot}  cma=96MB gpumem=16MB video=mxcfb0:dev=lcd,Amp-WD\0" \
+-	"loadbootscript=" \
+-		"fatload mmc ${mmcdev}:${mmcpart} ${loadaddr} ${script};\0" \
+-	"bootscript=echo Running bootscript from mmc ...; " \
+-		"source\0" \
+-	"loaduimage=fatload mmc ${mmcdev}:${mmcpart} ${loadaddr} ${uimage}\0" \
+-	"loadfdt=fatload mmc ${mmcdev}:${mmcpart} ${fdt_addr} ${fdt_file}\0" \
+-	"mmcboot=echo Booting from mmc ...; " \
+-		"run mmcargs; " \
+-		"if test ${boot_fdt} = yes || test ${boot_fdt} = try; then " \
+-			"if run loadfdt; then " \
+-				"bootm ${loadaddr} - ${fdt_addr}; " \
+-			"else " \
+-				"if test ${boot_fdt} = try; then " \
+-					"bootm; " \
+-				"else " \
+-					"echo WARN: Cannot load the DT; " \
+-				"fi; " \
+-			"fi; " \
+-		"else " \
+-			"bootm; " \
+-		"fi;\0" \
+-	"netargs=setenv bootargs console=${console},${baudrate} ${smp} " \
+-		"root=/dev/nfs " \
+-		"ip=dhcp nfsroot=${serverip}:${nfsroot},v3,tcp\0" \
+-	"netboot=echo Booting from net ...; " \
+-		"run netargs; " \
+-		"if test ${ip_dyn} = yes; then " \
+-			"setenv get_cmd dhcp; " \
+-		"else " \
+-			"setenv get_cmd tftp; " \
+-		"fi; " \
+-		"${get_cmd} ${uimage}; " \
+-		"if test ${boot_fdt} = yes || test ${boot_fdt} = try; then " \
+-			"if ${get_cmd} ${fdt_addr} ${fdt_file}; then " \
+-				"bootm ${loadaddr} - ${fdt_addr}; " \
+-			"else " \
+-				"if test ${boot_fdt} = try; then " \
+-					"bootm; " \
+-				"else " \
+-					"echo WARN: Cannot load the DT; " \
+-				"fi; " \
+-			"fi; " \
+-		"else " \
+-			"bootm; " \
+-		EXTRA_ENV_SETTINGS_ICORE \
+-		"fi;\0"
++	"fdt_high=0xffffffff\0"
+ #else
+ #define CONFIG_EXTRA_ENV_SETTINGS \
+-	CONFIG_MFG_ENV_SETTINGS \
+-	"script=boot.scr\0" \
+-	"uimage=uImage\0" \
+-	"fdt_file=" CONFIG_DEFAULT_FDT_FILE "\0" \
++	EXTRA_ENV_SETTINGS_ICORE \
+ 	"fdt_addr=0x18000000\0" \
+-	"boot_fdt=try\0" \
+-	"ip_dyn=yes\0" \
+-	"console=" CONFIG_CONSOLE_DEV "\0" \
+-	"fdt_high=0xffffffff\0"	  \
+-	"initrd_high=0xffffffff\0" \
+-	CONFIG_MMC_DEV_SET \
+-	"\0" \
+-	"mmcpart=" __stringify(CONFIG_SYS_MMC_IMG_LOAD_PART) "\0" \
+-	"mmcroot=" CONFIG_MMCROOT " rootwait rw\0" \
+-	"smp=" CONFIG_SYS_NOSMP "\0"\
+-	"mmcargs=setenv bootargs console=${console},${baudrate} ${smp} " \
+-		"root=${mmcroot}\0" \
+-	"loadbootscript=" \
+-		"fatload mmc ${mmcdev}:${mmcpart} ${loadaddr} ${script};\0" \
+-	"bootscript=echo Running bootscript from mmc ...; " \
+-		"source\0" \
+-	"loaduimage=fatload mmc ${mmcdev}:${mmcpart} ${loadaddr} ${uimage}\0" \
+-	"loadfdt=fatload mmc ${mmcdev}:${mmcpart} ${fdt_addr} ${fdt_file}\0" \
+-	"mmcboot=echo Booting from mmc ...; " \
+-		"run mmcargs; " \
+-		"if test ${boot_fdt} = yes || test ${boot_fdt} = try; then " \
+-			"if run loadfdt; then " \
+-				"bootm ${loadaddr} - ${fdt_addr}; " \
+-			"else " \
+-				"if test ${boot_fdt} = try; then " \
+-					"bootm; " \
+-				"else " \
+-					"echo WARN: Cannot load the DT; " \
+-				"fi; " \
+-			"fi; " \
+-		"else " \
+-			"bootm; " \
+-		"fi;\0" \
+-	"netargs=setenv bootargs console=${console},${baudrate} ${smp} " \
+-		"root=/dev/nfs " \
+-		"ip=dhcp nfsroot=${serverip}:${nfsroot},v3,tcp\0" \
+-	"netboot=echo Booting from net ...; " \
+-		"run netargs; " \
+-		"if test ${ip_dyn} = yes; then " \
+-			"setenv get_cmd dhcp; " \
+-		"else " \
+-			"setenv get_cmd tftp; " \
+-		"fi; " \
+-		"${get_cmd} ${uimage}; " \
+-		"if test ${boot_fdt} = yes || test ${boot_fdt} = try; then " \
+-			"if ${get_cmd} ${fdt_addr} ${fdt_file}; then " \
+-				"bootm ${loadaddr} - ${fdt_addr}; " \
+-			"else " \
+-				"if test ${boot_fdt} = try; then " \
+-					"bootm; " \
+-				"else " \
+-					"echo WARN: Cannot load the DT; " \
+-				"fi; " \
+-			"fi; " \
+-		"else " \
+-			"bootm; " \
+-		EXTRA_ENV_SETTINGS_ICORE \
+-		"fi;\0"
++	"fdt_high=0xffffffff\0"
+ #endif
+ #define CONFIG_BOOTCOMMAND \
+ 	"mmc dev ${mmcdev};" \
+@@ -347,7 +227,7 @@
+ 
+ /* Print Buffer Size */
+ #define CONFIG_SYS_PBSIZE (CONFIG_SYS_CBSIZE + sizeof(CONFIG_SYS_PROMPT) + 16)
+-#define CONFIG_SYS_MAXARGS             16
++#define CONFIG_SYS_MAXARGS             20
+ #define CONFIG_SYS_BARGSIZE CONFIG_SYS_CBSIZE
+ 
+ #define CONFIG_SYS_MEMTEST_START       0x10000000
+diff --git a/include/configs/mx6_icore_rqs_common.h b/include/configs/mx6_icore_rqs_common.h
+index 1840893..85b1965 100644
+--- a/include/configs/mx6_icore_rqs_common.h
++++ b/include/configs/mx6_icore_rqs_common.h
+@@ -278,7 +278,7 @@
+ 
+ /* Print Buffer Size */
+ #define CONFIG_SYS_PBSIZE (CONFIG_SYS_CBSIZE + sizeof(CONFIG_SYS_PROMPT) + 16)
+-#define CONFIG_SYS_MAXARGS             16
++#define CONFIG_SYS_MAXARGS             20
+ #define CONFIG_SYS_BARGSIZE CONFIG_SYS_CBSIZE
+ 
+ #define CONFIG_SYS_MEMTEST_START       0x10000000
