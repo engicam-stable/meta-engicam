@@ -10,7 +10,6 @@ EXTRA_IMAGE_FEATURES = "debug-tweaks ssh-server-openssh tools-debug"
 
 IMAGE_INSTALL_append = " \
     firmware-imx-vpu-imx6q \
-    firmware-imx-vpu-imx6d \
 "
 IMAGE_INSTALL_append = " \
     binutils \   
