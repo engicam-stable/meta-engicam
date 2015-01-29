@@ -1,0 +1,214 @@
+diff --git a/drivers/hid/Kconfig b/drivers/hid/Kconfig
+index fb52f3f..5aaeff69 100644
+--- a/drivers/hid/Kconfig
++++ b/drivers/hid/Kconfig
+@@ -453,6 +453,12 @@ config HID_NTRIG
+ 	depends on USB_HID
+ 	---help---
+ 	Support for N-Trig touch screen.
++	
++config HID_PENMOUNT_TOUCH6000
++	tristate "Penmount resistive touch 6000"
++	depends on USB_HID
++	---help---
++	Support for Penmount touch 6000 series
+ 
+ config HID_ORTEK
+ 	tristate "Ortek PKB-1700/WKB-2000/Skycable wireless keyboard and mouse trackpad"
+diff --git a/drivers/hid/Makefile b/drivers/hid/Makefile
+index 2065694..bf4c1f3 100644
+--- a/drivers/hid/Makefile
++++ b/drivers/hid/Makefile
+@@ -37,6 +37,7 @@ ifdef CONFIG_DEBUG_FS
+ endif
+ 
+ obj-$(CONFIG_HID_A4TECH)	+= hid-a4tech.o
++obj-$(CONFIG_HID_PENMOUNT_TOUCH6000)	+= hid-penmount.o
+ obj-$(CONFIG_HID_ACRUX)		+= hid-axff.o
+ obj-$(CONFIG_HID_APPLE)		+= hid-apple.o
+ obj-$(CONFIG_HID_APPLEIR)	+= hid-appleir.o
+diff --git a/drivers/hid/hid-penmount.c b/drivers/hid/hid-penmount.c
+new file mode 100755
+index 0000000..0b20b92
+--- /dev/null
++++ b/drivers/hid/hid-penmount.c
+@@ -0,0 +1,136 @@
++/*******************************************************
++ *
++ *  PenMount HID TouchScreen Driver
++ *
++ *  Copyright (c) 2013 PenMount Touch Solutions <penmount@seed.net.tw>
++ *
++ *******************************************************/
++
++/*******************************************************
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of the GNU General Public License as published by the Free
++ * Software Foundation; either version 2 of the License, or (at your option)
++ * any later version.
++ *******************************************************/
++
++////////////////////////////////////////////////////////
++#include <linux/module.h>
++#include <linux/version.h>
++#include <linux/hid.h>
++#include <linux/input.h>
++////////////////////////////////////////////////////////
++#ifndef USB_VENDOR_ID_PENMOUNT
++#define USB_VENDOR_ID_PENMOUNT          0x14E1
++#endif
++
++#ifndef USB_DEVICE_ID_PENMOUNT_5000
++#define USB_DEVICE_ID_PENMOUNT_5000     0x5000
++#endif
++
++#ifndef USB_DEVICE_ID_PENMOUNT_6000
++#define USB_DEVICE_ID_PENMOUNT_6000     0x6000
++#endif
++////////////////////////////////////////////////////////
++static
++int penmount_input_mapping(struct hid_device *pHidDevice,
++		struct hid_input *pHidInput, struct hid_field *pHidField,
++		struct hid_usage *pHidUsage, unsigned long **bit, int *max) {
++	struct input_dev *pInputDev = pHidInput->input;
++
++	if (!pInputDev)
++		return 0;
++
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 38)
++	set_bit(INPUT_PROP_DIRECT, pInputDev->propbit);
++#endif
++	
++	switch (pHidUsage->hid & HID_USAGE_PAGE) {
++	case HID_UP_GENDESK:
++		switch (pHidUsage->hid) {
++		case HID_GD_X:
++			hid_map_usage(pHidInput, pHidUsage, bit, max, EV_ABS, ABS_X);
++			return 1;
++		case HID_GD_Y:
++			hid_map_usage(pHidInput, pHidUsage, bit, max, EV_ABS, ABS_Y);
++			return 1;
++		}
++		break;
++	case HID_UP_BUTTON:
++		hid_map_usage(pHidInput, pHidUsage, bit, max, EV_KEY, BTN_TOUCH);
++		return 1;
++		break;
++	}
++
++	return 0;
++}
++//------------------------------------------------------
++static
++int penmount_probe(struct hid_device *pHidDevice,
++		const struct hid_device_id *pHidDevID) {
++	int ret = 0;
++
++	ret = hid_parse(pHidDevice);
++	if (ret)
++		return ret;
++
++	ret = hid_hw_start(pHidDevice, HID_CONNECT_DEFAULT);
++	if (ret)
++		return ret;
++
++	return ret;
++}
++//------------------------------------------------------
++static
++void penmount_remove(struct hid_device *pHidDevice) {
++	if (!pHidDevice)
++		return;
++
++	hid_hw_stop(pHidDevice);
++
++	return;
++}
++////////////////////////////////////////////////////////
++static const struct hid_device_id PENMOUNT_DEVICEID[] = {
++{
++	HID_USB_DEVICE(USB_VENDOR_ID_PENMOUNT, USB_DEVICE_ID_PENMOUNT_5000) }, {
++	HID_USB_DEVICE(USB_VENDOR_ID_PENMOUNT, USB_DEVICE_ID_PENMOUNT_6000) },
++	{ }
++};
++//------------------------------------------------------
++static const struct hid_usage_id PENMOUNT_USAGETABLE[] = {
++	{ HID_ANY_ID, HID_ANY_ID, HID_ANY_ID },
++	{ HID_ANY_ID - 1, HID_ANY_ID - 1, HID_ANY_ID - 1 }
++};
++////////////////////////////////////////////////////////
++static
++struct hid_driver penmount_DRIVER =
++{
++	.name = "hid-penmount" ,
++	.id_table = PENMOUNT_DEVICEID ,
++	.probe = penmount_probe ,
++	.remove = penmount_remove ,
++	.input_mapping = penmount_input_mapping ,
++	.usage_table = PENMOUNT_USAGETABLE ,
++};
++//------------------------------------------------------
++static
++int __init penmount_init ( void )
++{
++	return hid_register_driver ( &penmount_DRIVER );
++}
++//------------------------------------------------------
++static
++void __exit penmount_exit ( void )
++{
++	hid_unregister_driver ( &penmount_DRIVER );
++	return;
++}
++//------------------------------------------------------
++module_init (penmount_init);
++module_exit (penmount_exit);
++////////////////////////////////////////////////////////
++MODULE_AUTHOR("PenMount Touch Solutions <penmount@seed.net.tw>");
++MODULE_DESCRIPTION("PenMount HID TouchScreen Driver");
++MODULE_LICENSE("GPL");
++MODULE_DEVICE_TABLE(hid, PENMOUNT_DEVICEID);
++////////////////////////////////////////////////////////
+diff --git a/drivers/video/mxc/ldb.c b/drivers/video/mxc/ldb.c
+index 004ee51..c485060 100644
+--- a/drivers/video/mxc/ldb.c
++++ b/drivers/video/mxc/ldb.c
+@@ -205,7 +205,16 @@ static struct fb_videomode ldb_modedb[] = {
+         FB_VMODE_NONINTERLACED,
+ 	FB_MODE_IS_DETAILED,
+         },
+-
++	{
++	/* 1024x768  */
++        "LVDS-G121" , 65, 1024, 768, 15384,
++	40, 40,
++	5, 5,
++	136, 6,
++	0,
++        FB_VMODE_NONINTERLACED,
++	FB_MODE_IS_DETAILED,
++        },
+ };
+ static int ldb_modedb_sz = ARRAY_SIZE(ldb_modedb);
+ 
+diff --git a/drivers/video/mxc/mxc_lcdif.c b/drivers/video/mxc/mxc_lcdif.c
+index f2cbdfa..cef189d 100644
+--- a/drivers/video/mxc/mxc_lcdif.c
++++ b/drivers/video/mxc/mxc_lcdif.c
+@@ -127,6 +127,16 @@ static struct fb_videomode lcdif_modedb[] = {
+         FB_VMODE_NONINTERLACED,
+ 	FB_MODE_IS_DETAILED,
+         },
++	{
++	/* 1024x768  */
++        "LVDS-G121" , 65, 1024, 768, 15384,
++	40, 40,
++	5, 5,
++	136, 6,
++	0,
++        FB_VMODE_NONINTERLACED,
++	FB_MODE_IS_DETAILED,
++        },
+ };
+ static int lcdif_modedb_sz = ARRAY_SIZE(lcdif_modedb);
+ 

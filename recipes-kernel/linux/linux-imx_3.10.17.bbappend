@@ -18,4 +18,5 @@ SRC_URI += "file://0016-ldb_lowfreq.patch"
 SRC_URI += "file://0017-add-lcd-G070Y2-L01.patch"
 SRC_URI += "file://0018-rqs-support-improvment.patch"
 SRC_URI += "file://0019-rtc-pcf8563-support.patch"
+SRC_URI += "file://0020-penmount6000-lvds-g121.patch"
 
