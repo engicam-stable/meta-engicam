@@ -19,4 +19,7 @@ SRC_URI += "file://0017-add-lcd-G070Y2-L01.patch"
 SRC_URI += "file://0018-rqs-support-improvment.patch"
 SRC_URI += "file://0019-rtc-pcf8563-support.patch"
 SRC_URI += "file://0020-penmount6000-lvds-g121.patch"
+SRC_URI += "file://0021-add-dedicated-ofcap-dtb.patch"
+SRC_URI += "file://0022-max1180_noise_reduction.patch"
+SRC_URI += "file://0023-add-support-ofwi.patch"
 

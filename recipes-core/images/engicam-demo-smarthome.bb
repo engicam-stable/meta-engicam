@@ -42,14 +42,17 @@ IMAGE_INSTALL_append = " \
     tslib evtest tslib-conf tslib-tests tslib-calibrate \
     init-ifupdown \
     default-psw \
-    engicam-startup \ 
     psplash \
-    cinematicexperience \
+    engicam-startup-smarthome \ 
+    qtsmarthome \
     engicam-mtd-script \
     engicam-emmc-script \
+    iproute2 \
+    canutils \
+    cantest \
     mtd-utils imx-kobs mtd-utils-ubifs \
     "
 
-export IMAGE_BASENAME = "engicam-dev-fb-qt5-demo"
+export IMAGE_BASENAME = "engicam-demo-smarthome"
  
 

@@ -1,0 +1,2 @@
+mkimage -A arm -O linux -T script -C none -a 0 -e 0  -n "$1 script" -d $1.txt $1.scr
+

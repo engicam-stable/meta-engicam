@@ -4,6 +4,10 @@
 #
 # Copy thisn script in the uboot developping direcotory
 
+export ARCH=arm
+export CROSS_COMPILE=$TARGET_PREFIX
+unset  LDFLAGS
+export LOADADDR=0x10008000
 
 rm -rf ../bootbuild
 mkdir ../bootbuild

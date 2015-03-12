@@ -1,8 +1,8 @@
+require core-image-minimal.bb
+
 DESCRIPTION = "Engicam dev Image Frame Buffer Image QT5 with WebKit included"
 
-LICENSE = "MIT"
-
-inherit core-image
+inherit populate_sdk populate_sdk_qt5
  
 IMAGE_INSTALL_append = " \
     firmware-imx-vpu-imx6q \
@@ -61,18 +61,31 @@ boost cmake zlib glib-2.0 glive \
     qtgraphicaleffects-qmlplugins \
     qtconnectivity-qmlplugins \
     qtwebkit \
+    qtwebkit-qmlplugins \
+    qtwebengine \
     cairo pango fontconfig freetype pulseaudio dbus \
     alsa-lib alsa-tools alsa-state alsa-utils-alsaconf fsl-alsa-plugins \
     tslib evtest tslib-conf tslib-tests tslib-calibrate \
     i2c-tools \ 
     default-psw \
-    engicam-startup \ 
+    engicam-startup-demo \ 
     engicam-mtd-script \
     engicam-emmc-script \
     psplash \
     iproute2 \
     cantest \
-	mtd-utils imx-kobs mtd-utils-ubifs \
+    mtd-utils imx-kobs mtd-utils-ubifs \
+    ruby \
+    cpufrequtils \
+    qt3d \
+    qt3d-examples \
+    qt3d-qmlplugins \
+    qt3d-tools \    
+    qtlocation-plugins \
+    qtlocation-qmlplugins \    
     "
 
 DISTRO_FEATURES_remove = "x11 wayland"
+PACKAGECONFIG_remove = " x11 wayland"
+
+ 

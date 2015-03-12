@@ -64,7 +64,7 @@ boost cmake zlib glib-2.0 glive \
     tslib evtest tslib-conf tslib-tests tslib-calibrate \
     i2c-tools \ 
     default-psw \
-    engicam-startup \ 
+    engicam-startup-demo \ 
     engicam-mtd-script \
     engicam-emmc-script \
     psplash \
