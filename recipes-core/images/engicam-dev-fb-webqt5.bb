@@ -61,8 +61,6 @@ boost cmake zlib glib-2.0 glive \
     qtgraphicaleffects-qmlplugins \
     qtconnectivity-qmlplugins \
     qtwebkit \
-    qtwebkit-qmlplugins \
-    qtwebengine \
     cairo pango fontconfig freetype pulseaudio dbus \
     alsa-lib alsa-tools alsa-state alsa-utils-alsaconf fsl-alsa-plugins \
     tslib evtest tslib-conf tslib-tests tslib-calibrate \
