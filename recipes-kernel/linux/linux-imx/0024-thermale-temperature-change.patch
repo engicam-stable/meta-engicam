@@ -1,0 +1,16 @@
+diff --git a/drivers/thermal/imx_thermal.c b/drivers/thermal/imx_thermal.c
+index 7e2cea3..6ecb88f 100644
+--- a/drivers/thermal/imx_thermal.c
++++ b/drivers/thermal/imx_thermal.c
+@@ -55,7 +55,7 @@ enum imx_thermal_trip {
+  * It defines the temperature in millicelsius for passive trip point
+  * that will trigger cooling action when crossed.
+  */
+-#define IMX_TEMP_PASSIVE		85000
++#define IMX_TEMP_PASSIVE		105000
+ #define IMX_TEMP_PASSIVE_COOL_DELTA	10000
+ 
+ /*
+-- 
+1.7.9.5
+

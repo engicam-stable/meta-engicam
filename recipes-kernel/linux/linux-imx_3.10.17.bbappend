@@ -22,4 +22,5 @@ SRC_URI += "file://0020-penmount6000-lvds-g121.patch"
 SRC_URI += "file://0021-add-dedicated-ofcap-dtb.patch"
 SRC_URI += "file://0022-max1180_noise_reduction.patch"
 SRC_URI += "file://0023-add-support-ofwi.patch"
+SRC_URI += "file://0024-thermale-temperature-change.patch"
 

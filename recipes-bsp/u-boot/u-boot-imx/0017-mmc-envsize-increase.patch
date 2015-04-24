@@ -1,0 +1,26 @@
+diff --git a/include/configs/mx6_icore_common.h b/include/configs/mx6_icore_common.h
+index a628f6f..95382af 100644
+--- a/include/configs/mx6_icore_common.h
++++ b/include/configs/mx6_icore_common.h
+@@ -327,7 +327,7 @@
+ #endif
+ 
+ #if defined(CONFIG_ENV_IS_IN_MMC)
+-#define CONFIG_ENV_OFFSET		(8 * 64 * 1024)
++#define CONFIG_ENV_OFFSET		(16 * 64 * 1024)
+ #elif defined(CONFIG_ENV_IS_IN_SPI_FLASH)
+ #define CONFIG_ENV_OFFSET		(768 * 1024)
+ #define CONFIG_ENV_SECT_SIZE		(64 * 1024)
+diff --git a/include/configs/mx6_icore_rqs_common.h b/include/configs/mx6_icore_rqs_common.h
+index 85b1965..93439d3 100644
+--- a/include/configs/mx6_icore_rqs_common.h
++++ b/include/configs/mx6_icore_rqs_common.h
+@@ -378,7 +378,7 @@
+ #endif
+ 
+ #if defined(CONFIG_ENV_IS_IN_MMC)
+-	#define CONFIG_ENV_OFFSET	(768 * 1024)
++#define CONFIG_ENV_OFFSET		(16 * 64 * 1024)
+ #elif defined(CONFIG_ENV_IS_IN_SPI_FLASH)
+ #define CONFIG_ENV_OFFSET		(768 * 1024)
+ #define CONFIG_ENV_SECT_SIZE		(64 * 1024)
