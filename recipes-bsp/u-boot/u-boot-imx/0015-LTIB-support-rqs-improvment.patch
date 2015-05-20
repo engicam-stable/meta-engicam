@@ -188,7 +188,7 @@ index 2b2e778..f02d400 100644
 -		"bootcmd_mmc=run bootargs;  run bootargs_mmc; run loadfdt; fatload mmc 0:1 ${loadaddr} uImage; bootm ${loadaddr} - ${fdt_addr};\0"			\
 -		"bootcmd_net=run bootargs; run bootargs_net; tftp uImage; tftp ${fdt_addr} uImage.dtb; bootm ${loadaddr} - ${fdt_addr}\0"				\
 +		"mtdparts_yocto=mtdparts=gpmi-nand:4m(boot),8m(kernel),1m(dtb),-(rootfs)\0"										\
-+		"bootargs=set bootargs console=" CONFIG_CONSOLE_DEV ",115200" EXTRA_OPTION_SOLO "engi_board=${board} video=${video_type},${lcd_panel}\0"		\
++		"bootargs=set bootargs console=" CONFIG_CONSOLE_DEV ",115200" EXTRA_OPTION_SOLO "engi_board=${board} video=${video_type},${lcd_panel} fec_mac=${fec_addr}\0"		\
 +		"bootargsy_net=setenv bootargs ${bootargs} ${mtdparts_yocto} root=/dev/nfs ip=dhcp nfsroot=${serverip}:${nfsroot},v3,tcp\0" 				\
 +		"bootargsl_net=setenv bootargs ${bootargs} root=/dev/nfs ip=dhcp nfsroot=${serverip}:${nfsroot},v3,tcp\0" 						\
 +		"bootcmd_net="  YOCTO_BOOTCMD_NET "\0"															\

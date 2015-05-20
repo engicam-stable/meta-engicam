@@ -21,6 +21,8 @@ IMAGE_INSTALL += " \
     cpufrequtils \
     engicam-mtd-script \
     engicam-emmc-script \
+    fw-nandautosize \
+    u-boot-fw-utils \
     python3-modules \
     python3-misc \
     "

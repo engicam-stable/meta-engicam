@@ -8,9 +8,12 @@ inherit allarch
 SRC_URI = "file://prboot.sh \
            file://prfs.sh \
            file://prkernel.sh \
+           file://preraseboot.sh \
            file://tftp_boot.sh \
            file://tftp_kernel.sh \
            file://tftp_fs.sh \
+           file://tftp_erase_boot.sh \
+           file://fw_savenv.sh \
 	   file://copyright"
 
 
@@ -20,10 +23,10 @@ do_install () {
 	install -m 0755 ${WORKDIR}/prboot.sh ${D}${bindir}/prboot.sh 
 	install -m 0755 ${WORKDIR}/prfs.sh ${D}${bindir}/prfs.sh 
 	install -m 0755 ${WORKDIR}/prkernel.sh ${D}${bindir}/prkernel.sh 
+	install -m 0755 ${WORKDIR}/preraseboot.sh ${D}${bindir}/preraseboot.sh 
 	install -m 0755 ${WORKDIR}/tftp_boot.sh ${D}${bindir}/tftp_boot.sh 
 	install -m 0755 ${WORKDIR}/tftp_kernel.sh ${D}${bindir}/tftp_kernel.sh
 	install -m 0755 ${WORKDIR}/tftp_fs.sh ${D}${bindir}/tftp_fs.sh
+	install -m 0755 ${WORKDIR}/tftp_erase_boot.sh ${D}${bindir}/tftp_erase_boot.sh
+	install -m 0755 ${WORKDIR}/fw_savenv.sh ${D}${bindir}/fw_savenv.sh
 }
-
-
-

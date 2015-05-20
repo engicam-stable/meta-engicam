@@ -58,8 +58,10 @@ IMAGE_INSTALL_append = " binutils libgcc libstdc++ \
     evtest \
     i2c-tools \ 
     default-psw \
-    engicam-startup \ 
     engicam-mtd-script \
+    engicam-emmc-script \
+    fw-nandautosize \
+    u-boot-fw-utils \
     psplash \
     iproute2 \
     cantest \

@@ -20,6 +20,8 @@ IMAGE_INSTALL += " \
     ${SOC_IMAGE_INSTALL} \
     engicam-mtd-script \
     engicam-emmc-script \
+    fw-nandautosize \
+    u-boot-fw-utils \
     iproute2 \
     cantest \
     wf111-driver \

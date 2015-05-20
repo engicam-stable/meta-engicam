@@ -45,8 +45,10 @@ IMAGE_INSTALL += " \
     libfslparser \
     libfslvpuwrap \
     firmware-imx \
-    engicam-emmc-script \
     engicam-mtd-script \
+    engicam-emmc-script \
+    fw-nandautosize \
+    u-boot-fw-utils \
     imx-lib \
     imx-test \
     imx-vpu \

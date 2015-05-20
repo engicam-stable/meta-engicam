@@ -7,6 +7,7 @@ inherit allarch
 
 SRC_URI = "file://q7_tftp_sdcard.sh \
 	   file://q7_tftp_boot.sh \
+	   file://q7_tftp_erase_boot.sh \
 	   file://copyright"
 
 
@@ -15,6 +16,7 @@ do_install () {
 	install -d ${D}${bindir}
 	install -m 0755 ${WORKDIR}/q7_tftp_sdcard.sh ${D}${bindir}/q7_tftp_sdcard.sh
 	install -m 0755 ${WORKDIR}/q7_tftp_boot.sh ${D}${bindir}/q7_tftp_boot.sh 
+	install -m 0755 ${WORKDIR}/q7_tftp_erase_boot.sh ${D}${bindir}/q7_tftp_erase_boot.sh 
 }
 
 

@@ -16,6 +16,11 @@ FSL_KERNEL_DEFCONFIG="icore-defconfig"
 
 IMAGE_OVERHEAD_FACTOR = "200.0"
 
-IMAGE_INSTALL += "engicam-mtd-script engicam-emmc-script"
+IMAGE_INSTALL += "engicam-mtd-script \ 
+    engicam-emmc-script \
+    engicam-mtd-script \
+    engicam-emmc-script \
+    fw-nandautosize \
+    u-boot-fw-utils"
 
 

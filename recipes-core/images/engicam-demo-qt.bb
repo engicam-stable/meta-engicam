@@ -47,6 +47,8 @@ IMAGE_INSTALL_append = " \
     engicam-qtdemo \
     engicam-mtd-script \
     engicam-emmc-script \
+    fw-nandautosize \
+    u-boot-fw-utils \
     iproute2 \
     canutils \
     cantest \

@@ -1,0 +1,213 @@
+diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+index 4c8a9fa..dff7dac 100644
+--- a/arch/arm/boot/dts/Makefile
++++ b/arch/arm/boot/dts/Makefile
+@@ -121,6 +121,7 @@ dtb-$(CONFIG_ARCH_MXC) += \
+ 	imx6q-ofres.dtb \
+ 	imx6dl-ofcap.dtb \
+ 	imx6dl-ofwi.dtb \
++	imx6dl-ofloco.dtb \
+ 	imx6q-ofcap.dtb \
+ 	imx6q-ofwi.dtb \
+ 	imx6dl-sabreauto.dtb \
+diff --git a/arch/arm/boot/dts/imx6dl-ofloco10.dts b/arch/arm/boot/dts/imx6dl-ofloco.dts
+new file mode 100644
+index 0000000..41763df
+--- /dev/null
++++ b/arch/arm/boot/dts/imx6dl-ofloco.dts
+@@ -0,0 +1,118 @@
++/*
++ * Copyright (C) 2013 Freescale Semiconductor, Inc.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++/dts-v1/;
++
++#include "imx6dl.dtsi"
++#include "imx6qdl-icore.dtsi"
++
++/ {
++	model = "Engicam i.CoreM6 DualLite/Solo Openframe LOCO";
++	compatible = "fsl,imx6-icore", "fsl,imx6dl";
++};
++
++&ldb {
++	ipu_id = <0>;
++	sec_ipu_id = <0>;
++};
++
++&mxcfb1 {
++	status = "okay";
++};
++
++&mxcfb2 {
++	status = "okay";
++};
++
++/* To be enabled for PCI peripheral.
++   Please enable also the PCI support kernel options:
++   CONFIG_PCI and PCI_IMX6
++&pcie {
++	status = "okay";
++};
++*/
++
++&i2c1 {
++
++};
++
++&i2c2 {
++
++	hdmi: edid@50 {
++		compatible = "fsl,imx6-hdmi-i2c";
++		reg = <0x50>;
++	};
++
++};
++
++
++&i2c3 {
++
++	stmpe811@44 {
++		compatible = "st,stmpe811";
++		#address-cells = <1>;
++		#size-cells = <0>;
++		reg = <0x44>;
++		id = <1>; /* I2C2 (0-based define) */
++		blocks = <0x5>; /* Touchscreen */
++		irq-trigger = <0x1>; /* Rising Edge */
++		interrupts = <30 8>;
++		interrupt-parent = <&gpio5>;
++		irq-over-gpio;
++		irq-gpios = <&gpio5 30 0x4>;
++
++		stmpe_gpio_1: stmpe_gpio {
++		    compatible = "st,stmpe-gpio";
++		};
++		stmpe_touchscreen {
++		    compatible = "st,stmpe-ts";
++		    reg = <0>;
++		    ts,sample-time = <6>;
++		    ts,mod-12b = <0>;
++		    ts,ref-sel = <0>;
++		    ts,adc-freq = <1>;
++		    ts,ave-ctrl = <3>;
++		    ts,touch-det-delay = <4>;
++		    ts,settling = <6>;
++		    ts,fraction-z = <7>;
++		    ts,i-drive = <1>;
++		};
++	};
++
++	codec: sgtl5000@0a {
++		compatible = "fsl,sgtl5000";
++		reg = <0x0a>;
++		clocks = <&clks 201>;
++		VDDA-supply = <&reg_2p5v>;
++		VDDIO-supply = <&reg_3p3v>;
++		VDDD-supply = <&reg_1p8v>;
++		status = "disabled";
++	};
++
++	pcf8563: rtc@51 {
++		compatible = "pcf8563";
++		reg = <0x51>;
++	};
++};
++
++&iomuxc {
++
++	pinctrl-assert-gpios = <&gpio1 2 GPIO_ACTIVE_HIGH>;
++	
++	hog {
++		pinctrl_hog: hoggrp {
++			fsl,pins = <
++				MX6QDL_PAD_CSI0_DAT12__GPIO5_IO30 0x80000000 /*interrupt*/ 
++				MX6QDL_PAD_GPIO_2__GPIO1_IO02 0x1f059
++				MX6QDL_PAD_EIM_D19__GPIO3_IO19 0x1f059 /* not used pin for ADV7180 driver compatibility */
++			>;
++		};
++	};
++};
++
++
+diff --git a/drivers/input/touchscreen/stmpe-ts.c b/drivers/input/touchscreen/stmpe-ts.c
+index 59e81b0..e957fec 100644
+--- a/drivers/input/touchscreen/stmpe-ts.c
++++ b/drivers/input/touchscreen/stmpe-ts.c
+@@ -127,7 +127,7 @@ static void stmpe_work(struct work_struct *work)
+ static irqreturn_t stmpe_ts_handler(int irq, void *data)
+ {
+ 	u8 data_set[4];
+-	int x, y, z;
++	int i, x, y, z, x0, y0, z0;
+ 	struct stmpe_touch *ts = data;
+ 
+ 	/*
+@@ -147,10 +147,33 @@ static irqreturn_t stmpe_ts_handler(int irq, void *data)
+ 
+ 	stmpe_block_read(ts->stmpe, STMPE_REG_TSC_DATA_XYZ, 4, data_set);
+ 
++	
+ 	x = (data_set[0] << 4) | (data_set[1] >> 4);
+ 	y = ((data_set[1] & 0xf) << 8) | data_set[2];
+ 	z = data_set[3];
+-
++	
++	x0 = x + 100;
++	y0 = z0 = 0;
++	i = 10;
++#define DELTA_P		10
++	while ((abs(x-x0) > DELTA_P)||(abs(y-y0) > DELTA_P))
++	{
++		if(i-- < 0)
++		{
++			z = 0;
++			printk("stmpe-ts: too much noise!!!\n");
++			break;			
++		}
++		udelay(100);
++		stmpe_block_read(ts->stmpe, STMPE_REG_TSC_DATA_XYZ, 4, data_set);
++		x0 = x;
++		y0 = y;
++		z0 = z; 
++		x = (data_set[0] << 4) | (data_set[1] >> 4);
++		y = ((data_set[1] & 0xf) << 8) | data_set[2];
++		z = data_set[3];
++		z += 1;
++	}	
+ 	input_report_abs(ts->idev, ABS_X, x);
+ 	input_report_abs(ts->idev, ABS_Y, y);
+ 	input_report_abs(ts->idev, ABS_PRESSURE, z);
+diff --git a/drivers/mfd/stmpe.c b/drivers/mfd/stmpe.c
+index bbccd51..d23c822 100644
+--- a/drivers/mfd/stmpe.c
++++ b/drivers/mfd/stmpe.c
+@@ -1215,7 +1215,6 @@ int stmpe_probe(struct stmpe_client_info *ci, int partnum)
+ 	ret = stmpe_chip_init(stmpe);
+ 	if (ret)
+ 		return ret;
+-
+ 	if (stmpe->irq >= 0) {
+ 		ret = stmpe_irq_init(stmpe, np);
+ 		if (ret)
+diff --git a/drivers/video/mxc/ldb.c b/drivers/video/mxc/ldb.c
+index 3e3b3dd..bf5af7f 100644
+--- a/drivers/video/mxc/ldb.c
++++ b/drivers/video/mxc/ldb.c
+@@ -159,6 +159,12 @@ static struct fb_videomode ldb_modedb[] = {
+ 	 FB_SYNC_CLK_LAT_FALL,
+ 	 FB_VMODE_NONINTERLACED,
+ 	 0,},
++ 	{
++	 /* LOCO 10.1: 1024x600 @ 60 Hz */
++	 "LDB-WSGA", 60, 1024, 600, 18939, 353, 47, 39, 4, 8, 2,
++	 FB_SYNC_CLK_LAT_FALL | FB_SYNC_COMP_HIGH_ACT | FB_SYNC_VERT_HIGH_ACT,
++	 FB_VMODE_NONINTERLACED
++	 },
+ 	{
+ 	 "LDB-WXGA", 60, 1280, 800, 14065,
+ 	 40, 40,

@@ -53,8 +53,8 @@ index 6e7c685..004ee51 100644
 +	40, 40,
 +	5, 5,
 +	136, 6,
-+	FB_SYNC_CLK_LAT_FALL,
-+        FB_VMODE_NONINTERLACED,
++	0,
++       FB_VMODE_NONINTERLACED,
 +	FB_MODE_IS_DETAILED,
 +        },
  
@@ -74,8 +74,8 @@ index 81463f9..f2cbdfa 100644
 +	40, 40,
 +	5, 5,
 +	136, 6,
-+	FB_SYNC_CLK_LAT_FALL,
-+        FB_VMODE_NONINTERLACED,
++	0,
++       FB_VMODE_NONINTERLACED,
 +	FB_MODE_IS_DETAILED,
 +        },
  };

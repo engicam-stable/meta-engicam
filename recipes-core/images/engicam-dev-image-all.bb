@@ -67,6 +67,8 @@ boost cmake zlib glib-2.0 glive \
     engicam-startup-demo \ 
     engicam-mtd-script \
     engicam-emmc-script \
+    fw-nandautosize \
+    u-boot-fw-utils \
     psplash \
     iproute2 \
     cantest \
