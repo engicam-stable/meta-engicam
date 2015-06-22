@@ -1,0 +1,199 @@
+diff --git a/arch/arm/boot/dts/imx6dl-ofloco.dts b/arch/arm/boot/dts/imx6dl-ofloco.dts
+index a69edeb..91ee0dd 100644
+--- a/arch/arm/boot/dts/imx6dl-ofloco.dts
++++ b/arch/arm/boot/dts/imx6dl-ofloco.dts
+@@ -14,6 +14,13 @@
+ / {
+ 	model = "Engicam i.CoreM6 DualLite/Solo Openframe LOCO";
+ 	compatible = "fsl,imx6-icore", "fsl,imx6dl";
++	
++	backlight {
++		compatible = "pwm-backlight";
++		pwms = <&pwm3 0 3000000>;
++		brightness-levels = <0 4 8 16 32 64 128 255>;
++		default-brightness-level = <7>;
++	};
+ };
+ 
+ &ldb {
+@@ -57,30 +64,24 @@
+ 		compatible = "st,stmpe811";
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
++		#interrupt-cells = <2>;
+ 		reg = <0x44>;
+-		id = <1>; /* I2C2 (0-based define) */
+-		blocks = <0x5>; /* Touchscreen */
+-		irq-trigger = <0x1>; /* Rising Edge */
+-		interrupts = <30 8>;
++		pinctrl-names = "default";		
++		pinctrl-0 = <&pinctrl_stmpe_ts>;		
++		interrupts = <30 2>;
+ 		interrupt-parent = <&gpio5>;
+-		irq-over-gpio;
+-		irq-gpios = <&gpio5 30 0x4>;
+ 
+-		stmpe_gpio_1: stmpe_gpio {
+-		    compatible = "st,stmpe-gpio";
+-		};
+ 		stmpe_touchscreen {
+-		    compatible = "st,stmpe-ts";
+-		    reg = <0>;
+-		    ts,sample-time = <6>;
+-		    ts,mod-12b = <0>;
+-		    ts,ref-sel = <0>;
+-		    ts,adc-freq = <1>;
+-		    ts,ave-ctrl = <3>;
+-		    ts,touch-det-delay = <4>;
+-		    ts,settling = <6>;
+-		    ts,fraction-z = <7>;
+-		    ts,i-drive = <1>;
++			compatible = "st,stmpe-ts";
++			st,sample-time = <4>;
++			st,mod-12b = <1>;
++			st,ref-sel = <0>;
++			st,adc-freq = <1>;
++			st,ave-ctrl = <1>;
++			st,touch-det-delay = <2>;
++			st,settling = <2>;
++			st,fraction-z = <7>;
++			st,i-drive = <1>;
+ 		};
+ 	};
+ 
+@@ -101,13 +102,21 @@
+ };
+ 
+ &iomuxc {
++	touchpanel{
++		pinctrl_stmpe_ts:  stmpe-tsgrp  {
++			fsl,pins = <
++				MX6QDL_PAD_CSI0_DAT12__GPIO5_IO30 0x1b0b0 /*interrupt*/ 
++			>;
++		};
++	};
++};
++&iomuxc {
+ 
+ 	pinctrl-assert-gpios = <&gpio1 2 GPIO_ACTIVE_HIGH>;
+ 	
+ 	hog {
+ 		pinctrl_hog: hoggrp {
+ 			fsl,pins = <
+-				MX6QDL_PAD_CSI0_DAT12__GPIO5_IO30 0x80000000 /*interrupt*/ 
+ 				MX6QDL_PAD_GPIO_2__GPIO1_IO02 0x1f059
+ 				MX6QDL_PAD_EIM_D19__GPIO3_IO19 0x1f059 /* not used pin for ADV7180 driver compatibility */
+ 			>;
+diff --git a/drivers/input/touchscreen/stmpe-ts.c b/drivers/input/touchscreen/stmpe-ts.c
+index e957fec..88f1623 100644
+--- a/drivers/input/touchscreen/stmpe-ts.c
++++ b/drivers/input/touchscreen/stmpe-ts.c
+@@ -118,16 +118,41 @@ static void stmpe_work(struct work_struct *work)
+ 
+ 	/* reset the FIFO before we report release event */
+ 	__stmpe_reset_fifo(ts->stmpe);
+-
+ 	input_report_abs(ts->idev, ABS_PRESSURE, 0);
+ 	input_report_key(ts->idev, BTN_TOUCH, 0);
+ 	input_sync(ts->idev);
+ }
+ 
++#if 0
++static void sort(int * number,int nitems)
++{
++    int i,j,a;
++    for (i = 0; i < nitems; ++i)
++    {
++        for (j = i + 1; j < nitems; ++j)
++        {
++            if (number[i] > number[j])
++            {
++                a =  number[i];
++                number[i] = number[j];
++                number[j] = a;
++            }
++        }
++    }
++}
++#endif
++
+ static irqreturn_t stmpe_ts_handler(int irq, void *data)
+ {
+ 	u8 data_set[4];
+-	int i, x, y, z, x0, y0, z0;
++	int x, y, z;
++	#define VECTORMAX 5
++#if 0
++	int i
++	int  xv[VECTORMAX];
++	int  yv[VECTORMAX];
++	int  zv[VECTORMAX];
++#endif
+ 	struct stmpe_touch *ts = data;
+ 
+ 	/*
+@@ -144,7 +169,7 @@ static irqreturn_t stmpe_ts_handler(int irq, void *data)
+ 	 */
+ 	stmpe_set_bits(ts->stmpe, STMPE_REG_TSC_CTRL,
+ 				STMPE_TSC_CTRL_TSC_EN, 0);
+-
++#if 0
+ 	stmpe_block_read(ts->stmpe, STMPE_REG_TSC_DATA_XYZ, 4, data_set);
+ 
+ 	
+@@ -155,6 +180,8 @@ static irqreturn_t stmpe_ts_handler(int irq, void *data)
+ 	x0 = x + 100;
+ 	y0 = z0 = 0;
+ 	i = 10;
++
++
+ #define DELTA_P		10
+ 	while ((abs(x-x0) > DELTA_P)||(abs(y-y0) > DELTA_P))
+ 	{
+@@ -174,12 +201,45 @@ static irqreturn_t stmpe_ts_handler(int irq, void *data)
+ 		z = data_set[3];
+ 		z += 1;
+ 	}	
++#endif
++#if 0
++	for (i=0;i<VECTORMAX;i++)
++	{	
++		udelay(100);
++		stmpe_block_read(ts->stmpe, STMPE_REG_TSC_DATA_XYZ, 4, data_set);
++		xv[i] = (data_set[0] << 4) | (data_set[1] >> 4);
++		yv[i] = ((data_set[1] & 0xf) << 8) | data_set[2];
++		zv[i] = data_set[3];
++	}
++
++	sort(xv ,VECTORMAX);
++	sort(yv ,VECTORMAX);
++	sort(zv ,VECTORMAX);
++
++	x=xv[2];
++	y=yv[2];
++	z=1;//zv[VECTORMAX -1];
++
+ 	input_report_abs(ts->idev, ABS_X, x);
+ 	input_report_abs(ts->idev, ABS_Y, y);
+ 	input_report_abs(ts->idev, ABS_PRESSURE, z);
+ 	input_report_key(ts->idev, BTN_TOUCH, 1);
+-	input_sync(ts->idev);
++	input_sync(ts->idev);	     
++#endif
++
++#if 1
++	stmpe_block_read(ts->stmpe, STMPE_REG_TSC_DATA_XYZ, 4, data_set);
++	x = (data_set[0] << 4) | (data_set[1] >> 4);
++	y = ((data_set[1] & 0xf) << 8) | data_set[2];
++	z = data_set[3];
+ 
++	
++	input_report_abs(ts->idev, ABS_X, x);
++	input_report_abs(ts->idev, ABS_Y, y);
++	input_report_abs(ts->idev, ABS_PRESSURE, z);
++	input_report_key(ts->idev, BTN_TOUCH, 1);
++	input_sync(ts->idev);
++#endif
+        /* flush the FIFO after we have read out our values. */
+ 	__stmpe_reset_fifo(ts->stmpe);
+ 

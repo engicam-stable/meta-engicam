@@ -1,0 +1,49 @@
+diff --git a/drivers/mxc/gpu-viv/hal/os/linux/kernel/gc_hal_kernel_driver.c b/drivers/mxc/gpu-viv/hal/os/linux/kernel/gc_hal_kernel_driver.c
+index 19443e1..5fb1beb 100644
+--- a/drivers/mxc/gpu-viv/hal/os/linux/kernel/gc_hal_kernel_driver.c
++++ b/drivers/mxc/gpu-viv/hal/os/linux/kernel/gc_hal_kernel_driver.c
+@@ -137,7 +137,7 @@ static ulong contiguousSize = 128 << 20;
+ static ulong contiguousSize = 4 << 20;
+ #endif
+ #endif
+-static ulong contiguousSize = 64 << 20;
++static ulong contiguousSize = 32 << 20;
+ 
+ module_param(contiguousSize, ulong, 0644);
+ 
+diff --git a/drivers/video/mxc/ldb.c b/drivers/video/mxc/ldb.c
+index e805036..d8c1c97 100644
+--- a/drivers/video/mxc/ldb.c
++++ b/drivers/video/mxc/ldb.c
+@@ -636,9 +636,17 @@ static int ldb_disp_init(struct mxc_dispdrv_handle *disp,
+ 		else
+ 			reg |= LDB_BGREF_RMODE_INT;
+ 
+-		/* TODO: now only use SPWG data mapping for both channel */
++		if (g_ldb_mode >= LDB_SPL_DI0)
++			ldb->mode = g_ldb_mode;
++		else
++			ldb->mode = plat_data->mode;
++
++		/* TODO: now only use JEIDA for SPLIT modes AND SPWG data mapping for other modes */
+ 		reg &= ~(LDB_BIT_MAP_CH0_MASK | LDB_BIT_MAP_CH1_MASK);
+-		reg |= LDB_BIT_MAP_CH0_SPWG | LDB_BIT_MAP_CH1_SPWG;
++		if((ldb->mode == LDB_SPL_DI0)||(ldb->mode == LDB_SPL_DI1))
++  	        	reg |= LDB_BIT_MAP_CH0_JEIDA | LDB_BIT_MAP_CH1_JEIDA;
++		else
++  			reg |= LDB_BIT_MAP_CH0_SPWG | LDB_BIT_MAP_CH1_SPWG;
+ 
+ 		/* channel mode setting */
+ 		reg &= ~(LDB_CH0_MODE_MASK | LDB_CH1_MODE_MASK);
+@@ -649,11 +657,6 @@ static int ldb_disp_init(struct mxc_dispdrv_handle *disp,
+ 		else
+ 			reg |= LDB_DATA_WIDTH_CH0_18 | LDB_DATA_WIDTH_CH1_18;
+ 
+-		if (g_ldb_mode >= LDB_SPL_DI0)
+-			ldb->mode = g_ldb_mode;
+-		else
+-			ldb->mode = plat_data->mode;
+-
+ 		if ((ldb->mode == LDB_SIN0) || (ldb->mode == LDB_SIN1)) {
+ 			ret = ldb->mode - LDB_SIN0;
+ 			if (plat_data->disp_id != ret) {
