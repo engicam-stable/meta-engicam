@@ -87,6 +87,7 @@ IMAGE_INSTALL += " \
     libfslvpuwrap \
     firmware-imx \
     imx-lib \
+    e2fsprogs \
 "	
 
 CORE_IMAGE_EXTRA_INSTALL += " \

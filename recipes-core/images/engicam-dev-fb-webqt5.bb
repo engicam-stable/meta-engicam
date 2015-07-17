@@ -82,7 +82,8 @@ boost cmake zlib glib-2.0 glive \
     qt3d-qmlplugins \
     qt3d-tools \    
     qtlocation-plugins \
-    qtlocation-qmlplugins \    
+    qtlocation-qmlplugins \ 
+    e2fsprogs \   
     "
 
 DISTRO_FEATURES_remove = "x11 wayland"

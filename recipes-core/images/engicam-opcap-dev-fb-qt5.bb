@@ -68,6 +68,7 @@ IMAGE_INSTALL_append = " binutils libgcc libstdc++ \
     mtd-utils imx-kobs mtd-utils-ubifs \
     packagegroup-qt5-qtcreator-debug \
     packagegroup-qt5-toolchain-target \
+    e2fsprogs \
     "
 
 DISTRO_FEATURES_remove = "x11 wayland"

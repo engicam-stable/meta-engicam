@@ -75,6 +75,7 @@ boost cmake zlib glib-2.0 glive \
     iproute2 \
     cantest \
     mtd-utils imx-kobs mtd-utils-ubifs \
+    e2fsprogs \
     "
 
 DISTRO_FEATURES_remove = "x11 wayland"

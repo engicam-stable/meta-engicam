@@ -51,6 +51,7 @@ IMAGE_INSTALL += " \
     imx-test \
     imx-vpu \
     tslib \
+    e2fsprogs \
 "	
 
 

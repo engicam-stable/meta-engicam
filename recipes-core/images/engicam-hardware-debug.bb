@@ -27,4 +27,5 @@ IMAGE_INSTALL += " \
     usbutils \
     i2c-tools \
     devmem2 \
+    e2fsprogs \
     "

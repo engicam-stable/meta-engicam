@@ -26,4 +26,5 @@ IMAGE_INSTALL += " \
     iproute2 \
     canutils \
     cantest \
+    e2fsprogs \
     "

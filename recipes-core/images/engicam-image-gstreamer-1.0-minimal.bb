@@ -44,6 +44,7 @@ IMAGE_INSTALL += " \
     u-boot-fw-utils \
     imx-lib \
     imx-vpu \
+    e2fsprogs \
 "	
 
 

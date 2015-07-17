@@ -21,6 +21,8 @@ IMAGE_INSTALL += "engicam-mtd-script \
     engicam-mtd-script \
     engicam-emmc-script \
     fw-nandautosize \
-    u-boot-fw-utils"
+    u-boot-fw-utils \
+    e2fsprogs \
+"
 
 

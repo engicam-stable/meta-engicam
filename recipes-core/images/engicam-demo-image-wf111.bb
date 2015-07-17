@@ -27,4 +27,5 @@ IMAGE_INSTALL += " \
     wf111-driver \
     wireless-tools \
     wpa-supplicant \
+    e2fsprogs \
     "

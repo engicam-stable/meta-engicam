@@ -53,6 +53,7 @@ IMAGE_INSTALL_append = " \
     canutils \
     cantest \
     mtd-utils imx-kobs mtd-utils-ubifs \
+    e2fsprogs \
     "
 
 export IMAGE_BASENAME = "engicam-demo-smarthome"

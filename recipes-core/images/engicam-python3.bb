@@ -25,4 +25,5 @@ IMAGE_INSTALL += " \
     u-boot-fw-utils \
     python3-modules \
     python3-misc \
+    e2fsprogs \
     "
