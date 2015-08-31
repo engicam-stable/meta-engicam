@@ -1,5 +1,9 @@
-# Copiare questo script nella directory del kernel prima di di fare il git commit locale
-# cosi fa tutte le copie in automatico
+# This script automatically build the kernel for solo/duallight modules and copy and rename the uImage
+# file and related .dtb file in the tftpboot folder, ready to be used from the programming
+# nand script
+#
+# Copy this script in your kernel developping folder. Remind to replace the copy with your proper .dtb
+# file instead the default imx6dl-icore.dtb
 
 export ARCH=arm
 export CROSS_COMPILE=$TARGET_PREFIX
