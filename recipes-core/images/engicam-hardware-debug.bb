@@ -28,4 +28,8 @@ IMAGE_INSTALL += " \
     i2c-tools \
     devmem2 \
     e2fsprogs \
+    minicom \
+    serialtools \
+    fw-nandautosize \
+    u-boot-fw-utils \
     "

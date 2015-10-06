@@ -9,6 +9,10 @@ SRC_URI = "file://q7_tftp_sdcard.sh \
 	   file://q7_tftp_boot.sh \
 	   file://q7_tftp_kernel.sh \
 	   file://q7_tftp_boot_saveenv.sh \
+	   file://smarc_tftp_sdcard.sh \
+	   file://smarc_tftp_boot.sh \
+	   file://smarc_tftp_kernel.sh \
+	   file://smarc_tftp_boot_saveenv.sh \
 	   file://copyright"
 
 
@@ -18,7 +22,11 @@ do_install () {
 	install -m 0755 ${WORKDIR}/q7_tftp_sdcard.sh ${D}${bindir}/q7_tftp_sdcard.sh
 	install -m 0755 ${WORKDIR}/q7_tftp_boot.sh ${D}${bindir}/q7_tftp_boot.sh 
 	install -m 0755 ${WORKDIR}/q7_tftp_kernel.sh ${D}${bindir}/q7_tftp_kernel.sh 
-	install -m 0755 ${WORKDIR}/q7_tftp_boot_saveenv.sh ${D}${bindir}/q7_tftp_boot_saveenv.sh 
+	install -m 0755 ${WORKDIR}/q7_tftp_boot_saveenv.sh ${D}${bindir}/q7_tftp_boot_saveenv.sh
+	install -m 0755 ${WORKDIR}/smarc_tftp_boot.sh ${D}${bindir}/smarc_tftp_boot.sh 
+	install -m 0755 ${WORKDIR}/smarc_tftp_sdcard.sh ${D}${bindir}/smarc_tftp_sdcard.sh 
+	install -m 0755 ${WORKDIR}/smarc_tftp_kernel.sh ${D}${bindir}/smarc_tftp_kernel.sh 
+	install -m 0755 ${WORKDIR}/smarc_tftp_boot_saveenv.sh ${D}${bindir}/smarc_tftp_boot_saveenv.sh
 }
 
 

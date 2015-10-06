@@ -32,7 +32,7 @@ new file mode 100644
 index 0000000..2a9b36e
 --- /dev/null
 +++ b/arch/arm/boot/dts/imx6dl-ofcap.dts
-@@ -0,0 +1,131 @@
+@@ -0,0 +1,119 @@
 +/*
 + * Copyright (C) 2013 Freescale Semiconductor, Inc.
 + *
@@ -71,18 +71,6 @@ index 0000000..2a9b36e
 +	status = "okay";
 +};
 +*/
-+
-+&i2c1 {
-+
-+	max11801@48 {
-+		compatible = "maxim,max11801";
-+		reg = <0x48>;
-+		interrupt-parent = <&gpio3>;
-+		interrupts = <31 2>;
-+		work-mode = <0>;/*DCM mode*/
-+	};
-+
-+};
 +
 +&i2c2 {
 +
@@ -240,7 +228,7 @@ new file mode 100644
 index 0000000..1560af0
 --- /dev/null
 +++ b/arch/arm/boot/dts/imx6q-ofcap.dts
-@@ -0,0 +1,133 @@
+@@ -0,0 +1,121 @@
 +/*
 + * Copyright (C) 2013 Freescale Semiconductor, Inc.
 + *
@@ -283,18 +271,6 @@ index 0000000..1560af0
 +	status = "okay";
 +};
 +*/
-+
-+&i2c1 {
-+
-+	max11801@48 {
-+		compatible = "maxim,max11801";
-+		reg = <0x48>;
-+		interrupt-parent = <&gpio3>;
-+		interrupts = <31 2>;
-+		work-mode = <0>;/*DCM mode*/
-+	};
-+
-+};
 +
 +&i2c2 {
 +

@@ -14,7 +14,7 @@ IMAGE_FSTYPES = "tar.bz2 sdcard ubifs"
 UBOOT_CONFIG = "nand"
 
 SOC_IMAGE_INSTALL = ""
-SOC_IMAGE_INSTALL_mx6 = "gpu-viv-bin-mx6q gpu-viv-g2d fsl-gpu-sdk"
+SOC_IMAGE_INSTALL_mx6 = "gpu-viv-g2d"
 
 IMAGE_INSTALL += " \
     ${SOC_IMAGE_INSTALL} \
@@ -28,4 +28,5 @@ IMAGE_INSTALL += " \
     wireless-tools \
     wpa-supplicant \
     e2fsprogs \
+    usbutils \
     "
