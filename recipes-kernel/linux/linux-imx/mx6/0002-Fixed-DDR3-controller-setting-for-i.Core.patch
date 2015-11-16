@@ -1,0 +1,81 @@
+From 538d6ea93b1d7e044e0bf84685c1ba6a532819f5 Mon Sep 17 00:00:00 2001
+From: Your Name <Your Email>
+Date: Mon, 5 Oct 2015 15:40:40 +0200
+Subject: [PATCH 02/27] Fixed DDR3 controller setting for i.Core
+
+---
+ arch/arm/boot/dts/imx6dl-icore.dts |   14 --------------
+ arch/arm/mach-imx/busfreq_ddr3.c   |   15 +++++++++++----
+ 2 files changed, 11 insertions(+), 18 deletions(-)
+
+diff --git a/arch/arm/boot/dts/imx6dl-icore.dts b/arch/arm/boot/dts/imx6dl-icore.dts
+index 0f94d88..75d0eca 100644
+--- a/arch/arm/boot/dts/imx6dl-icore.dts
++++ b/arch/arm/boot/dts/imx6dl-icore.dts
+@@ -29,17 +29,3 @@
+ 	status = "okay";
+ };
+ 
+-
+-&gpc {
+-	/* use ldo-bypass, u-boot will check it and configure */
+-	fsl,ldo-bypass = <1>;
+-	fsl,wdog-reset = <2>;
+-};
+-#ifdef _MM_LDO_ENA
+-&gpc {
+-	/* use ldo-enable, u-boot will check it and configure */
+-	fsl,ldo-bypass = <0>;
+-	/* watchdog select of reset source */
+-	fsl,wdog-reset = <1>;
+-};
+-#endif
+diff --git a/arch/arm/mach-imx/busfreq_ddr3.c b/arch/arm/mach-imx/busfreq_ddr3.c
+index 390ae9c..b94a872 100644
+--- a/arch/arm/mach-imx/busfreq_ddr3.c
++++ b/arch/arm/mach-imx/busfreq_ddr3.c
+@@ -177,6 +177,13 @@ unsigned long ddr3_calibration[][2] = {
+ 	{0x4850, 0x0},
+ };
+ 
++unsigned long ddr3_calibration_icore[][2] = {
++	{0x83c, 0x0},
++	{0x840, 0x0},
++	{0x848, 0x0},
++	{0x850, 0x0},
++};
++
+ unsigned long ddr3_dll_mx6dl[][2] = {
+ 	{0x0c, 0x0},
+ 	{0x10, 0x0},
+@@ -583,23 +590,23 @@ int init_mmdc_ddr3_settings_imx6q(struct platform_device *busfreq_pdev)
+ 
+ 	if (cpu_is_imx6q())
+ 		ddr_settings_size = ARRAY_SIZE(ddr3_dll_mx6q) +
+-			ARRAY_SIZE(ddr3_calibration);
++			ARRAY_SIZE(ddr3_calibration_icore);
+ 	if (cpu_is_imx6dl())
+ 		ddr_settings_size = ARRAY_SIZE(ddr3_dll_mx6dl) +
+-			ARRAY_SIZE(ddr3_calibration);
++			ARRAY_SIZE(ddr3_calibration_icore);
+ 
+ 	normal_mmdc_settings = kmalloc((ddr_settings_size * 8), GFP_KERNEL);
+ 	if (cpu_is_imx6q()) {
+ 		memcpy(normal_mmdc_settings, ddr3_dll_mx6q,
+ 			sizeof(ddr3_dll_mx6q));
+ 		memcpy(((char *)normal_mmdc_settings + sizeof(ddr3_dll_mx6q)),
+-			ddr3_calibration, sizeof(ddr3_calibration));
++			ddr3_calibration_icore, sizeof(ddr3_calibration_icore));
+ 	}
+ 	if (cpu_is_imx6dl()) {
+ 		memcpy(normal_mmdc_settings, ddr3_dll_mx6dl,
+ 			sizeof(ddr3_dll_mx6dl));
+ 		memcpy(((char *)normal_mmdc_settings + sizeof(ddr3_dll_mx6dl)),
+-			ddr3_calibration, sizeof(ddr3_calibration));
++			ddr3_calibration_icore, sizeof(ddr3_calibration_icore));
+ 	}
+ 	/* store the original DDR settings at boot. */
+ 	for (i = 0; i < ddr_settings_size; i++) {
+-- 
+1.7.9.5
+

@@ -1,0 +1,14 @@
+
+setenv mtdids 'nand0=gpmi-nand'
+setenv mtdparts 'mtdparts=gpmi-nand:4m(boot),8m(kernel),1m(dtb),-(rootfs)'
+
+#uImage
+tftp ${loadaddr} geam6ul/uImage-geam6ul.bin
+nand erase.part kernel
+nand write ${loadaddr} 0x00400000 0x00800000
+
+#DTB:
+tftp ${loadaddr} geam6ul/uImage-imx6ul-gea.dtb
+nand erase.part dtb
+nand write ${loadaddr} 0x00c00000 0x00100000
+ 

@@ -1,0 +1,127 @@
+
+										    2014-11-26
+
+This instruction explane how to build an meta-engicam image with support of x11, gtk+ and opencv. This image can be
+used for to build and test opencv example.
+
+First step follow the manual and build an engicam-image-base from scratch and verify that the image work propertly.
+Remind to update at this date Engicam meta-layer before starting this procedure.
+
+**********************
+BUILDING THE X11 IMAGE
+**********************
+
+Follow this instruction for to build an x11 valid image with gtk+ and openCV
+
+  - Go in the yocto build directory /yocto-daisy/fsl-community-bsp$
+  - Create a new workspace with the command (chose the appropriate machine)
+	  MACHINE=icorem6dual . setup-environment test_cv
+  - Edit the file conf/local.conf like this:
+
+BB_NUMBER_THREADS ?= "${@oe.utils.cpu_count()}"
+PARALLEL_MAKE ?= "-j ${@oe.utils.cpu_count()}"
+MACHINE ??= 'icorem6dual'
+DISTRO ?= 'poky'
+PACKAGE_CLASSES ?= "package_rpm"
+EXTRA_IMAGE_FEATURES = "debug-tweaks"
+USER_CLASSES ?= "buildstats image-mklibs image-prelink"
+PATCHRESOLVE = "noop"
+BB_DISKMON_DIRS = "\
+ STOPTASKS,${TMPDIR},1G,100K \
+ STOPTASKS,${DL_DIR},1G,100K \
+ STOPTASKS,${SSTATE_DIR},1G,100K \
+ ABORT,${TMPDIR},100M,1K \
+ ABORT,${DL_DIR},100M,1K \
+ ABORT,${SSTATE_DIR},100M,1K" 
+PACKAGECONFIG_pn-qemu-native = "sdl"
+ASSUME_PROVIDED += "libsdl-native"
+CONF_VERSION = "1"
+
+BB_NUMBER_THREADS = '8'
+PARALLEL_MAKE = '-j 8'
+
+DL_DIR ?= "${BSPDIR}/downloads/"
+ACCEPT_FSL_EULA = ""
+
+#DISTRO_FEATURES_remove = "x11 wayland"
+
+CORE_IMAGE_EXTRA_INSTALL += "gpu-viv-bin-mx6q gpu-viv-bin-mx6q-dev kernel-dev opencv \
+	opencv-samples gtk+ cairo libopencv-core-dev libopencv-highgui-dev \
+	libopencv-imgproc-dev libopencv-objdetect-dev libopencv-ml-dev"
+ 
+
+UBOOT_CONFIG="sd"
+
+ACCEPT_FSL_EULA = ""
+
+LICENSE_FLAGS_WHITELIST += "commercial_libav"
+LICENSE_FLAGS_WHITELIST += "commercial_x264"
+LICENSE_FLAGS_WHITELIST += "commercial"
+
+  - Remind to set check the machine tipe MACHINE ??= 'icorem6dual'
+  - Remind to set the number of core for optimize the build process BB_NUMBER_THREADS = '8' PARALLEL_MAKE = '-j 8'
+  - Edit the file conf/bblayers.con and add the meta-engicam, meta-qt5 and meta-ruby layer
+        ${BSPDIR}/sources/meta-engicam \
+	${BSPDIR}/sources/meta-qt5 \
+	${BSPDIR}/sources/meta-openembedded/meta-ruby \
+  - Open the target machine module .conf file and comment the section about ubifs build (this for space reasons it will
+    be fixed soon)
+	#IMAGE_FSTYPES = "tar.bz2 sdcard ubifs"
+	#UBINIZE_ARGS = "-m 2048 -p 128KiB -s 2048"
+	#MKUBIFS_ARGS = "-m 2048 -e 126976 -c 1944"
+	#UBI_VOLNAME = "rootfs"
+  - Now its possible to build the first x11 image usign the command 'bitbake core-image-x11'
+  - Write the image on an SD card, run and test it
+  
+**********************
+BUILDING THE TOOLCHAIN
+**********************
+
+For compiling your application you need to build and install the toolchain for the packet added to your imgag
+
+  - bitbake meta-toolchain 
+  - bitbake engicam-image-opencv -c populate_sdk
+  - ./tmp/deploy/sdk/poky-eglibc-x86_64-core-image-x11-cortexa9hf-vfp-neon-toolchain-1.6.2.sh
+  - Enter target directory for SDK (default: /opt/poky/1.6.2): /opt/poky/x11-1.6.2
+  - confirm and install it
+
+**********************
+BUILDING AN APPLICATION
+**********************
+
+After installed an application set the new environment variabile and make the example with this isntruction
+
+      . /opt/poky/x11-1.6.2/environment-setup-cortexa9hf-vfp-neon-poky-linux-gnueabi
+      arm-poky-linux-gnueabi-g++ opencv_smiledetect.cpp -o smiledetect  --sysroot=/opt/poky/x11-1.6.2/sysroots/cortexa9hf-vfp-neon-poky-linux-gnueabi -lopencv_calib3d -lopencv_contrib -lopencv_core -lopencv_features2d -lopencv_flann -lopencv_gpu -lopencv_highgui -lopencv_imgproc -lopencv_legacy -lopencv_ml -lopencv_nonfree -lopencv_objdetect -lopencv_ocl -lopencv_photo -lopencv_stitching -lopencv_superres -lopencv_video -lopencv_videostab -lrt -lpthread -lm -ldl
+
+Connect the webcam, copy the application to the target and use this example for to run it:
+
+      DISPLAY=:0  ./smiledetect --cascade="haarcascade_frontalface_alt.xml" --smile-cascade="haarcascade_eye.xml" 1
+      
+Where the differnt part are:
+
+      DISPLAY=:0	display to be used from X11 server
+      ./smiledetect	name of the executable
+      --cascade=".xml"	xml pattern for video detect
+      1			camera video input. Type "ls /dev/video" tab for check wich device is the webcam
+      
+The usb web cam driver should be recognized automatically by the kernel. If a driver is missing try to change webcam or
+to add the driver from the kernel config driver list and reprogram the target with the new driver. 
+
+
+**********************
+NOTE AND WARNING
+**********************
+
+Please do not used HD camera interface. In the executable example you can customize the acquire resolution by editing this line:
+
+    cascade.detectMultiScale( smallImg, faces,
+        1.1, 2, 0
+        //|CV_HAAR_FIND_BIGGEST_OBJECT
+        //|CV_HAAR_DO_ROUGH_SEARCH
+        |CV_HAAR_SCALE_IMAGE
+        ,
+        Size(200, 200) );
+
+From the acquire resulution depends the frame rate of the video, because each frame must be processed by the opencv library. 
+Much more the frames are big and much more time and cpu you need for processing it.

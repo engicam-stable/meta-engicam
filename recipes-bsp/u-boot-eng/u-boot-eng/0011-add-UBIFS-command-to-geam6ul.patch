@@ -1,0 +1,35 @@
+From f6d2953cc2edd4ea39d926e494810fcd98db467d Mon Sep 17 00:00:00 2001
+From: "matteo.lisi" <matteo.lisi@engicam.com>
+Date: Tue, 20 Oct 2015 12:31:36 +0200
+Subject: [PATCH] add UBIFS command to geam6ul
+
+---
+ include/configs/geam6ul.h | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/include/configs/geam6ul.h b/include/configs/geam6ul.h
+index 3e2db53..fb593e6 100644
+--- a/include/configs/geam6ul.h
++++ b/include/configs/geam6ul.h
+@@ -70,6 +70,18 @@
+ #define CONFIG_SUPPORT_EMMC_BOOT /* eMMC specific */
+ #endif
+ 
++/* UBI/UBI config options */
++#define CONFIG_CMD_FLASH
++#define CONFIG_MTD_DEVICE
++#define CONFIG_MTD_PARTITIONS
++#define CONFIG_CMD_MTDPARTS
++#define CONFIG_RBTREE
++#define CONFIG_CMD_UBI
++#define CONFIG_CMD_UBIFS
++#define CONFIG_LZO
++#define CONFIG_CMD_NAND
++#define CONFIG_CMD_NAND_TRIMFFS
++
+ #undef CONFIG_BOOTM_NETBSD
+ #undef CONFIG_BOOTM_PLAN9
+ #undef CONFIG_BOOTM_RTEMS
+-- 
+1.9.1
+

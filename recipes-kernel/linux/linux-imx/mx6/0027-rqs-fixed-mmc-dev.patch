@@ -1,0 +1,65 @@
+From b3983ba46699b0e9acd792af391b4de75bd057ef Mon Sep 17 00:00:00 2001
+From: Your Name <Your Email>
+Date: Tue, 6 Oct 2015 14:06:32 +0200
+Subject: [PATCH 27/27] rqs-fixed-mmc-dev
+
+---
+ arch/arm/boot/dts/imx6dl-icore-rqs.dts |    6 ++++++
+ arch/arm/boot/dts/imx6q-icore-rqs.dts  |    6 ++++++
+ arch/arm/boot/dts/imx6qdl-icore.dtsi   |    6 ------
+ 3 files changed, 12 insertions(+), 6 deletions(-)
+
+diff --git a/arch/arm/boot/dts/imx6dl-icore-rqs.dts b/arch/arm/boot/dts/imx6dl-icore-rqs.dts
+index ef8a417..1fa09b3 100644
+--- a/arch/arm/boot/dts/imx6dl-icore-rqs.dts
++++ b/arch/arm/boot/dts/imx6dl-icore-rqs.dts
+@@ -14,6 +14,12 @@
+ / {
+ 	model = "Engicam i.CoreM6 DualLite/Solo SOM";
+ 	compatible = "fsl,imx6-icore-rqs", "fsl,imx6dl";
++	
++	aliases {
++		mmc1 = &usdhc4;
++		mmc0 = &usdhc3;
++		mmc2 = &usdhc1;
++	};
+ };
+ 
+ &ldb {
+diff --git a/arch/arm/boot/dts/imx6q-icore-rqs.dts b/arch/arm/boot/dts/imx6q-icore-rqs.dts
+index b63b6a2..a2e0cc0 100644
+--- a/arch/arm/boot/dts/imx6q-icore-rqs.dts
++++ b/arch/arm/boot/dts/imx6q-icore-rqs.dts
+@@ -14,6 +14,12 @@
+ / {
+ 	model = "Engicam i.CoreM6 Quad/Dual qseven SOM";
+ 	compatible = "fsl,imx6-icore-rqs", "fsl,imx6q";
++	
++	aliases {
++		mmc1 = &usdhc4;
++		mmc0 = &usdhc3;
++		mmc2 = &usdhc1;
++	};
+ };
+ 
+ &ldb {
+diff --git a/arch/arm/boot/dts/imx6qdl-icore.dtsi b/arch/arm/boot/dts/imx6qdl-icore.dtsi
+index 5df05d3..2faac2a 100644
+--- a/arch/arm/boot/dts/imx6qdl-icore.dtsi
++++ b/arch/arm/boot/dts/imx6qdl-icore.dtsi
+@@ -301,12 +301,6 @@
+ 	status = "okay";
+ };
+ 
+-&uart1 {
+-	pinctrl-names = "default";
+-	pinctrl-0 = <&pinctrl_uart1_2>;
+-	status = "okay";
+-};
+-
+ &uart2 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_uart2_1>;
+-- 
+1.7.9.5
+

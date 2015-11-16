@@ -1,0 +1,32 @@
+From 652fb3285f22a0dfc0a74d7247fed8ed830ee4d1 Mon Sep 17 00:00:00 2001
+From: "matteo.lisi" <matteo.lisi@engicam.com>
+Date: Tue, 10 Nov 2015 17:00:34 +0100
+Subject: [PATCH] add ttymxc1 rs232 settings
+
+---
+ arch/arm/boot/dts/imx6ul-gea.dts | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm/boot/dts/imx6ul-gea.dts b/arch/arm/boot/dts/imx6ul-gea.dts
+index 7eb4305..f8bd320 100644
+--- a/arch/arm/boot/dts/imx6ul-gea.dts
++++ b/arch/arm/boot/dts/imx6ul-gea.dts
+@@ -286,13 +286,14 @@
+ &uart2 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_uart2>;
+-	fsl,uart-has-rtscts;
++	//fsl,uart-has-rtscts;
+ 	/* for DTE mode, add below change */
+ 	/* fsl,dte-mode; */
+ 	/* pinctrl-0 = <&pinctrl_uart2dte>; */
+ 	status = "okay";
+ };
+ 
++
+ &usbotg1 {
+ 	dr_mode = "peripheral";
+ 	status = "okay";
+-- 
+1.9.1
+

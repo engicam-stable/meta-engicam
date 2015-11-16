@@ -1,0 +1,4 @@
+1.00 prima release
+1.01 
+1.02 supporto ubi
+1.03 compatibilità con ltib e sistemato RQSq7

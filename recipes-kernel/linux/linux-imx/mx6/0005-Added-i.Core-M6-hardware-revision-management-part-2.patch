@@ -1,0 +1,47 @@
+From 193ceecfb6aa3b063db1fd35efbd5deb6603c548 Mon Sep 17 00:00:00 2001
+From: Your Name <Your Email>
+Date: Mon, 5 Oct 2015 17:26:32 +0200
+Subject: [PATCH 05/27] Added-i.Core-M6-hardware-revision-management-part-2
+
+---
+ arch/arm/boot/dts/imx6qdl-icore.dtsi |    2 +-
+ arch/arm/mach-imx/mach-imx6q.c       |   10 +++++-----
+ 2 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/arch/arm/boot/dts/imx6qdl-icore.dtsi b/arch/arm/boot/dts/imx6qdl-icore.dtsi
+index ed7c1d3..ab08209 100644
+--- a/arch/arm/boot/dts/imx6qdl-icore.dtsi
++++ b/arch/arm/boot/dts/imx6qdl-icore.dtsi
+@@ -375,7 +375,7 @@
+ 	vbus-supply = <&reg_usb_otg_vbus>;
+ 	pinctrl-names = "default", "rev_c";
+ 	pinctrl-0 = <&pinctrl_usbotg_2>;
+-	pinctrl-0 = <&pinctrl_usbotg_3>;
++	pinctrl-1 = <&pinctrl_usbotg_3>;
+ 	disable-over-current;
+ 	ver-gpios = <&gpio7 2 0>;
+ 	status = "okay";
+diff --git a/arch/arm/mach-imx/mach-imx6q.c b/arch/arm/mach-imx/mach-imx6q.c
+index a1f28f2..3c1535c 100644
+--- a/arch/arm/mach-imx/mach-imx6q.c
++++ b/arch/arm/mach-imx/mach-imx6q.c
+@@ -641,11 +641,11 @@ static void __init imx6q_init_late(void)
+ 		|| of_machine_is_compatible("fsl,imx6dl-sabreauto"))
+ 		imx6q_flexcan_fixup_auto();
+ 
+-+
+-+		if (of_machine_is_compatible("fsl,imx6-icore")) {
+-+			icore_late_init();
+-+	}
+-+
++
++		if (of_machine_is_compatible("fsl,imx6-icore")) {
++			icore_late_init();
++	}
++
+ }
+ 
+ static void __init imx6q_map_io(void)
+-- 
+1.7.9.5
+

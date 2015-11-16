@@ -1,0 +1,92 @@
+From e653e452e0262c024d145494bed452cd55bfa908 Mon Sep 17 00:00:00 2001
+From: Your Name <Your Email>
+Date: Tue, 6 Oct 2015 12:22:10 +0200
+Subject: [PATCH 16/27] rqs-support-improvment
+
+---
+ arch/arm/mach-imx/mach-imx6q.c |   35 +++--------------------------------
+ 1 file changed, 3 insertions(+), 32 deletions(-)
+
+diff --git a/arch/arm/mach-imx/mach-imx6q.c b/arch/arm/mach-imx/mach-imx6q.c
+index 62028fb..8e08313 100644
+--- a/arch/arm/mach-imx/mach-imx6q.c
++++ b/arch/arm/mach-imx/mach-imx6q.c
+@@ -615,7 +615,6 @@ static void __init icore_late_init(void)
+ 	int icore_ver_gpio;
+ 
+ 	np = of_find_node_by_path("/soc/aips-bus@02100000/usb@02184000");
+-//	np = of_find_compatible_node(NULL, NULL, "fsl,imx6q-usb");
+ 	pdev = of_find_device_by_node(np);
+ 	if (!pdev) {
+ 		pr_err("%s: can't find usb otg device\n", __func__);
+@@ -629,7 +628,7 @@ static void __init icore_late_init(void)
+ 		!gpio_request_one(icore_ver_gpio, GPIOF_DIR_IN, "icore_ver_gpio")) {
+ 		if(gpio_get_value(icore_ver_gpio))
+ 		{
+-			printk("i.Core RQS revision -\n");
++			printk("iCore SODIMM revision -\n");
+ 			pctl = pinctrl_get_select(&pdev->dev, "rev_c"); 
+ 			if (IS_ERR(pctl)) {
+ 				pr_err("%s: can't get pinctrl state\n", __func__);
+@@ -637,7 +636,7 @@ static void __init icore_late_init(void)
+ 			}
+ 		}		
+ 		else
+-			printk("i.Core RQS revision A or higher\n");
++			printk("iCore SODIMM revision A or higher\n");
+ 	}
+ 	else
+ 		goto put_node;	
+@@ -653,7 +652,7 @@ static void __init icore_rqs_late_init(void)
+ 	struct platform_device *pdev;
+ 	struct clk *lvds2_sel, *osc, *lvds2_out;
+ 
+-	printk("uQseven i.Core-rqs module\n");
++	printk("uQseven iCoreRQS module\n");
+ 
+ 	printk("Init clock for USB HUB on RQS....");
+ 	lvds2_sel = clk_get_sys(NULL, "lvds2_sel");
+@@ -671,40 +670,12 @@ static void __init icore_rqs_late_init(void)
+ 	printk("Done\n");
+ 
+ 	np = of_find_node_by_path("/soc/aips-bus@02100000/usb@02184000");
+-//	np = of_find_compatible_node(NULL, NULL, "fsl,imx6q-usb");
+ 	pdev = of_find_device_by_node(np);
+ 	if (!pdev) {
+ 		pr_err("%s: can't find usb otg device\n", __func__);
+ 		goto put_node;
+ 	}
+ 
+-
+-	if(1)
+-	{
+-	}
+-
+-#ifdef TOLTO_RQS
+-	int icore_ver_gpio;
+-	icore_ver_gpio = of_get_named_gpio(np, "ver-gpios", 0);
+-
+-	if (gpio_is_valid(icore_ver_gpio) &&
+-		!gpio_request_one(icore_ver_gpio, GPIOF_DIR_IN, "icore_ver_gpio")) {
+-		if(gpio_get_value(icore_ver_gpio))
+-		{
+-			struct pinctrl *pctl;
+-			printk("i.Core revision C or older\n");
+-			pctl = pinctrl_get_select(&pdev->dev, "rev_c"); 
+-			if (IS_ERR(pctl)) {
+-				pr_err("%s: can't get pinctrl state\n", __func__);
+-				goto put_node;
+-			}
+-		}		
+-		else
+-			printk("i.Core revision D or higher\n");
+-	}
+-	else
+-		goto put_node;	
+-#endif
+ put_node:
+ 	of_node_put(np);
+ 
+-- 
+1.7.9.5
+

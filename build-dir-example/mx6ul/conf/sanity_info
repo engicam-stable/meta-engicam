@@ -1,0 +1,3 @@
+SANITY_VERSION 1
+TMPDIR /media/matteo/rootfsext/yoctoext/fido/fsl-release-bsp/testul/tmp
+SSTATE_DIR /media/matteo/rootfsext/yoctoext/fido/fsl-release-bsp/testul/sstate-cache

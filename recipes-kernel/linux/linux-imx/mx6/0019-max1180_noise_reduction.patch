@@ -1,0 +1,576 @@
+From 1d1fbf40caa7c51d018429583bf1c7a686492cac Mon Sep 17 00:00:00 2001
+From: Your Name <Your Email>
+Date: Tue, 6 Oct 2015 12:33:10 +0200
+Subject: [PATCH 19/27] max1180_noise_reduction
+
+---
+ arch/arm/boot/dts/Makefile.rej          |   11 +++
+ arch/arm/boot/dts/imx6dl-icore.dts      |    5 --
+ arch/arm/boot/dts/imx6dl-ofcap.dts      |  131 ++++++++++++++++++++++++++++++
+ arch/arm/boot/dts/imx6dl-ofres.dts      |   32 +++++++-
+ arch/arm/boot/dts/imx6q-icore.dts       |    6 --
+ arch/arm/boot/dts/imx6q-ofcap.dts       |  133 +++++++++++++++++++++++++++++++
+ arch/arm/boot/dts/imx6q-ofres.dts       |   33 +++++++-
+ drivers/input/touchscreen/Kconfig       |   13 +++
+ drivers/input/touchscreen/max11801_ts.c |   62 ++++++++++++--
+ 9 files changed, 405 insertions(+), 21 deletions(-)
+ create mode 100644 arch/arm/boot/dts/Makefile.rej
+ create mode 100644 arch/arm/boot/dts/imx6dl-ofcap.dts
+ create mode 100644 arch/arm/boot/dts/imx6q-ofcap.dts
+
+diff --git a/arch/arm/boot/dts/Makefile.rej b/arch/arm/boot/dts/Makefile.rej
+new file mode 100644
+index 0000000..714b051
+--- /dev/null
++++ b/arch/arm/boot/dts/Makefile.rej
+@@ -0,0 +1,11 @@
++--- arch/arm/boot/dts/Makefile
+++++ arch/arm/boot/dts/Makefile
++@@ -119,6 +119,8 @@
++ 	imx6q-icore.dtb \
++ 	imx6dl-ofres.dtb \
++ 	imx6q-ofres.dtb \
+++	imx6dl-ofcap.dtb \
+++	imx6q-ofcap.dtb \
++ 	imx6dl-sabreauto.dtb \
++ 	imx6dl-sabreauto-ecspi.dtb \
++ 	imx6dl-sabreauto-flexcan1.dtb \
+diff --git a/arch/arm/boot/dts/imx6dl-icore.dts b/arch/arm/boot/dts/imx6dl-icore.dts
+index da4e730..439cc5d 100644
+--- a/arch/arm/boot/dts/imx6dl-icore.dts
++++ b/arch/arm/boot/dts/imx6dl-icore.dts
+@@ -97,11 +97,6 @@
+ 		mclk_source = <0>;
+ 		cvbs = <1>;
+ 	};
+-	
+-	pcf8563: rtc@51 {
+-		compatible = "pcf8563";
+-		reg = <0x51>;
+-	};
+ };
+ 
+ &iomuxc {
+diff --git a/arch/arm/boot/dts/imx6dl-ofcap.dts b/arch/arm/boot/dts/imx6dl-ofcap.dts
+new file mode 100644
+index 0000000..2a9b36e
+--- /dev/null
++++ b/arch/arm/boot/dts/imx6dl-ofcap.dts
+@@ -0,0 +1,131 @@
++/*
++ * Copyright (C) 2013 Freescale Semiconductor, Inc.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++/dts-v1/;
++
++#include "imx6dl.dtsi"
++#include "imx6qdl-icore.dtsi"
++
++/ {
++	model = "Engicam i.CoreM6 DualLite/Solo starterkit";
++	compatible = "fsl,imx6-icore", "fsl,imx6dl";
++};
++
++&ldb {
++	ipu_id = <0>;
++	sec_ipu_id = <0>;
++};
++
++&mxcfb1 {
++	status = "okay";
++};
++
++&mxcfb2 {
++	status = "okay";
++};
++
++/* To be enabled for PCI peripheral.
++   Please enable also the PCI support kernel options:
++   CONFIG_PCI and PCI_IMX6
++&pcie {
++	status = "okay";
++};
++*/
++
++&i2c1 {
++
++	max11801@48 {
++		compatible = "maxim,max11801";
++		reg = <0x48>;
++		interrupt-parent = <&gpio3>;
++		interrupts = <31 2>;
++		work-mode = <0>;/*DCM mode*/
++	};
++
++};
++
++&i2c2 {
++
++	hdmi: edid@50 {
++		compatible = "fsl,imx6-hdmi-i2c";
++		reg = <0x50>;
++	};
++
++};
++
++
++&i2c3 {
++
++	codec: sgtl5000@0a {
++		compatible = "fsl,sgtl5000";
++		reg = <0x0a>;
++		clocks = <&clks 201>;
++		VDDA-supply = <&reg_2p5v>;
++		VDDIO-supply = <&reg_3p3v>;
++		VDDD-supply = <&reg_1p8v>;
++	};
++
++	polytouch: edt-ft5x06@38 {
++		compatible = "edt,edt-ft5406";
++		reg = <0x38>;
++		pinctrl-names = "default";		
++		pinctrl-0 = <&pinctrl_edt_ft5x06>;
++		interrupt-parent = <&gpio5>;
++		interrupts = <30 0>;	
++		reset-gpios = <&gpio6 0 1>;
++	};
++
++	adv7180: adv7180@21 {
++		compatible = "adv,adv7180";
++		reg = <0x21>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_ipu1_6>;
++		clocks = <&clks 201>;
++		clock-names = "csi_mclk";
++		DOVDD-supply = <&reg_3p3v>; /* 3.3v, enabled via 2.8 VGEN6 */
++		AVDD-supply = <&reg_3p3v>;  /* 1.8v */
++		DVDD-supply = <&reg_3p3v>;  /* 1.8v */
++		PVDD-supply = <&reg_3p3v>;  /* 1.8v */
++		pwn-gpios = <&gpio3 19 0>;  /* put on not used pin */
++		csi_id = <0>;
++		mclk = <24000000>;
++		mclk_source = <0>;
++		cvbs = <1>;
++	};
++	
++	pcf8563: rtc@51 {
++		compatible = "pcf8563";
++		reg = <0x51>;
++	};
++};
++
++&iomuxc {
++
++	pinctrl-assert-gpios = <&gpio1 2 GPIO_ACTIVE_HIGH>;
++	
++	hog {
++		pinctrl_hog: hoggrp {
++			fsl,pins = <
++				MX6QDL_PAD_GPIO_2__GPIO1_IO02 0x1f059
++				MX6QDL_PAD_EIM_D19__GPIO3_IO19 0x1f059 /* not used pin for ADV7180 driver compatibility */
++			>;
++		};
++	};
++};
++
++&iomuxc {
++	touchpanel{
++		pinctrl_edt_ft5x06:  edt-ft5x06grp  {
++			fsl,pins = <
++				MX6QDL_PAD_CSI0_DAT12__GPIO5_IO30 0x1b0b0 /*interrupt*/ 
++				MX6QDL_PAD_CSI0_DAT14__GPIO6_IO00 0x1b0b0 /*reset edt*/
++			>;
++		};
++	};
++};
++
+diff --git a/arch/arm/boot/dts/imx6dl-ofres.dts b/arch/arm/boot/dts/imx6dl-ofres.dts
+index 9d02885..e50ae42 100644
+--- a/arch/arm/boot/dts/imx6dl-ofres.dts
++++ b/arch/arm/boot/dts/imx6dl-ofres.dts
+@@ -9,7 +9,7 @@
+ /dts-v1/;
+ 
+ #include "imx6dl.dtsi"
+-#include "imx6qdl-ofres.dtsi"
++#include "imx6qdl-icore.dtsi"
+ 
+ / {
+ 	model = "Engicam i.CoreM6 DualLite/Solo resistive openframe";
+@@ -86,6 +86,20 @@
+ };
+ 
+ &iomuxc {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_lvds>;
++	lvdsreset-delay = <30>;
++	lvdsreset-pin = <&gpio6 0 GPIO_ACTIVE_LOW>;
++	lvds {
++		pinctrl_lvds: lvdsgrp {
++			fsl,pins = <
++				MX6QDL_PAD_CSI0_DAT14__GPIO6_IO00 0x1f059 // LVDS reset
++			>;
++		};
++	};
++};
++
++&iomuxc {
+ 	touchpanel{
+ 		pinctrl_edt_ft5x06:  edt-ft5x06grp  {
+ 			fsl,pins = <
+@@ -96,3 +110,19 @@
+ 	};
+ };
+ 
++&iomuxc {
++
++	pinctrl-assert-gpios = <&gpio1 2 GPIO_ACTIVE_HIGH>;
++	
++	hog {
++		pinctrl_hog: hoggrp {
++			fsl,pins = <
++				MX6QDL_PAD_CSI0_MCLK__GPIO5_IO19 0x1f059
++				MX6QDL_PAD_CSI0_PIXCLK__GPIO5_IO18 0x1f059
++				MX6QDL_PAD_CSI0_VSYNC__GPIO5_IO21 0x1f059
++				MX6QDL_PAD_CSI0_DAT19__GPIO6_IO05 0x1f059
++				MX6QDL_PAD_GPIO_2__GPIO1_IO02 0x1f059
++			>;
++		};
++	};
++};
+diff --git a/arch/arm/boot/dts/imx6q-icore.dts b/arch/arm/boot/dts/imx6q-icore.dts
+index 6c00d5e..9a7e8f3 100644
+--- a/arch/arm/boot/dts/imx6q-icore.dts
++++ b/arch/arm/boot/dts/imx6q-icore.dts
+@@ -107,12 +107,6 @@
+ 		mclk_source = <0>;
+ 		cvbs = <1>;
+ 	};
+-	
+-	pcf8563: rtc@51 {
+-		compatible = "pcf8563";
+-		reg = <0x51>;
+-	};
+-
+ };
+ 
+ &iomuxc {
+diff --git a/arch/arm/boot/dts/imx6q-ofcap.dts b/arch/arm/boot/dts/imx6q-ofcap.dts
+new file mode 100644
+index 0000000..1560af0
+--- /dev/null
++++ b/arch/arm/boot/dts/imx6q-ofcap.dts
+@@ -0,0 +1,133 @@
++/*
++ * Copyright (C) 2013 Freescale Semiconductor, Inc.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++/dts-v1/;
++
++#include "imx6q.dtsi"
++#include "imx6qdl-icore.dtsi"
++
++/ {
++	model = "Engicam i.CoreM6 Quad/Dual starterkit";
++	compatible = "fsl,imx6-icore", "fsl,imx6q";
++};
++
++&ldb {
++	ipu_id = <0>;
++	sec_ipu_id = <0>;
++};
++
++&mxcfb1 {
++	status = "okay";
++};
++
++&mxcfb2 {
++	status = "okay";
++};
++
++&sata {
++	status = "okay";
++};
++
++/* To be enabled for PCI peripheral.
++   Please enable also the PCI support kernel options:
++   CONFIG_PCI and PCI_IMX6
++&pcie {
++	status = "okay";
++};
++*/
++
++&i2c1 {
++
++	max11801@48 {
++		compatible = "maxim,max11801";
++		reg = <0x48>;
++		interrupt-parent = <&gpio3>;
++		interrupts = <31 2>;
++		work-mode = <0>;/*DCM mode*/
++	};
++
++};
++
++&i2c2 {
++
++	hdmi: edid@50 {
++		compatible = "fsl,imx6-hdmi-i2c";
++		reg = <0x50>;
++	};
++};
++
++ &i2c3 {
++
++	codec: sgtl5000@0a {
++		compatible = "fsl,sgtl5000";
++		reg = <0x0a>;
++		clocks = <&clks 201>;
++		VDDA-supply = <&reg_2p5v>;
++		VDDIO-supply = <&reg_3p3v>;
++		VDDD-supply = <&reg_1p8v>;
++	};
++
++	polytouch: edt-ft5x06@38 {
++		compatible = "edt,edt-ft5406";
++		reg = <0x38>;
++		pinctrl-names = "default";		
++		pinctrl-0 = <&pinctrl_edt_ft5x06>;
++		interrupt-parent = <&gpio5>;
++		interrupts = <30 0>;	
++		reset-gpios = <&gpio6 0 1>;
++	};
++
++	adv7180: adv7180@21 {
++		compatible = "adv,adv7180";
++		reg = <0x21>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_ipu1_6>;
++		clocks = <&clks 201>;
++		clock-names = "csi_mclk";
++		DOVDD-supply = <&reg_3p3v>; /* 3.3v, enabled via 2.8 VGEN6 */
++		AVDD-supply = <&reg_3p3v>;  /* 1.8v */
++		DVDD-supply = <&reg_3p3v>;  /* 1.8v */
++		PVDD-supply = <&reg_3p3v>;  /* 1.8v */
++		pwn-gpios = <&gpio3 19 0>;  /* put on not used pin */
++		csi_id = <0>;
++		mclk = <24000000>;
++		mclk_source = <0>;
++		cvbs = <1>;
++	};
++	
++	pcf8563: rtc@51 {
++		compatible = "pcf8563";
++		reg = <0x51>;
++	};
++
++};
++
++&iomuxc {
++
++	pinctrl-assert-gpios = <&gpio1 2 GPIO_ACTIVE_HIGH>;
++	
++	hog {
++		pinctrl_hog: hoggrp {
++			fsl,pins = <
++				MX6QDL_PAD_GPIO_2__GPIO1_IO02 0x1f059
++				MX6QDL_PAD_EIM_D19__GPIO3_IO19 0x1f059 /* not used pin for ADV7180 driver compatibility */
++			>;
++		};
++	};
++};
++
++&iomuxc {
++	touchpanel{
++		pinctrl_edt_ft5x06:  edt-ft5x06grp  {
++			fsl,pins = <
++				MX6QDL_PAD_CSI0_DAT12__GPIO5_IO30 0x1b0b0 /*interrupt*/ 
++				MX6QDL_PAD_CSI0_DAT14__GPIO6_IO00 0x1b0b0 /*reset edt*/
++			>;
++		};
++	};
++};
+diff --git a/arch/arm/boot/dts/imx6q-ofres.dts b/arch/arm/boot/dts/imx6q-ofres.dts
+index 08dd6ed..a9303d9 100644
+--- a/arch/arm/boot/dts/imx6q-ofres.dts
++++ b/arch/arm/boot/dts/imx6q-ofres.dts
+@@ -9,7 +9,7 @@
+ /dts-v1/;
+ 
+ #include "imx6q.dtsi"
+-#include "imx6qdl-ofres.dtsi"
++#include "imx6qdl-icore.dtsi"
+ 
+ / {
+ 	model = "Engicam i.CoreM6 Quad/Dual resistive openframe";
+@@ -89,6 +89,20 @@
+ };
+ 
+ &iomuxc {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_lvds>;
++	lvdsreset-delay = <30>;
++	lvdsreset-pin = <&gpio6 0 GPIO_ACTIVE_LOW>;
++	lvds {
++		pinctrl_lvds: lvdsgrp {
++			fsl,pins = <
++				MX6QDL_PAD_CSI0_DAT14__GPIO6_IO00 0x1f059 // LVDS reset
++			>;
++		};
++	};
++};
++
++&iomuxc {
+ 	touchpanel{
+ 		pinctrl_edt_ft5x06:  edt-ft5x06grp  {
+ 			fsl,pins = <
+@@ -98,3 +112,20 @@
+ 		};
+ 	};
+ };
++
++&iomuxc {
++
++	pinctrl-assert-gpios = <&gpio1 2 GPIO_ACTIVE_HIGH>;
++	
++	hog {
++		pinctrl_hog: hoggrp {
++			fsl,pins = <
++				MX6QDL_PAD_CSI0_MCLK__GPIO5_IO19 0x1f059
++				MX6QDL_PAD_CSI0_PIXCLK__GPIO5_IO18 0x1f059
++				MX6QDL_PAD_CSI0_VSYNC__GPIO5_IO21 0x1f059
++				MX6QDL_PAD_CSI0_DAT19__GPIO6_IO05 0x1f059
++				MX6QDL_PAD_GPIO_2__GPIO1_IO02 0x1f059
++			>;
++		};
++	};
++};
+diff --git a/drivers/input/touchscreen/Kconfig b/drivers/input/touchscreen/Kconfig
+index e013025..432083e 100644
+--- a/drivers/input/touchscreen/Kconfig
++++ b/drivers/input/touchscreen/Kconfig
+@@ -386,6 +386,19 @@ config TOUCHSCREEN_MAX11801
+ 
+ 	  To compile this driver as a module, choose M here: the
+ 	  module will be called max11801_ts.
++	  
++config ENGICAM_MAX1180_CUSTOM
++	bool "MAX11801 for Engicam board"
++	default Y
++	depends on TOUCHSCREEN_MAX11801
++	help
++	  Select this option for include Engicam custom driver improvment. This
++	  option is strictly recommended for big size LCD screen and resistive
++	  openframe board.
++	  
++	  If unsure, say Y.
++	  
++	  Deselect this option for using default driver configuration.
+ 
+ config TOUCHSCREEN_MCS5000
+ 	tristate "MELFAS MCS-5000 touchscreen"
+diff --git a/drivers/input/touchscreen/max11801_ts.c b/drivers/input/touchscreen/max11801_ts.c
+index d1a4f01..d82bfcb 100644
+--- a/drivers/input/touchscreen/max11801_ts.c
++++ b/drivers/input/touchscreen/max11801_ts.c
+@@ -43,8 +43,6 @@
+ #include <linux/of.h>
+ #include <linux/of_device.h>
+ 
+-#define ICORE6M_DRIVER_TS
+-
+ /* Register Address define */
+ #define GENERNAL_STATUS_REG		0x00
+ #define GENERNAL_CONF_REG		0x01
+@@ -179,6 +177,14 @@ static int max11801_write_reg(struct i2c_client *client, int addr, int data)
+ 
+ static int px, py;
+ 
++#ifdef CONFIG_ENGICAM_MAX1180_CUSTOM
++  #define NSAMPLE 10
++  static int data_x[NSAMPLE];
++  static int data_y[NSAMPLE];
++  static int sample_count=0;
++  static int ii=0;
++#endif
++
+ static irqreturn_t max11801_ts_interrupt(int irq, void *dev_id)
+ {
+ 	struct max11801_data *data = dev_id;
+@@ -252,19 +258,59 @@ static irqreturn_t max11801_ts_interrupt(int irq, void *dev_id)
+ 		case EVENT_INIT:
+ 			/* fall through */
+ 		case EVENT_MIDDLE:
+-			input_report_abs(data->input_dev, ABS_X, x);
+ 			y = MAX11801_MAX_Y - y;	/* Calibration */
+-			input_report_abs(data->input_dev, ABS_Y, y);
+-			input_report_abs(data->input_dev, ABS_PRESSURE, 1);
+-			input_sync(data->input_dev);
+-			px=x;
+-			py=y;
++			#ifdef CONFIG_ENGICAM_MAX1180_CUSTOM
++			  if (sample_count>1)
++			  {
++				  memcpy(data_x,&data_x[1],sizeof(data_x[0])*(NSAMPLE-1));
++				  memcpy(data_y,&data_y[1],sizeof(data_x[0])*(NSAMPLE-1));
++				  data_x[NSAMPLE-1]=x;
++				  data_y[NSAMPLE-1]=y;
++				  x=0;
++				  y=0;
++				  for(ii=0;ii<NSAMPLE;ii++)
++				  {
++				    x+=data_x[ii];
++				    y+=data_y[ii];
++				  }
++				  x/=NSAMPLE;
++				  y/=NSAMPLE;
++				  px=x;
++				  py=y;
++				  input_report_abs(data->input_dev, ABS_X, x);
++				  input_report_abs(data->input_dev, ABS_Y, y);
++				  input_report_abs(data->input_dev, ABS_PRESSURE, 1);
++				  input_sync(data->input_dev);				
++			  }
++			  else
++			  {
++				  if(sample_count)
++				  {
++					  for(ii=0;ii<NSAMPLE;ii++)
++					  {
++						  data_x[ii]=x;
++						  data_y[ii]=y;
++					  }
++				  }
++				  sample_count++;
++			  }
++			#else
++			  input_report_abs(data->input_dev, ABS_X, x);
++			  input_report_abs(data->input_dev, ABS_Y, y);
++			  input_report_abs(data->input_dev, ABS_PRESSURE, 1);
++			  input_sync(data->input_dev);
++			  px=x;
++			  py=y;
++			#endif
+ 			break;
+ 		case EVENT_RELEASE:
+ 			input_report_abs(data->input_dev, ABS_X, px);
+ 			input_report_abs(data->input_dev, ABS_Y, py);
+ 			input_report_abs(data->input_dev, ABS_PRESSURE, 0);
+ 			input_sync(data->input_dev);
++			#ifdef CONFIG_ENGICAM_MAX1180_CUSTOM
++			sample_count=0;
++			#endif
+ 			break;
+ 		case EVENT_FIFO_END:
+ 				break;
+-- 
+1.7.9.5
+

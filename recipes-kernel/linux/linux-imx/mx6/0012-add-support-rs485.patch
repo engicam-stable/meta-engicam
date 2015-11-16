@@ -1,0 +1,272 @@
+From dda739293890a604a0477a167ef7a8e422c42031 Mon Sep 17 00:00:00 2001
+From: Your Name <Your Email>
+Date: Tue, 6 Oct 2015 12:05:13 +0200
+Subject: [PATCH 12/27] add-support-rs485
+
+---
+ arch/arm/boot/dts/imx6qdl-icore.dtsi |    4 +
+ drivers/tty/serial/imx.c             |  161 +++++++++++++++++++++++++++++++++-
+ include/uapi/linux/serial.h          |    2 +
+ 3 files changed, 166 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm/boot/dts/imx6qdl-icore.dtsi b/arch/arm/boot/dts/imx6qdl-icore.dtsi
+index b8101ca..5df05d3 100644
+--- a/arch/arm/boot/dts/imx6qdl-icore.dtsi
++++ b/arch/arm/boot/dts/imx6qdl-icore.dtsi
+@@ -316,6 +316,10 @@
+ &uart3 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_uart3_2>;
++        fsl,uart-has-rtscts;
++	uart-rs485-mode;
++        rs485-rts-delay = <0 150>;
++	rs485_rts_enable = <&gpio3 23 GPIO_ACTIVE_LOW>;
+ 	status = "okay";
+ };
+ 
+diff --git a/drivers/tty/serial/imx.c b/drivers/tty/serial/imx.c
+index e75e298..04f5d81 100644
+--- a/drivers/tty/serial/imx.c
++++ b/drivers/tty/serial/imx.c
+@@ -49,6 +49,7 @@
+ #include <linux/of_device.h>
+ #include <linux/io.h>
+ #include <linux/dma-mapping.h>
++#include <linux/of_gpio.h>
+ 
+ #include <asm/irq.h>
+ #include <linux/platform_data/serial-imx.h>
+@@ -186,7 +187,7 @@
+ 
+ #define DRIVER_NAME "IMX-uart"
+ 
+-#define UART_NR 8
++#define UART_NR 5
+ #define IMX_RXBD_NUM 20
+ #define IMX_MODULE_MAX_CLK_RATE	80000000
+ 
+@@ -234,6 +235,7 @@ struct imx_port {
+ 	struct clk		*clk_ipg;
+ 	struct clk		*clk_per;
+ 	const struct imx_uart_data *devdata;
++	struct serial_rs485	rs485;		/* rs485 settings */
+ 
+ 	/* DMA fields */
+ 	unsigned int		dma_is_inited:1;
+@@ -304,6 +306,16 @@ static struct of_device_id imx_uart_dt_ids[] = {
+ };
+ MODULE_DEVICE_TABLE(of, imx_uart_dt_ids);
+ 
++/* Address to all device node for access in the device tree */
++static char *device_tree_port_nodes[UART_NR]=
++{
++	"/soc/aips-bus@02100000/serial@02020000",	// uart1
++	"/soc/aips-bus@02100000/serial@021e8000", 	// uart2
++	"/soc/aips-bus@02100000/serial@021ec000", 	// uart3
++	"/soc/aips-bus@02100000/serial@021f0000",	// uart4
++	"/soc/aips-bus@02100000/serial@021f4000"	// uart5
++}; 
++
+ static inline unsigned uts_reg(struct imx_port *sport)
+ {
+ 	return sport->devdata->uts_reg;
+@@ -323,6 +335,125 @@ static inline int is_imx6q_uart(struct imx_port *sport)
+ {
+ 	return sport->devdata->devtype == IMX6Q_UART;
+ }
++
++static inline struct imx_port * to_imx_port(struct uart_port *uart)
++{
++	return container_of(uart, struct imx_port, port);
++}
++
++static void imx_rs485_stop_tx(struct imx_port *imx_uart_port)
++{
++	if(gpio_is_valid(imx_uart_port->rs485.padding[0]))
++	{
++		udelay(imx_uart_port->rs485.delay_rts_after_send);
++		gpio_direction_output(imx_uart_port->rs485.padding[0], 0);	
++	}
++}
++
++static void imx_rs485_start_tx(struct imx_port *imx_uart_port)
++{
++	if(gpio_is_valid(imx_uart_port->rs485.padding[0]))
++	{
++		udelay(imx_uart_port->rs485.delay_rts_before_send);
++		gpio_direction_output(imx_uart_port->rs485.padding[0], 1);	
++	}
++}
++
++void imx_rs485_config(struct uart_port *port, struct serial_rs485 *rs485conf)
++{
++	struct imx_port *imx_uart_port = to_imx_port(port);
++
++	spin_lock(&port->lock);
++
++	imx_uart_port->rs485 = *rs485conf;
++	if (rs485conf->flags & SER_RS485_ENABLED) {
++		dev_dbg(port->dev,"RS485 is configured on /dev/ttymxc%d\n",port->line);
++		printk(KERN_NOTICE"RS485 is configured on /dev/ttymxc%d\n",port->line);
++		imx_rs485_stop_tx(imx_uart_port);
++
++	} else {
++		dev_dbg(port->dev, "RS485 configure error on /dev/ttymxc%d\n",port->line);
++		printk(KERN_NOTICE"RS485 configure error on /dev/ttymxc%d\n",port->line);
++	}
++	spin_unlock(&port->lock);
++
++}
++
++static void imx_rs485_config_port (struct uart_port *port)
++{
++	struct serial_rs485 rs485conf;
++	struct device_node *np = NULL;
++	struct platform_device *pdev = NULL;
++	u32 rs485_delay[2];
++
++	/* Load the resource from device tree */
++	np = of_find_node_by_path(device_tree_port_nodes[port->line]);
++	pdev = of_find_device_by_node(np);
++	rs485conf.padding[0] = of_get_named_gpio(np, "rs485_rts_enable", 0);
++	
++	/* Set RS485 mode: */
++	rs485conf.flags |= SER_RS485_ENABLED;
++
++	/* Set delays values from dts instead use default values */
++	if (of_property_read_u32_array(np, "rs485-rts-delay", rs485_delay, 2) == 0) 
++	{
++		rs485conf.delay_rts_before_send = rs485_delay[0];
++		rs485conf.delay_rts_after_send = rs485_delay[1];		
++	}
++	else
++	{
++		rs485conf.delay_rts_before_send = 0;
++		rs485conf.delay_rts_after_send = 50;
++	}
++
++	/* Set send enabled flags */
++	rs485conf.flags |= SER_RS485_RTS_BEFORE_SEND;
++	rs485conf.flags |= SER_RS485_RTS_AFTER_SEND;
++
++	/* Set the GPIO */
++	if(gpio_is_valid(rs485conf.padding[0]) && !gpio_request_one(rs485conf.padding[0] , GPIOF_DIR_OUT, "rs485_rts_enable") )
++	{
++		gpio_direction_output(rs485conf.padding[0], 0);		
++		rs485conf.padding[0] = rs485conf.padding[0];
++		imx_rs485_config(port, &rs485conf);
++	}
++	else
++	{
++		printk("Error configuring RS485\n");
++		rs485conf.padding[0] = 0;
++	}
++}
++
++
++static int imx_ioctl(struct uart_port *port,
++	unsigned int cmd,
++	unsigned long arg)
++{
++	struct serial_rs485 rs485conf;
++
++	switch (cmd) {
++	case TIOCSRS485:
++		if (copy_from_user(&rs485conf,
++			(struct serial_rs485 *) arg,
++			sizeof(rs485conf)))
++				return -EFAULT;
++		imx_rs485_config(port, &rs485conf);
++		break;
++
++	case TIOCGRS485:
++		if (copy_to_user((struct serial_rs485 *) arg,
++			&(to_imx_port(port)->rs485),
++			sizeof(rs485conf)))
++				return -EFAULT;
++		printk(KERN_NOTICE"Getting RS485 parameters for the device\n");
++		break;
++
++	default:
++		return -ENOIOCTLCMD;
++	}
++	return 0;
++}
++
+ /*
+  * Save and restore functions for UCR1, UCR2 and UCR3 registers
+  */
+@@ -607,6 +738,14 @@ static void imx_start_tx(struct uart_port *port)
+ 	struct imx_port *sport = (struct imx_port *)port;
+ 	unsigned long temp;
+ 
++	if(sport->rs485.flags & SER_RS485_ENABLED)
++	{
++		imx_rs485_start_tx(sport);
++		//transmit complete interrupt enable the receiver
++		temp = readl(sport->port.membase + UCR4);
++		writel(temp | UCR4_TCEN, sport->port.membase + UCR4);
++	}
++
+ 	if (USE_IRDA(sport)) {
+ 		/* half duplex in IrDA mode; have to disable receive mode */
+ 		temp = readl(sport->port.membase + UCR4);
+@@ -765,8 +904,24 @@ static irqreturn_t imx_int(int irq, void *dev_id)
+ 	struct imx_port *sport = dev_id;
+ 	unsigned int sts;
+ 	unsigned int sts2;
++	unsigned int cr4,sr2;
+ 
+ 	sts = readl(sport->port.membase + USR1);
++	sr2 = readl(sport->port.membase + USR2);
++	cr4 = readl(sport->port.membase + UCR4);
++
++	if(sport->rs485.flags & SER_RS485_ENABLED)
++	{
++		//if RS485 test if the transmit is complete
++		if((cr4 & UCR4_TCEN)&&(sr2 & USR2_TXDC))
++		{
++			unsigned long temp;
++			imx_rs485_stop_tx(sport);
++			//Transmit complete interrupt disabled
++			temp =readl(sport->port.membase + UCR4);
++			writel(temp & ~UCR4_TCEN, sport->port.membase + UCR4);
++		}
++	}
+ 
+ 	if ((sts & USR1_RRDY || sts & USR1_AGTIM) &&
+ 		!sport->dma_is_enabled) {
+@@ -1717,6 +1872,7 @@ static struct uart_ops imx_pops = {
+ 	.type		= imx_type,
+ 	.config_port	= imx_config_port,
+ 	.verify_port	= imx_verify_port,
++	.ioctl		= imx_ioctl,
+ #if defined(CONFIG_CONSOLE_POLL)
+ 	.poll_get_char  = imx_poll_get_char,
+ 	.poll_put_char  = imx_poll_put_char,
+@@ -2031,6 +2187,9 @@ static int serial_imx_probe_dt(struct imx_port *sport,
+ 	if (of_get_property(np, "fsl,dte-mode", NULL))
+ 		sport->dte_mode = 1;
+ 
++	if (of_get_property(np, "uart-rs485-mode", NULL))
++		imx_rs485_config_port ((struct uart_port *)sport);
++
+ 	sport->devdata = of_id->data;
+ 
+ 	return 0;
+diff --git a/include/uapi/linux/serial.h b/include/uapi/linux/serial.h
+index 5e0d0ed..175312b 100644
+--- a/include/uapi/linux/serial.h
++++ b/include/uapi/linux/serial.h
+@@ -116,6 +116,8 @@ struct serial_rs485 {
+ 							   sending */
+ #define SER_RS485_RTS_AFTER_SEND	(1 << 2)	/* Logical level for
+ 							   RTS pin after sent*/
++#define SER_RS485_RTS_BEFORE_SEND	(1 << 3)	/* Logical level for
++							   RTS pin before sent*/
+ #define SER_RS485_RX_DURING_TX		(1 << 4)
+ 	__u32	delay_rts_before_send;	/* Delay before send (milliseconds) */
+ 	__u32	delay_rts_after_send;	/* Delay after send (milliseconds) */
+-- 
+1.7.9.5
+

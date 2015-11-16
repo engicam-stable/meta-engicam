@@ -1,0 +1,50 @@
+From 98ea86caf2fda550ec222df6297d00c5c093f8a8 Mon Sep 17 00:00:00 2001
+From: Your Name <Your Email>
+Date: Wed, 2 Sep 2015 10:47:23 +0200
+Subject: [PATCH 4/5] only-sdhc1-configured-for-geam6ul
+
+---
+ board/engicam/geam6ul/geam6ul.c |    1 +
+ include/configs/geam6ul.h       |    6 +-----
+ 2 files changed, 2 insertions(+), 5 deletions(-)
+
+diff --git a/board/engicam/geam6ul/geam6ul.c b/board/engicam/geam6ul/geam6ul.c
+index bcbabd6..e25fe94 100644
+--- a/board/engicam/geam6ul/geam6ul.c
++++ b/board/engicam/geam6ul/geam6ul.c
+@@ -398,6 +398,7 @@ static void setup_iomux_uart(void)
+ }
+ 
+ #ifdef CONFIG_FSL_ESDHC
++/* defined only 1 SDHC in configs/geam64ul.h */ 
+ static struct fsl_esdhc_cfg usdhc_cfg[2] = {
+ 	{USDHC1_BASE_ADDR, 0, 1},
+ 	{USDHC2_BASE_ADDR, 0, 4},
+diff --git a/include/configs/geam6ul.h b/include/configs/geam6ul.h
+index 5f55723..948cc45 100644
+--- a/include/configs/geam6ul.h
++++ b/include/configs/geam6ul.h
+@@ -60,11 +60,7 @@
+ #define CONFIG_FSL_ESDHC
+ #define CONFIG_SYS_FSL_ESDHC_ADDR	USDHC2_BASE_ADDR
+ 
+-#ifdef CONFIG_SYS_USE_NAND
+ #define CONFIG_SYS_FSL_USDHC_NUM	1
+-#else
+-#define CONFIG_SYS_FSL_USDHC_NUM	2
+-#endif
+ 
+ #define CONFIG_MMC
+ #define CONFIG_CMD_MMC
+@@ -353,7 +349,7 @@
+ #define CONFIG_ENV_SIZE			CONFIG_ENV_SECT_SIZE
+ #endif
+ 
+-#define CONFIG_SYS_MMC_ENV_DEV		1   /* USDHC2 */
++#define CONFIG_SYS_MMC_ENV_DEV		0   /* USDHC2 */
+ #define CONFIG_SYS_MMC_ENV_PART		0	/* user area */
+ #define CONFIG_MMCROOT			"/dev/mmcblk1p2"  /* USDHC2 */
+ 
+-- 
+1.7.9.5
+

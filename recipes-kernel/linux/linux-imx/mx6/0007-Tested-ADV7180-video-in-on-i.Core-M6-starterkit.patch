@@ -1,0 +1,206 @@
+From 6c7e7aaf8f20cee2e4b03fffb53cb357e67a2015 Mon Sep 17 00:00:00 2001
+From: Your Name <Your Email>
+Date: Mon, 5 Oct 2015 18:07:43 +0200
+Subject: [PATCH 07/27] Tested-ADV7180-video-in-on-i.Core-M6-starterkit
+
+---
+ arch/arm/boot/dts/imx6dl-icore.dts           |   65 ++++++++++++++++++++++++++
+ arch/arm/boot/dts/imx6q-icore.dts            |    2 +-
+ arch/arm/mach-imx/mach-imx6q.c               |   43 ++++++++++++-----
+ drivers/media/platform/mxc/capture/adv7180.c |   22 +++++++++
+ 4 files changed, 120 insertions(+), 12 deletions(-)
+
+diff --git a/arch/arm/boot/dts/imx6dl-icore.dts b/arch/arm/boot/dts/imx6dl-icore.dts
+index 75d0eca..0fd3b57 100644
+--- a/arch/arm/boot/dts/imx6dl-icore.dts
++++ b/arch/arm/boot/dts/imx6dl-icore.dts
+@@ -29,3 +29,68 @@
+ 	status = "okay";
+ };
+ 
++
++&i2c1 {
++
++	max11801@48 {
++		compatible = "maxim,max11801";
++		reg = <0x48>;
++		interrupt-parent = <&gpio3>;
++		interrupts = <31 2>;
++		work-mode = <0>;/*DCM mode*/
++	};
++
++};
++
++&i2c2 {
++
++	hdmi: edid@50 {
++		compatible = "fsl,imx6-hdmi-i2c";
++		reg = <0x50>;
++	};
++
++};
++
++
++&i2c3 {
++
++	codec: sgtl5000@0a {
++		compatible = "fsl,sgtl5000";
++		reg = <0x0a>;
++		clocks = <&clks 201>;
++		VDDA-supply = <&reg_2p5v>;
++		VDDIO-supply = <&reg_3p3v>;
++	};
++
++
++	adv7180: adv7180@21 {
++		compatible = "adv,adv7180";
++		reg = <0x21>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_ipu1_6>;
++		clocks = <&clks 201>;
++		clock-names = "csi_mclk";
++		DOVDD-supply = <&reg_3p3v>; /* 3.3v, enabled via 2.8 VGEN6 */
++		AVDD-supply = <&reg_3p3v>;  /* 1.8v */
++		DVDD-supply = <&reg_3p3v>;  /* 1.8v */
++		PVDD-supply = <&reg_3p3v>;  /* 1.8v */
++		pwn-gpios = <&gpio3 19 0>;  /* put on not used pin */
++		csi_id = <0>;
++		mclk = <24000000>;
++		mclk_source = <0>;
++		cvbs = <1>;
++	};
++};
++
++&iomuxc {
++
++	hog {
++		pinctrl_hog: hoggrp {
++			fsl,pins = <
++				MX6QDL_PAD_GPIO_2__GPIO1_IO02 0x1f059
++				MX6QDL_PAD_EIM_D19__GPIO3_IO19 0x1f059 /* not used pin for ADV7180 driver compatibility */
++			>;
++		};
++	};
++};
++
+diff --git a/arch/arm/boot/dts/imx6q-icore.dts b/arch/arm/boot/dts/imx6q-icore.dts
+index 74b7148..1152cf3 100644
+--- a/arch/arm/boot/dts/imx6q-icore.dts
++++ b/arch/arm/boot/dts/imx6q-icore.dts
+@@ -66,7 +66,7 @@
+ 		compatible = "adv,adv7180";
+ 		reg = <0x21>;
+ 		pinctrl-names = "default";
+-		pinctrl-0 = <&pinctrl_ipu1_2>;
++		pinctrl-0 = <&pinctrl_ipu1_6>;
+ 		clocks = <&clks 201>;
+ 		clock-names = "csi_mclk";
+ 		DOVDD-supply = <&reg_3p3v>; /* 3.3v, enabled via 2.8 VGEN6 */
+diff --git a/arch/arm/mach-imx/mach-imx6q.c b/arch/arm/mach-imx/mach-imx6q.c
+index 3c1535c..54b0453 100644
+--- a/arch/arm/mach-imx/mach-imx6q.c
++++ b/arch/arm/mach-imx/mach-imx6q.c
+@@ -333,21 +333,42 @@ put_node:
+ 
+ static void __init imx6q_csi_mux_init(void)
+ {
+-	/*
+-	 * MX6Q SabreSD board:
+-	 * IPU1 CSI0 connects to parallel interface.
+-	 * Set GPR1 bit 19 to 0x1.
+-	 *
+-	 * MX6DL SabreSD board:
+-	 * IPU1 CSI0 connects to parallel interface.
+-	 * Set GPR13 bit 0-2 to 0x4.
+-	 * IPU1 CSI1 connects to MIPI CSI2 virtual channel 1.
+-	 * Set GPR13 bit 3-5 to 0x1.
+-	 */
+ 	struct regmap *gpr;
+ 
+ 	gpr = syscon_regmap_lookup_by_compatible("fsl,imx6q-iomuxc-gpr");
++
+ 	if (!IS_ERR(gpr)) {
++		/*
++		 * MX6Q i.Core board:
++		 * IPU1 CSI0 connects to parallel interface.
++		 * IPU2 CSI1 connects to parallel interface.
++		 * Set GPR1 bit 19 and 20 to 0x1.
++		 *
++		 * MX6DL SabreSD board:
++		 * IPU1 CSI0 connects to parallel interface.
++		 * Set GPR13 bit 0-2 to 0x4.
++		 * IPU1 CSI1 connects to parallel interface.
++		 * Set GPR13 bit 3-5 to 0x4.
++		 */
++		if (of_machine_is_compatible("fsl,imx6-icore"))
++		{
++			if(cpu_is_imx6q())
++				regmap_update_bits(gpr, IOMUXC_GPR1, 3 << 19, 3 << 19);
++			else
++				regmap_update_bits(gpr, IOMUXC_GPR13, 0x3F, 0x24);
++		}
++
++		/*
++		 * MX6Q SabreSD board:
++		 * IPU1 CSI0 connects to parallel interface.
++		 * Set GPR1 bit 19 to 0x1.
++		 *
++		 * MX6DL SabreSD board:
++		 * IPU1 CSI0 connects to parallel interface.
++		 * Set GPR13 bit 0-2 to 0x4.
++		 * IPU1 CSI1 connects to MIPI CSI2 virtual channel 1.
++		 * Set GPR13 bit 3-5 to 0x1.
++		 */
+ 		if (of_machine_is_compatible("fsl,imx6q-sabresd") ||
+ 			of_machine_is_compatible("fsl,imx6q-sabreauto"))
+ 			regmap_update_bits(gpr, IOMUXC_GPR1, 1 << 19, 1 << 19);
+diff --git a/drivers/media/platform/mxc/capture/adv7180.c b/drivers/media/platform/mxc/capture/adv7180.c
+index abd6159..b071a41 100644
+--- a/drivers/media/platform/mxc/capture/adv7180.c
++++ b/drivers/media/platform/mxc/capture/adv7180.c
+@@ -33,6 +33,18 @@
+ #include "v4l2-int-device.h"
+ #include "mxc_v4l2_capture.h"
+ 
++#undef dev_dbg
++#define dev_dbg(dev, format, arg...)		\
++	printk(format, ##arg)
++
++#undef dev_warn
++#define dev_warn(dev, format, arg...)		\
++	printk(format, ##arg)
++
++#undef dev_err
++#define dev_err(dev, format, arg...)		\
++	printk(format, ##arg)
++
+ #define ADV7180_VOLTAGE_ANALOG               1800000
+ #define ADV7180_VOLTAGE_DIGITAL_CORE         1800000
+ #define ADV7180_VOLTAGE_DIGITAL_IO           3300000
+@@ -934,6 +946,15 @@ static void adv7180_hard_reset(bool cvbs)
+ 		adv7180_write_reg(ADV7180_INPUT_CTL, 0x09);
+ 	}
+ 
++#define ENGICAM
++#ifdef ENGICAM
++	// setup decoder to output VSYNC
++	adv7180_write_reg(0x58, 0x01);
++
++	// ITU-R BT.656
++	adv7180_write_reg(0x04, 0x45);
++	adv7180_write_reg(0xF4, 0x3F);
++#else
+ 	/* Datasheet recommends */
+ 	adv7180_write_reg(0x01, 0xc8);
+ 	adv7180_write_reg(0x02, 0x04);
+@@ -1173,6 +1194,7 @@ static void adv7180_hard_reset(bool cvbs)
+ 	adv7180_write_reg(0xF9, 0x03);
+ 	adv7180_write_reg(0xFA, 0xFA);
+ 	adv7180_write_reg(0xFB, 0x40);
++#endif
+ }
+ 
+ /*! ADV7180 I2C attach function.
+-- 
+1.7.9.5
+

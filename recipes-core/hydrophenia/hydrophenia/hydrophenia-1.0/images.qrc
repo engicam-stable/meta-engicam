@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/img">
+        <file>img/vasca_uva.png</file>
+        <file>img/vasca_pomodori.png</file>
+        <file>img/vasca_mirtilli.png</file>
+        <file>img/vasca_fragole.png</file>
+        <file>img/base_vasche.png</file>
+        <file>img/base_home.png</file>
+        <file>img/trasparenza.png</file>
+        <file>img/settaggi_serra.png</file>
+        <file>img/fondo_vasche.png</file>
+        <file>img/icona_home_trasp.png</file>
+        <file>img/icona_temperatura.png</file>
+        <file>img/icona_umidita.png</file>
+    </qresource>
+</RCC>
