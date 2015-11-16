@@ -1,7 +1,0 @@
-setenv mtdids 'nand0=gpmi-nand'
-setenv mtdparts 'mtdparts=gpmi-nand:4m(boot),8m(kernel),1m(dtb),-(rootfs)'
-
-#uImage
-tftp ${loadaddr} uImage
-nand erase 0x00400000 0x00800000
-nand write ${loadaddr} 0x00400000 0x00800000
