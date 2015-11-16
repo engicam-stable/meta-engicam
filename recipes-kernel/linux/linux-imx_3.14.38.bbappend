@@ -5,6 +5,7 @@ SRC_URI_append_mx6ul += "file://0001-add-geam6ul-support.patch \
   			 file://0004-fix-backlight-settings-on-geam6ul.patch\
   			 file://0005-remove-power-key-form-geam6ul.patch \
   			 file://0006-add-ttymxc1-rs232-settings.patch \
+  			 file://0007-geam6ul-2nd-ethernet.patch \
 			 file://defconfig \
 "
 
