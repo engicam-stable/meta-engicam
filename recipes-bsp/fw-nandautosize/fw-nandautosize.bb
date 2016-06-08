@@ -13,3 +13,4 @@ do_install () {
 	install -d ${D}${sysconfdir}/rcS.d
 	install -m 0644 ${WORKDIR}/S98Fwgetsize.sh  ${D}${sysconfdir}/rcS.d/
 }
+

@@ -1,0 +1,11 @@
+
+# DEVICE TREE
+i.MX 6SoloX
+	imx6sx-icore.dts							-> Starter Kit
+	imx6sx-icore-icu-10.dts				-> ICU schermo 10'
+	imx6sx-icore-icu-123hsxga.dts	-> ICU schermo 12.3' (sogliola)
+	
+# U-BOOT
+Per gstreamer incrementare cma in bootargs
+i.MX 6SoloX		-> 160M
+i.MX 6Quad		-> 256M

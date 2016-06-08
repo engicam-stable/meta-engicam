@@ -1,0 +1,32 @@
+From b12525ff0918f58b18c3d6ca4b2b7fee1a780546 Mon Sep 17 00:00:00 2001
+From: Mirko Ardinghi <mirko.ardinghi@engicam.com>
+Date: Thu, 4 Feb 2016 17:57:07 +0100
+Subject: [PATCH] Added saving U-Boot environment on MMC
+
+---
+ include/configs/icore_mx6sx.h    | 9 ++++++---
+ 1 files changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/include/configs/icore_mx6sx.h b/include/configs/icore_mx6sx.h
+index 7a36490..448b28c 100644
+--- a/include/configs/icore_mx6sx.h
++++ b/include/configs/icore_mx6sx.h
+@@ -239,9 +239,12 @@
+ /* MP: #define CONFIG_ENV_IS_IN_SPI_FLASH */
+ #else
+ /* define CONFIG_SYS_USE_QSPI */  /* Enable the QSPI flash at default */
+-#define CONFIG_SYS_USE_NAND
+-/* #define CONFIG_ENV_IS_IN_MMC */
+-#define CONFIG_ENV_IS_IN_NAND
++#ifndef CONFIG_ENV_IS_IN_MMC 
++	#define CONFIG_ENV_IS_IN_NAND	
++#endif
++	#define CONFIG_SYS_USE_NAND
++	/* #define CONFIG_ENV_IS_IN_MMC */
++	
+ #endif
+ 
+ 
+-- 
+1.9.1
+

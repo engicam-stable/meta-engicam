@@ -5,28 +5,22 @@ LIC_FILES_CHKSUM = "file://${WORKDIR}/copyright;md5=3dd6192d306f582dee7687da3d87
 
 inherit allarch
 
-SRC_URI = "file://q7_tftp_sdcard.sh \
-	   file://q7_tftp_boot.sh \
-	   file://q7_tftp_kernel.sh \
-	   file://q7_tftp_boot_saveenv.sh \
-	   file://smarc_tftp_sdcard.sh \
-	   file://smarc_tftp_boot.sh \
-	   file://smarc_tftp_kernel.sh \
-	   file://smarc_tftp_boot_saveenv.sh \
+SRC_URI = "file://tftp_rqs_sdcard.sh \
+	   file://tftp_rqs_boot.sh \
+	   file://tftp_rqsdl_kernel.sh \
+	   file://tftp_rqsq_kernel.sh \
+	   file://tftp_rqs_fs.sh \
 	   file://copyright"
 
 
 
 do_install () {
 	install -d ${D}${bindir}
-	install -m 0755 ${WORKDIR}/q7_tftp_sdcard.sh ${D}${bindir}/q7_tftp_sdcard.sh
-	install -m 0755 ${WORKDIR}/q7_tftp_boot.sh ${D}${bindir}/q7_tftp_boot.sh 
-	install -m 0755 ${WORKDIR}/q7_tftp_kernel.sh ${D}${bindir}/q7_tftp_kernel.sh 
-	install -m 0755 ${WORKDIR}/q7_tftp_boot_saveenv.sh ${D}${bindir}/q7_tftp_boot_saveenv.sh
-	install -m 0755 ${WORKDIR}/smarc_tftp_boot.sh ${D}${bindir}/smarc_tftp_boot.sh 
-	install -m 0755 ${WORKDIR}/smarc_tftp_sdcard.sh ${D}${bindir}/smarc_tftp_sdcard.sh 
-	install -m 0755 ${WORKDIR}/smarc_tftp_kernel.sh ${D}${bindir}/smarc_tftp_kernel.sh 
-	install -m 0755 ${WORKDIR}/smarc_tftp_boot_saveenv.sh ${D}${bindir}/smarc_tftp_boot_saveenv.sh
+	install -m 0755 ${WORKDIR}/tftp_rqs_sdcard.sh ${D}${bindir}/tftp_rqs_sdcard.sh
+	install -m 0755 ${WORKDIR}/tftp_rqs_boot.sh ${D}${bindir}/tftp_rqs_boot.sh 
+	install -m 0755 ${WORKDIR}/tftp_rqsdl_kernel.sh ${D}${bindir}/tftp_rqsdl_kernel.sh 
+	install -m 0755 ${WORKDIR}/tftp_rqsq_kernel.sh ${D}${bindir}/tftp_rqsq_kernel.sh
+	install -m 0755 ${WORKDIR}/tftp_rqs_fs.sh ${D}${bindir}/tftp_rqs_fs.sh
 }
 
 

@@ -1,6 +1,11 @@
 if env | grep -q ^serverip=; then
 	echo "Download u-boot.imx wait a while..."
 	tftp -g -r u-boot.imx -l u-boot.imx $serverip
+	if [ $? -eq 1 ]; then
+      	    echo "TFTP Error check network config"
+	    exit
+           fi
+	
 	if [ -f u-boot.imx ]; then
 		fw_printenv > parametri.txt
 		cat parametri.txt | sed -e 's/=/ /' > convertito.txt

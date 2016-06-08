@@ -5,41 +5,27 @@ SECTION = "bootloader"
 DEPENDS = "mtd-utils"
 
 
-SRCBRANCH ??= "imx_v2015.04_3.14.38_6ul_ga"
+SRC_URI = "git://github.com/engicam-stable/u-boot-eng-2015.git;protocol=git"
 
-SRCREV = "5d63276bfebc82cffa10d66ddaa903dd2ab0df43"
-
-SRC_URI = "git://git.freescale.com/imx/uboot-imx.git;branch=${SRCBRANCH}"
+SRCREV = "2ba46af7415947a879f457a91088216e10dd849c"
 
 S = "${WORKDIR}/git"
 
 
 inherit fsl-u-boot-localversion
-
-LOCALVERSION ?= "-${SRCBRANCH}"
-
+ 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
-COMPATIBLE_MACHINE = "(mx6|mx6ul|mx7)"
+COMPATIBLE_MACHINE = "(mx6|mx6ul)"
 
-SRC_URI += "file://0001-Added-GEA-M6UL-support.patch"
-SRC_URI += "file://0002-geam6ul-enet0-tested.patch"
-SRC_URI += "file://0003-geam6ul-configured-audio-mclk-for-sgtl5000.patch"
-SRC_URI += "file://0004-only-sdhc1-configured-for-geam6ul.patch"
-SRC_URI += "file://0005-geam6ul_added_config_for_nand_and_sd.patch"
-SRC_URI += "file://0006-Added-i.Core-SoloX-support-EDIMM-and-SMARC.patch"
-SRC_URI += "file://0007-Added-icoreM6-edimm-som-support.patch"
-SRC_URI += "file://0008-fix-fdt_addr-for-imx6qdl-and-default-dtb-name.patch"
-SRC_URI += "file://0009-fix-icorem6-fdt-varable.patch"
-SRC_URI += "file://0010-custom-logo.patch"
-SRC_URI += "file://0011-add-UBIFS-command-to-geam6ul.patch"
+SRC_URI_append_mx6sx += "file://0001-Added-saving-U-Boot-environment-on-MMC-6SX.patch"
+
+SRC_URI_append_mx6sxm4 += "file://0002-M4-App-On-DDR.patch"
 
 S = "${WORKDIR}/git"
 
 INSANE_SKIP_${PN} = "already-stripped"
 EXTRA_OEMAKE_class-target = 'CROSS_COMPILE=${TARGET_PREFIX} CC="${CC} ${CFLAGS} ${LDFLAGS}" V=1'
 EXTRA_OEMAKE_class-cross = 'ARCH=${TARGET_ARCH} CC="${CC} ${CFLAGS} ${LDFLAGS}" V=1'
-
-
 
 inherit uboot-config
 

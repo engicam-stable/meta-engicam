@@ -1,9 +1,19 @@
 if env | grep -q ^serverip=; then
 	echo "Download uImage wait a while..."
 	tftp -g -r uImage -l uImage $serverip
+           if [ $? -eq 1 ]; then
+      	   echo "TFTP Error check network config"
+	   exit
+           fi
+
 	if [ -f uImage ]; then
 	 echo "Download uImage.dtb wait a while..."
 	 tftp -g -r uImage.dtb -l uImage.dtb $serverip
+	 if [ $? -eq 1 ]; then
+      	    echo "TFTP Error check network config"
+	    exit
+            fi
+
 	 if [ -f uImage.dtb ]; then
 
 		#kernel programming:

@@ -150,11 +150,28 @@ PARALLEL_MAKE = '-j $NCPU'
 
 DL_DIR ?= "\${BSPDIR}/downloads/"
 
-DISTRO_FEATURES_remove = "x11 wayland"
-
 UBOOT_CONFIG="sd"
 
+PACKAGECONFIG_append = " tslib "
+PACKAGECONFIG_append = " linuxfb "
+
 EOF
+
+if [ "$MACHINE" == "geam6ul" ]; then
+    cat >> conf/local.conf <<EOF
+IMAGE_ROOTFS_SIZE = "2097152"
+IMAGE_OVERHEAD_FACTOR = "1.0"
+DISTRO_FEATURES_remove = " x11 wayland opengl gl"
+STARTUPDEMO = "resistive"
+EOF
+else
+    cat >> conf/local.conf <<EOF
+IMAGE_ROOTFS_SIZE = "2097152"
+DISTRO_FEATURES_remove = " x11 wayland"
+STARTUPDEMO = "resistive"
+EOF
+fi
+
     # Change settings according environment
     sed -e "s,MACHINE ??=.*,MACHINE ??= '$MACHINE',g" \
         -e "s,SDKMACHINE ??=.*,SDKMACHINE ??= '$SDKMACHINE',g" \
@@ -176,8 +193,6 @@ fi
 # Handle EULA setting
 if [ -z "$EULA" ] && ! grep -q '^ACCEPT_FSL_EULA\s*=' conf/local.conf; then
     EULA='ask'
-else
-    EULA="1";
 fi
 
 if [ "$EULA" = "ask" ]; then

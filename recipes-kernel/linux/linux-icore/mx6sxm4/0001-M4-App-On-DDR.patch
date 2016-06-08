@@ -1,0 +1,169 @@
+From 98c378ecc0f5c7abec1ddca10755d573ae69dfab Mon Sep 17 00:00:00 2001
+From: Mirko Ardinghi <mirko.ardinghi@engicam.com>
+Date: Tue, 8 Mar 2016 11:52:10 +0100
+Subject: [PATCH] pingpong
+
+---
+ arch/arm/Kconfig                      |   1 -
+ arch/arm/Makefile                     |   2 +-
+ arch/arm/boot/dts/Makefile            |   1 +
+ arch/arm/boot/dts/imx6sx-icore-m4.dts | 101 ++++++++++++++++++++++++++++++++++
+ arch/arm/mach-imx/Makefile.boot       |   1 +
+ 5 files changed, 104 insertions(+), 2 deletions(-)
+ create mode 100644 arch/arm/boot/dts/imx6sx-icore-m4.dts
+ create mode 100644 arch/arm/mach-imx/Makefile.boot
+
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index af00d12..de2e2e2 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -308,7 +308,6 @@ config ARCH_MULTIPLATFORM
+ 	bool "Allow multiple platforms to be selected"
+ 	depends on MMU
+ 	select ARM_PATCH_PHYS_VIRT
+-	select AUTO_ZRELADDR
+ 	select COMMON_CLK
+ 	select MULTI_IRQ_HANDLER
+ 	select SPARSE_IRQ
+diff --git a/arch/arm/Makefile b/arch/arm/Makefile
+index 08a9ef5..d120806 100644
+--- a/arch/arm/Makefile
++++ b/arch/arm/Makefile
+@@ -235,7 +235,7 @@ else
+ MACHINE  :=
+ endif
+ ifeq ($(CONFIG_ARCH_MULTIPLATFORM),y)
+-MACHINE  :=
++MACHINE  := arch/arm/mach-imx
+ endif
+ 
+ machdirs := $(patsubst %,arch/arm/mach-%/,$(machine-y))
+diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+index 0d0143d..86b44d6 100644
+--- a/arch/arm/boot/dts/Makefile
++++ b/arch/arm/boot/dts/Makefile
+@@ -218,6 +218,7 @@ dtb-$(CONFIG_ARCH_MXC) += \
+ 	imx6sx-19x19-arm2-lcdif1.dtb \
+ 	imx6sx-19x19-arm2-gpmi-weim.dtb \
+ 	imx6sx-icore.dtb \
++	imx6sx-icore-m4.dtb \
+ 	imx6sx-icore-icu-10.dtb \
+ 	imx6sx-icore-icu-123hsxga.dtb \
+ 	imx6sx-smarcore.dtb \
+diff --git a/arch/arm/boot/dts/imx6sx-icore-m4.dts b/arch/arm/boot/dts/imx6sx-icore-m4.dts
+new file mode 100644
+index 0000000..ac6e84f
+--- /dev/null
++++ b/arch/arm/boot/dts/imx6sx-icore-m4.dts
+@@ -0,0 +1,101 @@
++/*
++ * Copyright (C) 2014 Freescale Semiconductor, Inc.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include "imx6sx-icore.dts"
++
++/{
++	memory {
++		linux,usable-memory = <0x81000000 0xef00000>;
++		reg = <0x81000000 0xf000000>;
++	};
++};
++
++&iomuxc {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_hog>;
++ };
++
++/*
++ * The flollowing modules are conflicting with M4, disable them when m4
++ * is running.
++ */
++&flexcan1 {
++	status = "disabled";
++};
++
++&flexcan2 {
++	status = "disabled";
++};
++
++&i2c3 {
++  status = "disabled";
++};
++
++&mcctest{
++	status = "okay";
++};
++
++&mcctty{
++	status = "okay";
++};
++
++&uart2 {
++	status = "disabled";
++};
++
++&adc1 {
++  status = "disabled";
++};
++
++&adc2 {
++  status = "disabled";
++};
++
++&qspi2 {
++	status = "disabled";
++};
++
++&qspi_m4 {
++	status = "disabled";
++};
++
++&ocram {
++	reg = <0x00901000 0x1E000>;
++};
++
++&csi1 {
++	status = "disabled";
++};
++
++&csi2 {
++	status = "disabled";
++};
++
++&clks {
++	fsl,shared-clks-number = <0x23>;
++	fsl,shared-clks-index = <IMX6SX_CLK_PLL2_BUS IMX6SX_CLK_PLL2_PFD0
++			IMX6SX_CLK_PLL2_PFD2 IMX6SX_CLK_PLL3_USB_OTG
++			IMX6SX_CLK_PLL3_PFD1 IMX6SX_CLK_PLL3_PFD2
++			IMX6SX_CLK_PLL3_PFD3 IMX6SX_CLK_PLL4_AUDIO
++			IMX6SX_CLK_PLL5_VIDEO
++			IMX6SX_CLK_OCRAM IMX6SX_CLK_CAN1_SERIAL
++			IMX6SX_CLK_CAN1_IPG IMX6SX_CLK_CAN2_SERIAL
++			IMX6SX_CLK_CAN2_IPG IMX6SX_CLK_CANFD
++			IMX6SX_CLK_ECSPI1 IMX6SX_CLK_ECSPI2
++			IMX6SX_CLK_ECSPI3 IMX6SX_CLK_ECSPI4
++			IMX6SX_CLK_ECSPI5 IMX6SX_CLK_QSPI1
++			IMX6SX_CLK_QSPI2 IMX6SX_CLK_SSI1
++			IMX6SX_CLK_SSI2 IMX6SX_CLK_SSI3
++			IMX6SX_CLK_UART_SERIAL IMX6SX_CLK_UART_IPG
++			IMX6SX_CLK_PERIPH_CLK2_SEL IMX6SX_CLK_OCRAM_ALT_SEL
++			IMX6SX_CLK_I2C1 IMX6SX_CLK_I2C2
++			IMX6SX_CLK_I2C3 IMX6SX_CLK_I2C4
++			IMX6SX_CLK_EPIT1 IMX6SX_CLK_EPIT2>;
++	fsl,shared-mem-addr = <0x91F000>;
++	fsl,shared-mem-size = <0x1000>;
++};
+diff --git a/arch/arm/mach-imx/Makefile.boot b/arch/arm/mach-imx/Makefile.boot
+new file mode 100644
+index 0000000..271d0d7
+--- /dev/null
++++ b/arch/arm/mach-imx/Makefile.boot
+@@ -0,0 +1 @@
++zreladdr-y := 0x81008000
+-- 
+1.9.1
+
