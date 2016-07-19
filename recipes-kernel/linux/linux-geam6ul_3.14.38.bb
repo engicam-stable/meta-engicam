@@ -13,7 +13,7 @@ SRC_URI = "git://github.com/engicam-stable/engicam-kernel-geam6ul-3.14.38.git;pr
            file://defconfig \
 "
 
-SRCREV = "40fdd5a781bf0c592c291c1db79f1b821cc61de1"
+SRCREV = "24708043c39e33f722feaf8fa356654534e26821"
 
 S = "${WORKDIR}/git"
 
