@@ -13,7 +13,7 @@ SRC_URI = "git://github.com/engicam-stable/engicam-kernel-icore-3.14.28.git;prot
            file://defconfig \
 "
 
-SRCREV = "4ca5baba49ea5e495c655887168ac73ef6ec4c6b"
+SRCREV = "9ff47a0eaf64459ccf198c98c92b6df50270ba88"
 
 S = "${WORKDIR}/git"
 
