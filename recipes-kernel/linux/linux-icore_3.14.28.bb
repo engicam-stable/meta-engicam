@@ -21,7 +21,7 @@ S = "${WORKDIR}/git"
 # machine, with different entry points
 KERNEL_EXTRA_ARGS += "LOADADDR=${UBOOT_ENTRYPOINT}"
 
-SRC_URI_append_mx6sxm4 += "file://0001-M4-App-On-DDR.patch \
+SRC_URI_append_mx6sxm4 += "file://0001-M4-run-on-DDR.patch \
 	file://defconfig"
 
 COMPATIBLE_MACHINE = "(mx6)"
