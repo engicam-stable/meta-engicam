@@ -20,14 +20,14 @@ IMAGE_INSTALL_append_mx6 = " \
     gst1.0-fsl-plugin \    
     cpufrequtils \
     usbutils \
-    dosfstools \
-    e2fsprogs \
     imx-test \
 "
 
 IMAGE_INSTALL_remove_mx6sx = " gstreamer1.0-plugins-imx"
 
 IMAGE_INSTALL_append_mx6sx = " vadc-pxp"
+
+IMAGE_INSTALL_append_mx6ul = " engicam-emmc-tools "
 
 IMAGE_INSTALL_append = " \    
     binutils \ 
@@ -54,6 +54,8 @@ IMAGE_INSTALL_append = " \
     fbset \
     minicom \
     ethtool \
+    dosfstools \
+    e2fsprogs \    
     fsl-alsa-plugins \ 
     v4l-utils \
 "
