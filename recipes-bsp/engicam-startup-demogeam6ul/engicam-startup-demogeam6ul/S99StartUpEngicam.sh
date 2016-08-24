@@ -7,6 +7,11 @@ echo -e '\033[9;0]' > /dev/tty1
 #####calibrate touch if needed
 export TSLIB_TSDEVICE="/dev/input/touchscreen0"
 
+# Fix d-bus problem
+if [ ! -e /var/lib/dbus/machine-id ];
+then
+	dbus-uuidgen --ensure
+fi
 
 if [ ! -f /etc/pointercal ]; then
 	echo "Start calibration sequence..."
