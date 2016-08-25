@@ -17,8 +17,6 @@ inherit fsl-u-boot-localversion
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 COMPATIBLE_MACHINE = "(mx6|mx6ul)"
 
-SRC_URI_append_mx6sx += "file://0001-Added-saving-U-Boot-environment-on-MMC-6SX.patch"
-
 SRC_URI_append_mx6sxm4 += "file://0002-M4-App-On-DDR.patch"
 
 S = "${WORKDIR}/git"
