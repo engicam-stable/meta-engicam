@@ -1,7 +1,7 @@
 #!/bin/bash
 # EMMC programmer
 
-ver="ver. 1.5, 2016-08-24"
+ver="ver. 1.6, 2016-08-25"
 filebytftp=false
 
 function error
@@ -63,9 +63,9 @@ function usage
 		echo "Usage: ${1}${ext} [-h]  $path"
 	fi
 
-	if [ "$1" == "emmc_fs_ker" ];
+	if [ "$1" == "emmc_ker_dtb" ];
 	then
-		echo "Usage: ${1}${ext} [-h]  $path"
+		echo "Usage: ${1}${ext} [-h]  $path <dtb name>"
 	fi
 
 	if [ "$1" == "emmc_fs_ker_dtb" ];
@@ -261,7 +261,7 @@ if [ "$boot_from_sdcard" == "" ];
 then
 	declare -a commands=("emmc_ker" "emmc_dtb" "emmc_boot")
 else
-	declare -a commands=("emmc_fs" "emmc_fs_ker" "emmc_fs_ker_dtb" "emmc_ker" "emmc_dtb" "emmc_boot" "emmc_sdcard")
+	declare -a commands=("emmc_fs" "emmc_ker_dtb" "emmc_fs_ker_dtb" "emmc_ker" "emmc_dtb" "emmc_boot" "emmc_sdcard")
 fi
 
 # Check the command
@@ -305,7 +305,7 @@ then
 		usage $command
 	fi
 	
-	if [ "$command" == "emmc_dtb" -o "$command" == "emmc_fs_ker_dtb" ];
+	if grep -q "dtb" <<< "$command" ;
 	then
 		if [ "$1" == "" -o "$1" == "-p" ]; # No dtb name specified
 		then
@@ -322,9 +322,9 @@ else
 		pathfile=$1
 	fi
 
-	if [ "$command" == "emmc_dtb" -o "$command" == "emmc_fs_ker_dtb" ]; # No dtb name specified
+	if grep -q "dtb" <<< "$command" ; 
 	then
-		if [ "$2" == "" -o "$2" == "-p" ];
+		if [ "$2" == "" -o "$2" == "-p" ]; # No dtb name specified
 		then
 			usage $command
 		else
