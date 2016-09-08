@@ -14,7 +14,7 @@ PROVIDES += "u-boot"
 
 SRC_URI = "git://github.com/engicam-stable/u-boot-eng-2015.git;protocol=git"
 
-SRCREV = "638ab3d238a826543823c80cac2f9bff3580b61c"
+SRCREV = "57166dfc463feae6b2c2591a8180c688e16e5761"
 
 S = "${WORKDIR}/git"
 

@@ -1,7 +1,7 @@
 #!/bin/bash
 # EMMC programmer
 
-ver="ver. 1.6, 2016-08-25"
+ver="ver. 1.7, 2016-09-08"
 filebytftp=false
 
 function error
@@ -25,13 +25,20 @@ echo "o
 n
 p
 1
-
+65
 +8M
+n
+p
+3
+
+
 n
 p
 2
 
 
+d
+3
 t
 1
 c
