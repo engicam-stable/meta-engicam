@@ -3,7 +3,6 @@ SECTION = "wireless driver"
 LICENSE = "CLOSED"
 
 INSANE_SKIP_${PN} = "already-stripped"
-DEPENDS += "imx-test"
 
 
 SRC_URI = " \
