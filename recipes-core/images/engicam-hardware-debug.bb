@@ -23,7 +23,6 @@ IMAGE_INSTALL += " \
     wf111-driver \
     wireless-tools \
     wpa-supplicant \
-    netperf \
     usbutils \
     i2c-tools \
     devmem2 \

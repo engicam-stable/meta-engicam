@@ -1,0 +1,49 @@
+From b299489f98f560dc247a5a730912694e6ec19cd3 Mon Sep 17 00:00:00 2001
+From: engicam <engicam@support.com>
+Date: Wed, 31 Aug 2016 17:32:45 +0200
+Subject: [PATCH] Fine
+
+---
+ board/engicam/mx6_icore/mx6_icore.c | 5 ++++-
+ include/configs/mx6_icore_common.h  | 2 +-
+ 2 files changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/board/engicam/mx6_icore/mx6_icore.c b/board/engicam/mx6_icore/mx6_icore.c
+index a0a7d39..3d7e540 100644
+--- a/board/engicam/mx6_icore/mx6_icore.c
++++ b/board/engicam/mx6_icore/mx6_icore.c
+@@ -700,7 +700,7 @@ static void setup_display(void)
+ 	int reg;
+ 
+ 	setup_iomux_backlight();
+-	board_set_backlight(1);
++	board_set_backlight(0);
+ 	enable_ipu_clock();
+ 	imx_setup_hdmi();
+ 
+@@ -739,6 +739,9 @@ static void setup_display(void)
+ 	     |IOMUXC_GPR2_DATA_WIDTH_CH0_18BIT
+ 	     |IOMUXC_GPR2_LVDS_CH1_MODE_DISABLED
+ 	     |IOMUXC_GPR2_LVDS_CH0_MODE_ENABLED_DI0;
++
++	reg &= ~(IOMUXC_GPR2_LVDS_CH0_MODE_MASK |
++		 IOMUXC_GPR2_LVDS_CH1_MODE_MASK);
+ 	writel(reg, &iomux->gpr[2]);
+ 
+ 	reg = readl(&iomux->gpr[3]);
+diff --git a/include/configs/mx6_icore_common.h b/include/configs/mx6_icore_common.h
+index 95382af..b6827ac 100644
+--- a/include/configs/mx6_icore_common.h
++++ b/include/configs/mx6_icore_common.h
+@@ -378,7 +378,7 @@
+ #define CONFIG_SPLASH_SCREEN
+ #define CONFIG_SPLASH_SCREEN_ALIGN
+ #define CONFIG_BMP_16BPP
+-#define CONFIG_VIDEO_LOGO
++/*#define CONFIG_VIDEO_LOGO Abilitare per splashscreen UBOOT*/
+ #define CONFIG_VIDEO_BMP_LOGO
+ #ifdef CONFIG_MX6DL
+ #define CONFIG_IPUV3_CLK 198000000
+-- 
+1.9.1
+

@@ -16,6 +16,8 @@ SRC_URI += "file://0014-Add-new-board-ofcap.patch"
 SRC_URI += "file://0015-LTIB-support-rqs-improvment.patch"
 SRC_URI += "file://0016-temperature-extension.patch"
 SRC_URI += "file://0017-mmc-envsize-increase.patch"
+SRC_URI += "file://0018-lvds-disabled.patch"
+SRC_URI += "file://0019-fixed-dcd.patch"
 SRC_URI += "file://Engicam.bmp"
 
 do_patch_prepend() {
