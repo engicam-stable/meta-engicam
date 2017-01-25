@@ -4,4 +4,6 @@ echo "Engicam custom startup"
 echo 0 > /sys/class/graphics/fbcon/cursor_blink
 echo -e '\033[9;0]' > /dev/tty1  
 
-/usr/share/engicam-qtdemo-1.0/QtDemo -platform eglfs &
+export QT_EGLFS_IMX6_NO_FB_MULTI_BUFFER=1
+
+/usr/bin/democard -platform eglfs &

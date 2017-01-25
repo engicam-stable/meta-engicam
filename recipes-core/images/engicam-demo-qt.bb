@@ -45,8 +45,8 @@ IMAGE_INSTALL_append_mx6 = " \
 	qtxmlpatterns-mkspecs \
 	packagegroup-qt5-qtcreator-debug \
 	engicam-emmc-script \
-	${@base_contains('STARTUPDEMO', 'resistive', ' engicam-qtdemo engicam-startup-demo-resistive', '', d)} \
-	${@base_contains('STARTUPDEMO', 'capacitive', ' engicam-qtdemo engicam-startup-demo-capacitive', '', d)} \
+	${@base_contains('STARTUPDEMO', 'resistive', ' democard engicam-startup-demo-resistive', '', d)} \
+	${@base_contains('STARTUPDEMO', 'capacitive', ' democard engicam-startup-demo-capacitive', '', d)} \
 "   
 
 ############################################

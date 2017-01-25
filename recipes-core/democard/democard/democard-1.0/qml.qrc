@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>cards/Card.qml</file>
+        <file>cards/back.png</file>
+        <file>cards/card_one.png</file>
+        <file>cards/card_two.png</file>
+        <file>cards/card_three.png</file>
+        <file>deckCreation.js</file>
+        <file>WinImage.qml</file>
+        <file>winner.png</file>
+    </qresource>
+</RCC>

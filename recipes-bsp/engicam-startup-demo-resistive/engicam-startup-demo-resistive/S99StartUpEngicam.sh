@@ -14,8 +14,9 @@ else
 	echo "Calibration file present..."
 fi
 
+export QT_EGLFS_IMX6_NO_FB_MULTI_BUFFER=1
 export QT_QPA_EGLFS_TSLIB=1
 
-/usr/share/engicam-qtdemo-1.0/QtDemo -platform eglfs &
+/usr/bin/democard -platform eglfs &
 
 
