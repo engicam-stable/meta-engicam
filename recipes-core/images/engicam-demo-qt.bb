@@ -20,6 +20,8 @@ IMAGE_INSTALL_append_mx6 = " \
 
 #PACKAGES QT
 IMAGE_INSTALL_append_mx6 = " \
+	packagegroup-qt5-qtcreator-debug \
+	rqs-emmc-tools \
     	qtbase-dev \
 	qtbase-fonts \
 	qtbase-mkspecs \
@@ -43,8 +45,6 @@ IMAGE_INSTALL_append_mx6 = " \
 	qtsvg-plugins \
 	qtxmlpatterns-dev \
 	qtxmlpatterns-mkspecs \
-	packagegroup-qt5-qtcreator-debug \
-	engicam-emmc-script \
 	${@base_contains('STARTUPDEMO', 'resistive', ' democard engicam-startup-demo-resistive', '', d)} \
 	${@base_contains('STARTUPDEMO', 'capacitive', ' democard engicam-startup-demo-capacitive', '', d)} \
 "   
@@ -55,7 +55,8 @@ IMAGE_INSTALL_append_mx6 = " \
 
 #PACKAGES QT
 IMAGE_INSTALL_append_mx6ul = " \
-	packagegroup-qt5-qtcreator-debug \      
+	packagegroup-qt5-qtcreator-debug \
+	geam6ul-emmc-tools \     
 	qtbase-dev \
 	qtbase-fonts \
 	qtbase-mkspecs \
