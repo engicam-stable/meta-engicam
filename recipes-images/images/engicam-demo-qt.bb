@@ -5,7 +5,7 @@ LICENSE = "MIT"
 inherit core-image
 inherit distro_features_check
 inherit populate_sdk 
-inherit populate_sdk_${@base_contains('MACHINE', 'geam6ul', 'qt5_geam6ul', 'qt5_icore', d)}
+inherit populate_sdk_${@bb.utils.contains('MACHINE', 'geam6ul', 'qt5_geam6ul', 'qt5_icore', d)}
 
 EXTRA_IMAGE_FEATURES = " debug-tweaks ssh-server-openssh tools-debug \			
 			"
@@ -15,8 +15,7 @@ EXTRA_IMAGE_FEATURES = " debug-tweaks ssh-server-openssh tools-debug \
 SOC_IMAGE_INSTALL_mx6 = "packagegroup-fsl-tools-gpu kernel-module-imx-gpu-viv"
 
 IMAGE_INSTALL_append_mx6 = " \
- 	firmware-imx-vpu-imx6q \
-	firmware-imx-vpu-imx6d \
+  	firmware-imx \
 "
 
 #PACKAGES QT
@@ -45,8 +44,9 @@ IMAGE_INSTALL_append_mx6 = " \
 	qtxmlpatterns-dev \
 	qtxmlpatterns-mkspecs \
 	packagegroup-qt5-qtcreator-debug \
-	${@base_contains('STARTUPDEMO', 'resistive', ' democard engicam-startup-demo-resistive', '', d)} \
-	${@base_contains('STARTUPDEMO', 'capacitive', ' democard engicam-startup-demo-capacitive', '', d)} \
+	engicam-emmc-script \
+	${@bb.utils.contains('STARTUPDEMO', 'resistive', ' democard engicam-startup-demo-resistive', '', d)} \
+	${@bb.utils.contains('STARTUPDEMO', 'capacitive', ' democard engicam-startup-demo-capacitive', '', d)} \
 "   
 
 ############################################
@@ -72,8 +72,8 @@ IMAGE_INSTALL_append_mx6ul = " \
 	qtsvg-mkspecs \
 	qtsvg-plugins \	
         qtquick1 \
-	${@base_contains('STARTUPDEMO', 'capacitive', ' demogeam6ul engicam-startup-demogeam6ul-cap', '', d)} \	
-	${@base_contains('STARTUPDEMO', 'resistive', ' demogeam6ul engicam-startup-demogeam6ul', '', d)} \
+	${@bb.utils.contains('STARTUPDEMO', 'capacitive', ' demogeam6ul engicam-startup-demogeam6ul-cap', '', d)} \	
+	${@bb.utils.contains('STARTUPDEMO', 'resistive', ' demogeam6ul engicam-startup-demogeam6ul', '', d)} \
     "
 
 #################################################
@@ -82,8 +82,7 @@ IMAGE_INSTALL_append_mx6ul = " \
 IMAGE_INSTALL_append += " \
 	binutils \
 	psplash \
-        engicam-mtd-script \
-	engicam-emmc-tools \
+        engicam-mtd-script \        
         mtd-utils imx-kobs mtd-utils-ubifs \
 "
 

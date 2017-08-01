@@ -26,5 +26,8 @@ do_install () {
 	install -m 0755 ${WORKDIR}/test_gps ${D}${bindir}/test_gps
 }
 
+FILES_${PN} = "${bindir}/*"
+INSANE_SKIP_${PN} = "ldflags"
+
 
 

@@ -24,5 +24,7 @@ do_install () {
 	install -m 0755 ${WORKDIR}/cantest ${D}${bindir}/cantest
 }
 
+FILES_${PN} = "${bindir}/*"
+INSANE_SKIP_${PN} = "ldflags"
 
 

@@ -1,0 +1,305 @@
+# ----------------------------------------------------------------------------
+# FILE: os_linux/Kbuild
+#
+# PURPOSE:
+#       Build instructions for UniFi linux driver for 2.6 kernels.
+#
+#
+# Copyright (C) 2005-2009 by Cambridge Silicon Radio Ltd.
+# ----------------------------------------------------------------------------
+
+# Read platform config details.
+DRIVERTOP := $(src)/..
+
+
+ifeq ($(SDIO_DRIVER),emb)
+
+SDIO_DEFS = -DSDIO_EXPORTS_STRUCT_DEVICE
+SDIO_INCLUDES ?= -I$(SDIODIR)/include
+
+SDIO_OBJS := \
+          sdio_emb.o
+endif
+
+ifeq ($(SDIO_DRIVER),mmc_fs)
+
+SDIO_INCLUDES ?= -I.
+
+SDIO_OBJS := \
+          sdio_mmc_fs.o
+endif
+
+
+ifeq ($(SDIO_DRIVER),mmc)
+
+SDIO_DEFS = -DSDIO_EXPORTS_STRUCT_DEVICE -DCSR_WIFI_SUPPORT_MMC_DRIVER -DCSR_WIFI_SINGLE_FUNCTION
+
+SDIO_INCLUDES =
+
+SDIO_OBJS := \
+          sdio_mmc.o
+endif
+
+ifeq ($(SDIO_DRIVER),mobstor)
+
+SDIO_INCLUDES ?= -I. -I$(MOBSTOR_DIR)
+
+SDIO_OBJS := \
+          sdio_mobstor.o
+
+endif
+
+
+# Change these values if a different synergy framework or wifi version is needed.
+SYNERGY_ROOT=$(DRIVERTOP)/../synergy
+include $(SYNERGY_ROOT)/paths.mk
+SYNERGY_FRAMEWORK_ROOT := $(subst $(DRIVERTOP)/../,,$(FW_ROOT))
+SYNERGY_WIFI_ROOT = synergy/wifi/5.2.2
+
+SYNERGY_FRAMEWORK_BSP_INC_DIR = $(DRIVERTOP)/../$(SYNERGY_FRAMEWORK_ROOT)/bsp/inc
+SYNERGY_FRAMEWORK_BSP_PORT_INC_DIR = $(DRIVERTOP)/../$(SYNERGY_FRAMEWORK_ROOT)/bsp/ports/pclin/inc
+SYNERGY_FRAMEWORK_BSP_PORT_KERNEL_INC_DIR = $(DRIVERTOP)/../$(SYNERGY_FRAMEWORK_ROOT)/bsp/ports/pclin/inc/kernel
+SYNERGY_FRAMEWORK_BSP_PORT_KERNEL_COAL_INC_DIR = $(DRIVERTOP)/../$(SYNERGY_FRAMEWORK_ROOT)/bsp/ports/pclin/inc/kernel/coal
+SYNERGY_FRAMEWORK_GSP_INC_DIR = $(DRIVERTOP)/../$(SYNERGY_FRAMEWORK_ROOT)/gsp/inc
+SYNERGY_FRAMEWORK_CODE_DIR = ../../$(SYNERGY_FRAMEWORK_ROOT)/bsp/ports/pclin/src/kernel
+SYNERGY_FRAMEWORK_GSP_CODE_DIR = ../../$(SYNERGY_FRAMEWORK_ROOT)/gsp
+
+SYNERGY_FRAMEWORK_OBJS := \
+    $(SYNERGY_FRAMEWORK_CODE_DIR)/framework_ext/csr_framework_ext.o \
+    $(SYNERGY_FRAMEWORK_CODE_DIR)/time/csr_time.o \
+    $(SYNERGY_FRAMEWORK_CODE_DIR)/panic/csr_panic.o \
+    $(SYNERGY_FRAMEWORK_CODE_DIR)/pmem/csr_pmem.o \
+    $(SYNERGY_FRAMEWORK_CODE_DIR)/util/csr_util.o \
+    $(SYNERGY_FRAMEWORK_GSP_CODE_DIR)/src/utils/formatted_io/csr_formatted_io.o \
+    $(SYNERGY_FRAMEWORK_GSP_CODE_DIR)/src/utils/msgconv/csr_msgconv.o \
+    $(SYNERGY_FRAMEWORK_GSP_CODE_DIR)/src/utils/msgconv/csr_serialize_primitive_types.o \
+    $(SYNERGY_FRAMEWORK_GSP_CODE_DIR)/src/utils/unicode/csr_utf16.o
+
+# Relative to source directory
+HIP_BASE_DIR = $(DRIVERTOP)/../$(SYNERGY_WIFI_ROOT)/src/hip
+
+# SME related staff
+ifeq ($(SME), nme)
+WIFI_CODE_DIR = ../../$(SYNERGY_WIFI_ROOT)
+
+#SME_INCLUDES += -I$(DRIVERTOP)/smeproxy
+SME_INCLUDES += -I$(DRIVERTOP)/../$(SYNERGY_WIFI_ROOT)/inc
+SME_INCLUDES += -I$(DRIVERTOP)/../$(SYNERGY_WIFI_ROOT)/src/inc
+
+SME_DEFS = -DCSR_SME_USERSPACE -DCSR_SUPPORT_SME -DREMOTE_SYS_SAP -DCSR_WIFI_SECURITY_WAPI_ENABLE -DCSR_WIFI_SECURITY_WAPI_QOSCTRL_MIC_WORKAROUND -DENABLE_SHUTDOWN
+OS_OBJS := \
+    sme_csr/sme_userspace.o             \
+    sme_csr/csr_wifi_sme_sef.o          \
+    sme_csr/csr_wifi_router_sef.o       \
+    sme_csr/csr_wifi_router_ctrl_sef.o  \
+    sme_csr/csr_wifi_router_transport.o \
+    $(WIFI_CODE_DIR)/src/interfaces/router/csr_wifi_router_converter_init.o \
+    $(WIFI_CODE_DIR)/src/interfaces/router/csr_wifi_router_serialize.o \
+    $(WIFI_CODE_DIR)/src/interfaces/router/csr_wifi_router_free_downstream_contents.o \
+    $(WIFI_CODE_DIR)/src/interfaces/router/csr_wifi_router_free_upstream_contents.o \
+    $(WIFI_CODE_DIR)/src/interfaces/router_ctrl/csr_wifi_router_ctrl_converter_init.o \
+    $(WIFI_CODE_DIR)/src/interfaces/router_ctrl/csr_wifi_router_ctrl_serialize.o \
+    $(WIFI_CODE_DIR)/src/interfaces/router_ctrl/csr_wifi_router_ctrl_free_downstream_contents.o \
+    $(WIFI_CODE_DIR)/src/interfaces/router_ctrl/csr_wifi_router_ctrl_free_upstream_contents.o \
+    $(WIFI_CODE_DIR)/src/interfaces/sme/csr_wifi_sme_converter_init.o \
+    $(WIFI_CODE_DIR)/src/interfaces/sme/csr_wifi_sme_serialize.o \
+    $(WIFI_CODE_DIR)/src/interfaces/sme/csr_wifi_sme_free_downstream_contents.o \
+    $(WIFI_CODE_DIR)/src/interfaces/sme/csr_wifi_sme_free_upstream_contents.o \
+    $(WIFI_CODE_DIR)/src/wifi_util/csr_wifi_lib.o \
+    $(WIFI_CODE_DIR)/src/wifi_util/msgconv/csr_wifi_serialize_primitive_types.o \
+    sme_sys.o                        \
+    sme_blocking.o        \
+    sme_mgt.o      \
+    unifi_sme.o                        \
+    data_tx.o                        \
+    bh.o drv.o firmware.o            \
+    indications.o io.o netdev.o        \
+    inet.o                            \
+    os.o                            \
+    init_hw.o                        \
+    unifi_event.o                    \
+    unifi_pdu_processing.o          \
+    sdio_events.o                    \
+    ul_int.o                        \
+    putest.o                        \
+    unifi_dbg.o
+
+WEXT_OBJS :=
+endif
+
+
+ifeq ($(SME), wext)
+WIFI_CODE_DIR = ../../$(SYNERGY_WIFI_ROOT)
+
+#SME_INCLUDES += -I$(DRIVERTOP)/smeproxy
+SME_INCLUDES += -I$(DRIVERTOP)/../$(SYNERGY_WIFI_ROOT)/inc
+SME_INCLUDES += -I$(DRIVERTOP)/../$(SYNERGY_WIFI_ROOT)/src/inc
+
+SME_DEFS = -DCSR_SME_USERSPACE -DCSR_SUPPORT_WEXT -DCSR_SUPPORT_SME  \
+           -DREMOTE_SYS_SAP  -DREMOTE_MGT_SAP -DCSR_WIFI_SECURITY_WAPI_ENABLE -DCSR_WIFI_SECURITY_WAPI_QOSCTRL_MIC_WORKAROUND -DENABLE_SHUTDOWN
+OS_OBJS := \
+    sme_csr/sme_userspace.o             \
+    sme_csr/csr_wifi_sme_sef.o          \
+    sme_csr/csr_wifi_router_sef.o       \
+    sme_csr/csr_wifi_router_ctrl_sef.o      \
+    sme_csr/csr_wifi_router_transport.o \
+    $(WIFI_CODE_DIR)/src/interfaces/router/csr_wifi_router_converter_init.o \
+    $(WIFI_CODE_DIR)/src/interfaces/router/csr_wifi_router_serialize.o \
+    $(WIFI_CODE_DIR)/src/interfaces/router/csr_wifi_router_free_downstream_contents.o \
+    $(WIFI_CODE_DIR)/src/interfaces/router/csr_wifi_router_free_upstream_contents.o \
+    $(WIFI_CODE_DIR)/src/interfaces/router_ctrl/csr_wifi_router_ctrl_converter_init.o \
+    $(WIFI_CODE_DIR)/src/interfaces/router_ctrl/csr_wifi_router_ctrl_serialize.o \
+    $(WIFI_CODE_DIR)/src/interfaces/router_ctrl/csr_wifi_router_ctrl_free_downstream_contents.o \
+    $(WIFI_CODE_DIR)/src/interfaces/router_ctrl/csr_wifi_router_ctrl_free_upstream_contents.o \
+    $(WIFI_CODE_DIR)/src/interfaces/sme/csr_wifi_sme_converter_init.o \
+    $(WIFI_CODE_DIR)/src/interfaces/sme/csr_wifi_sme_serialize.o \
+    $(WIFI_CODE_DIR)/src/interfaces/sme/csr_wifi_sme_free_downstream_contents.o \
+    $(WIFI_CODE_DIR)/src/interfaces/sme/csr_wifi_sme_free_upstream_contents.o \
+    $(WIFI_CODE_DIR)/src/wifi_util/csr_wifi_lib.o \
+    $(WIFI_CODE_DIR)/src/wifi_util/msgconv/csr_wifi_serialize_primitive_types.o \
+    sme_sys.o                        \
+    unifi_sme.o                      \
+    data_tx.o                        \
+    bh.o drv.o firmware.o            \
+    indications.o io.o netdev.o      \
+    os.o                             \
+    init_hw.o                        \
+    unifi_event.o                    \
+    sdio_events.o                    \
+    unifi_pdu_processing.o          \
+    ul_int.o                         \
+    inet.o                           \
+    putest.o                         \
+    unifi_dbg.o
+
+WEXT_OBJS := \
+    sme_mgt.o      \
+    sme_blocking.o \
+    wext_events.o  \
+    sme_wext.o
+endif
+ifeq ($(SME), wext_ap)
+WIFI_CODE_DIR = ../../$(SYNERGY_WIFI_ROOT)
+
+#SME_INCLUDES += -I$(DRIVERTOP)/smeproxy
+SME_INCLUDES += -I$(DRIVERTOP)/../$(SYNERGY_WIFI_ROOT)/inc
+SME_INCLUDES += -I$(DRIVERTOP)/../$(SYNERGY_WIFI_ROOT)/src/inc
+
+SME_DEFS = -DCSR_SME_USERSPACE -DCSR_SUPPORT_WEXT -DCSR_SUPPORT_SME  \
+           -DREMOTE_SYS_SAP  -DREMOTE_MGT_SAP -DCSR_WIFI_SECURITY_WAPI_ENABLE -DCSR_WIFI_SECURITY_WAPI_QOSCTRL_MIC_WORKAROUND -DENABLE_SHUTDOWN -DCSR_WIFI_NME_ENABLE -DCSR_WIFI_AP_ENABLE -DCSR_SUPPORT_WEXT_AP -DCSR_WIFI_REQUEUE_PACKET_TO_HAL
+OS_OBJS := \
+    sme_csr/sme_userspace.o             \
+    sme_csr/csr_wifi_sme_sef.o          \
+    sme_csr/csr_wifi_nme_ap_sef.o       \
+    sme_csr/csr_wifi_router_sef.o       \
+    sme_csr/csr_wifi_router_ctrl_sef.o  \
+    sme_csr/csr_wifi_router_transport.o \
+    $(WIFI_CODE_DIR)/src/interfaces/router/csr_wifi_router_converter_init.o \
+    $(WIFI_CODE_DIR)/src/interfaces/router/csr_wifi_router_serialize.o \
+    $(WIFI_CODE_DIR)/src/interfaces/router/csr_wifi_router_free_downstream_contents.o \
+    $(WIFI_CODE_DIR)/src/interfaces/router/csr_wifi_router_free_upstream_contents.o \
+    $(WIFI_CODE_DIR)/src/interfaces/router_ctrl/csr_wifi_router_ctrl_converter_init.o \
+    $(WIFI_CODE_DIR)/src/interfaces/router_ctrl/csr_wifi_router_ctrl_serialize.o \
+    $(WIFI_CODE_DIR)/src/interfaces/router_ctrl/csr_wifi_router_ctrl_free_downstream_contents.o \
+    $(WIFI_CODE_DIR)/src/interfaces/router_ctrl/csr_wifi_router_ctrl_free_upstream_contents.o \
+    $(WIFI_CODE_DIR)/src/interfaces/sme/csr_wifi_sme_converter_init.o \
+    $(WIFI_CODE_DIR)/src/interfaces/sme/csr_wifi_sme_serialize.o \
+    $(WIFI_CODE_DIR)/src/interfaces/sme/csr_wifi_sme_free_downstream_contents.o \
+    $(WIFI_CODE_DIR)/src/interfaces/sme/csr_wifi_sme_free_upstream_contents.o \
+    $(WIFI_CODE_DIR)/src/interfaces/nme/csr_wifi_nme_converter_init.o \
+    $(WIFI_CODE_DIR)/src/interfaces/nme/csr_wifi_nme_serialize.o \
+    $(WIFI_CODE_DIR)/src/interfaces/nme/csr_wifi_nme_free_downstream_contents.o \
+    $(WIFI_CODE_DIR)/src/interfaces/nme/csr_wifi_nme_free_upstream_contents.o \
+    $(WIFI_CODE_DIR)/src/interfaces/nme_ap/csr_wifi_nme_ap_converter_init.o \
+    $(WIFI_CODE_DIR)/src/interfaces/nme_ap/csr_wifi_nme_ap_serialize.o \
+    $(WIFI_CODE_DIR)/src/interfaces/nme_ap/csr_wifi_nme_ap_free_downstream_contents.o \
+    $(WIFI_CODE_DIR)/src/interfaces/nme_ap/csr_wifi_nme_ap_free_upstream_contents.o \
+    $(WIFI_CODE_DIR)/src/wifi_util/csr_wifi_lib.o \
+    $(WIFI_CODE_DIR)/src/wifi_util/msgconv/csr_wifi_serialize_primitive_types.o \
+    sme_sys.o                        \
+    unifi_sme.o                      \
+    data_tx.o                        \
+    bh.o drv.o firmware.o            \
+    indications.o io.o netdev.o      \
+    os.o                             \
+    init_hw.o                        \
+    unifi_event.o                    \
+    sdio_events.o                    \
+    unifi_pdu_processing.o           \
+    ul_int.o                         \
+    inet.o                           \
+    putest.o                         \
+    unifi_dbg.o
+
+WEXT_OBJS := \
+    sme_mgt.o      \
+    sme_blocking.o \
+    wext_events.o  \
+    sme_wext.o
+endif
+
+
+ifeq ($(SME), native)
+SME_DEFS = -DCSR_NATIVE_LINUX -DCSR_NATIVE_SOFTMAC -DCSR_WIFI_HIP_FULL_SIGNAL_SET
+SME_INCLUDES += -I$(DRIVERTOP)/../$(SYNERGY_WIFI_ROOT)/inc
+SME_INCLUDES += -I$(DRIVERTOP)/../$(SYNERGY_WIFI_ROOT)/src/inc
+OS_OBJS := \
+	sme_native/mlme.o			\
+	sme_native/sme_native.o			\
+	data_tx.o				\
+	bh.o drv.o firmware.o			\
+	indications.o io.o netdev.o		\
+	os.o					\
+	init_hw.o				\
+	unifi_event.o			\
+        unifi_pdu_processing.o          \
+	sdio_events.o			\
+	ul_int.o				\
+	putest.o				\
+	unifi_dbg.o
+
+WEXT_OBJS := \
+
+endif
+
+# Sanity check that the SME variable has been set up to
+# refer to a supported configuration.
+ifeq ($(OS_OBJS),)
+$(error No valid driver config was provided (e.g. in config.*.mk))
+endif
+
+# Location of (maybe symlinked) build directory
+HIP_CODE_DIR = ../../$(SYNERGY_WIFI_ROOT)/src/hip/lib_hip
+
+HIP_OBJS := \
+        $(HIP_CODE_DIR)/csr_wifi_hip_card_sdio.o \
+        $(HIP_CODE_DIR)/csr_wifi_hip_card_sdio_mem.o \
+        $(HIP_CODE_DIR)/csr_wifi_hip_card_sdio_intr.o\
+        $(HIP_CODE_DIR)/csr_wifi_hip_send.o \
+        $(HIP_CODE_DIR)/csr_wifi_hip_signals.o \
+        $(HIP_CODE_DIR)/csr_wifi_hip_ta_sampling.o \
+        $(HIP_CODE_DIR)/csr_wifi_hip_udi.o \
+        $(HIP_CODE_DIR)/csr_wifi_hip_unifi_signal_names.o \
+        $(HIP_CODE_DIR)/csr_wifi_hip_dump.o \
+        $(HIP_CODE_DIR)/csr_wifi_hip_download.o \
+        $(HIP_CODE_DIR)/csr_wifi_hip_xbv.o \
+        $(HIP_CODE_DIR)/csr_wifi_hip_chiphelper.o \
+        $(HIP_CODE_DIR)/csr_wifi_hip_packing.o
+
+obj-m := unifi_sdio.o
+
+
+unifi_sdio-y :=  \
+	$(SDIO_OBJS)				\
+	sdio_stubs.o				\
+	$(HIP_OBJS)				\
+	$(OS_OBJS)				\
+	$(SYNERGY_FRAMEWORK_OBJS) \
+	$(SME_OBJS)				\
+	$(WEXT_OBJS)
+
+
+U_INCLUDES = -I$(HIP_BASE_DIR)/inc -I$(HIP_BASE_DIR)/lib_hip -I$(src) $(SME_INCLUDES) -I$(SYNERGY_FRAMEWORK_GSP_INC_DIR) -I$(SYNERGY_FRAMEWORK_BSP_PORT_KERNEL_INC_DIR) -I$(SYNERGY_FRAMEWORK_BSP_PORT_INC_DIR) -I$(SYNERGY_FRAMEWORK_BSP_PORT_KERNEL_COAL_INC_DIR) -I$(SYNERGY_FRAMEWORK_BSP_INC_DIR) $(SDIO_INCLUDES)
+U_DEFINES = -DMODULE -D__KERNEL__ -DUNIFI_DEBUG -DCSR_WIFI_DEFER_TH_FLUSH -DCSR_WIFI_RX_PATH_SPLIT -DCSR_WIFI_RX_PATH_SPLIT_DONT_USE_WQ -DCSR_WIFI_SPLIT_PATCH -DCSR_WIFI_VERSION=\"$(WIFI_VERSION)\" $(SDIO_DEFS) $(SME_DEFS)
+
+EXTRA_CFLAGS += $(U_DEFINES) $(U_INCLUDES) $(EXTRA_DRV_CFLAGS)

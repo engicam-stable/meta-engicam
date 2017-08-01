@@ -72,9 +72,9 @@ RDEPENDS_${PN} += " \
     qtsvg-plugins \
     qtsystems-dev \
     qtsystems-mkspecs \
-    ${@base_contains('DISTRO_FEATURES', 'wayland', '${USE_WAYLAND}', '', d)} \
-    ${@base_contains('BBFILE_COLLECTIONS', 'ruby-layer', '${USE_RUBY}', '', d)} \
-    ${@base_contains('DISTRO_FEATURES', 'x11', '${USE_X11}', '', d)} \
+    ${@bb.utils.contains('DISTRO_FEATURES', 'wayland', '${USE_WAYLAND}', '', d)} \
+    ${@bb.utils.contains('BBFILE_COLLECTIONS', 'ruby-layer', '${USE_RUBY}', '', d)} \
+    ${@bb.utils.contains('DISTRO_FEATURES', 'x11', '${USE_X11}', '', d)} \
     qtxmlpatterns-dev \
     qtxmlpatterns-mkspecs \
     qttranslations-qtxmlpatterns \

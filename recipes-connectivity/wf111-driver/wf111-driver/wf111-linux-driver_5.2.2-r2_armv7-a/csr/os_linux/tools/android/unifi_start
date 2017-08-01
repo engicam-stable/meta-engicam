@@ -1,0 +1,24 @@
+#!/system/bin/sh
+
+run() {
+	# poll unifi and start unifi_helper when detected
+	while true; do
+		if ! lsmod|grep -q unifi_sdio; then
+			# unifi_sdio was not loaded, try to load it
+			if ! insmod /system/lib/modules/unifi_sdio.ko; then
+				echo "Failed to load unifi_sdio kernel module"
+				exit 1
+			fi
+		fi
+
+		udi=`ls /dev/unifiudi* 2>/dev/null`
+		if [ -n "$udi" ]; then
+			# unifi found
+			instance=${udi#?????????????}
+			/system/bin/unififw $instance 2
+		fi
+		sleep 3
+	done
+}
+
+run &

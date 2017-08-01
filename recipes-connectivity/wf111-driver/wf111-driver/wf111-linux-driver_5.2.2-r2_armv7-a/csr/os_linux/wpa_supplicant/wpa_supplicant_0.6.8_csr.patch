@@ -1,0 +1,121 @@
+diff -uNr wpa_supplicant-0.6.8/src/common/version.h wpa_supplicant-0.6.8_mod/src/common/version.h
+--- wpa_supplicant-0.6.8/src/common/version.h	2009-02-15 18:00:00.000000000 +0000
++++ wpa_supplicant-0.6.8_mod/src/common/version.h	2010-07-09 11:23:04.000000000 +0100
+@@ -1,6 +1,6 @@
+ #ifndef VERSION_H
+ #define VERSION_H
+ 
+-#define VERSION_STR "0.6.8"
++#define VERSION_STR "0.6.8-csr"
+ 
+ #endif /* VERSION_H */
+diff -uNr wpa_supplicant-0.6.8/src/drivers/driver_wext.c wpa_supplicant-0.6.8_mod/src/drivers/driver_wext.c
+--- wpa_supplicant-0.6.8/src/drivers/driver_wext.c	2009-02-15 18:00:00.000000000 +0000
++++ wpa_supplicant-0.6.8_mod/src/drivers/driver_wext.c	2010-07-09 11:23:04.000000000 +0100
+@@ -452,7 +452,7 @@
+ {
+ 	union wpa_event_data data;
+ 
+-	if (drv->assoc_req_ies == NULL && drv->assoc_resp_ies == NULL)
++	if (drv->assoc_req_ies == NULL && drv->assoc_resp_ies == NULL && drv->scan_gen_ies == NULL)
+ 		return;
+ 
+ 	os_memset(&data, 0, sizeof(data));
+@@ -466,14 +466,54 @@
+ 		drv->assoc_resp_ies = NULL;
+ 		data.assoc_info.resp_ies_len = drv->assoc_resp_ies_len;
+ 	}
+-
++    if (drv->scan_gen_ies) {
++		data.assoc_info.beacon_ies = drv->scan_gen_ies;
++		drv->scan_gen_ies = NULL;
++		data.assoc_info.beacon_ies_len = drv->scan_gen_ies_len;
++	}
+ 	wpa_supplicant_event(drv->ctx, EVENT_ASSOCINFO, &data);
+ 
+ 	os_free(data.assoc_info.req_ies);
+ 	os_free(data.assoc_info.resp_ies);
++	os_free(data.assoc_info.beacon_ies);
+ }
+ 
+ 
++static void wpa_driver_wext_update_beacon_ies(struct wpa_driver_wext_data *drv,
++                                              const u8 *bssid)
++{
++    struct wpa_scan_results *scan_res;
++    struct wpa_scan_res *r;
++    int i;
++    const u8 *ie_pos;
++
++    scan_res = wpa_driver_wext_get_scan_results(drv);
++    if (scan_res == NULL) {
++        wpa_printf(MSG_DEBUG, "wpa_driver_wext_update_beacon_ies: failed to get scan results");
++        return;
++    }
++
++    /* Search for the current BSSID */
++    for (i = 0; i < scan_res->num; i++) {
++        r = scan_res->res[i];
++        if (os_memcmp(r->bssid, bssid, ETH_ALEN) != 0)
++            continue;
++
++        ie_pos = (const u8 *) (r + 1);
++
++        wpa_hexdump(MSG_DEBUG, "wpa_driver_wext_update_beacon_ies:", ie_pos,
++                    r->ie_len);
++        os_free(drv->scan_gen_ies);
++        drv->scan_gen_ies = os_malloc(r->ie_len);
++        if (drv->scan_gen_ies == NULL) {
++            drv->scan_gen_ies_len = 0;
++            return;
++        }
++        os_memcpy(drv->scan_gen_ies, ie_pos, r->ie_len);
++        drv->scan_gen_ies_len = r->ie_len;
++    }
++}
++
+ static void wpa_driver_wext_event_wireless(struct wpa_driver_wext_data *drv,
+ 					   void *ctx, char *data, int len)
+ {
+@@ -527,6 +567,7 @@
+ 						     NULL);
+ 			
+ 			} else {
++                wpa_driver_wext_update_beacon_ies(drv, (const u8*)iwe->u.ap_addr.sa_data);
+ 				wpa_driver_wext_event_assoc_ies(drv);
+ 				wpa_supplicant_event(ctx, EVENT_ASSOC, NULL);
+ 			}
+@@ -1251,8 +1292,8 @@
+ 			       struct wext_scan_data *res)
+ {
+ 	res->res.qual = iwe->u.qual.qual;
+-	res->res.noise = iwe->u.qual.noise;
+-	res->res.level = iwe->u.qual.level;
++    res->res.noise = ( iwe->u.qual.noise > 63 ) ? iwe->u.qual.noise - 0x100 : iwe->u.qual.noise;
++    res->res.level = ( iwe->u.qual.level > 63 ) ? iwe->u.qual.level - 0x100 : iwe->u.qual.level;
+ }
+ 
+ 
+diff -uNr wpa_supplicant-0.6.8/src/drivers/driver_wext.h wpa_supplicant-0.6.8_mod/src/drivers/driver_wext.h
+--- wpa_supplicant-0.6.8/src/drivers/driver_wext.h	2009-02-15 18:00:00.000000000 +0000
++++ wpa_supplicant-0.6.8_mod/src/drivers/driver_wext.h	2010-07-09 11:23:04.000000000 +0100
+@@ -30,6 +30,8 @@
+ 	size_t assoc_req_ies_len;
+ 	u8 *assoc_resp_ies;
+ 	size_t assoc_resp_ies_len;
++    u8 *scan_gen_ies;
++    size_t scan_gen_ies_len;
+ 	struct wpa_driver_capa capa;
+ 	int has_capability;
+ 	int we_version_compiled;
+diff -uNr wpa_supplicant-0.6.8/src/rsn_supp/pmksa_cache.c wpa_supplicant-0.6.8_mod/src/rsn_supp/pmksa_cache.c
+--- wpa_supplicant-0.6.8/src/rsn_supp/pmksa_cache.c	2009-02-15 18:00:00.000000000 +0000
++++ wpa_supplicant-0.6.8_mod/src/rsn_supp/pmksa_cache.c	2010-07-09 11:24:05.000000000 +0100
+@@ -98,6 +98,7 @@
+ 	os_get_time(&now);
+ 	while (pmksa->pmksa && pmksa->pmksa->expiration <= now.sec) {
+ 		struct rsn_pmksa_cache_entry *entry = pmksa->pmksa;
++		wpa_sm_remove_pmkid(pmksa->sm, entry->aa, entry->pmkid);
+ 		pmksa->pmksa = entry->next;
+ 		wpa_printf(MSG_DEBUG, "RSN: expired PMKSA cache entry for "
+ 			   MACSTR, MAC2STR(entry->aa));

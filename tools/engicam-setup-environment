@@ -165,7 +165,7 @@ PACKAGECONFIG_append_pn-qtbase = " linuxfb "
 
 EOF
 
-if [ "$MACHINE" == "geamx6ul" ] || [ "$MACHINE" == "isiot-geamx6ul" ] || [ "$MACHINE" == "gealmx6ull" ]; then
+if [ "$MACHINE" == "geamx6ul" ] || [ "$MACHINE" == "isiot-geamx6ul" ] || [ "$MACHINE" == "geamx6ull" ]; then
     cat >> conf/local.conf <<EOF
 IMAGE_ROOTFS_SIZE = "2097152"
 IMAGE_OVERHEAD_FACTOR = "1.0"
