@@ -1,0 +1,11 @@
+setenv mtdids 'nand0=gpmi-nand'
+setenv mtdparts 'mtdparts=gpmi-nand:4m(boot),8m(kernel),1m(dtb),-(rootfs)'
+
+#FS:
+nand erase.part rootfs
+tftp ${loadaddr} rootfs.ubifs       
+ubi part rootfs
+ubi create rootfs
+ubi write ${loadaddr} rootfs ${filesize}
+ubifsmount ubi0:rootfs
+ubifsls

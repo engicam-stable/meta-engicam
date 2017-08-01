@@ -4,10 +4,10 @@ LICENSE = "MIT"
 
 inherit core-image
 inherit distro_features_check
-inherit populate_sdk 
+inherit populate_sdk
 inherit populate_sdk_${@bb.utils.contains('MACHINE', 'geam6ul', 'qt5_geam6ul', 'qt5_icore', d)}
 
-EXTRA_IMAGE_FEATURES = " debug-tweaks ssh-server-openssh tools-debug \			
+EXTRA_IMAGE_FEATURES = " debug-tweaks ssh-server-openssh tools-debug \
 			"
 
 ###############RECIPES iMX6##########################
@@ -21,7 +21,6 @@ IMAGE_INSTALL_append_mx6 = " \
 #PACKAGES QT
 IMAGE_INSTALL_append_mx6 = " \
     	qtbase-dev \
-	qtbase-fonts \
 	qtbase-mkspecs \
 	qtbase-plugins \
 	qtbase-staticdev \
@@ -30,14 +29,13 @@ IMAGE_INSTALL_append_mx6 = " \
 	qtconnectivity-qmlplugins \
 	qtdeclarative-dev \
 	qtdeclarative-mkspecs \
-	qtdeclarative-plugins \
-	qtdeclarative-qmlplugins \
 	qtdeclarative-staticdev \
 	qtgraphicaleffects-qmlplugins \
 	qtimageformats-dev \
 	qtimageformats-plugins \
 	qtscript-dev \
 	qtscript-mkspecs \
+	qtmultimedia \
 	qtsvg-dev \
 	qtsvg-mkspecs \
 	qtsvg-plugins \
@@ -45,9 +43,10 @@ IMAGE_INSTALL_append_mx6 = " \
 	qtxmlpatterns-mkspecs \
 	packagegroup-qt5-qtcreator-debug \
 	engicam-emmc-script \
+	packagegroup-fsl-gstreamer1.0-full \
 	${@bb.utils.contains('STARTUPDEMO', 'resistive', ' democard engicam-startup-demo-resistive', '', d)} \
 	${@bb.utils.contains('STARTUPDEMO', 'capacitive', ' democard engicam-startup-demo-capacitive', '', d)} \
-"   
+"
 
 ############################################
 
@@ -55,24 +54,22 @@ IMAGE_INSTALL_append_mx6 = " \
 
 #PACKAGES QT
 IMAGE_INSTALL_append_mx6ul = " \
-	packagegroup-qt5-qtcreator-debug \      
+	packagegroup-qt5-qtcreator-debug \
 	qtbase-dev \
-	qtbase-fonts \
 	qtbase-mkspecs \
 	qtbase-plugins \
 	qtbase-staticdev \
 	qtdeclarative-dev \
 	qtdeclarative-mkspecs \
-	qtdeclarative-plugins \
 	qtdeclarative-qmlplugins \
 	qtdeclarative-staticdev \
 	qtimageformats-dev \
 	qtimageformats-plugins \
 	qtsvg-dev \
 	qtsvg-mkspecs \
-	qtsvg-plugins \	
+	qtsvg-plugins \
         qtquick1 \
-	${@bb.utils.contains('STARTUPDEMO', 'capacitive', ' demogeam6ul engicam-startup-demogeam6ul-cap', '', d)} \	
+	${@bb.utils.contains('STARTUPDEMO', 'capacitive', ' demogeam6ul engicam-startup-demogeam6ul-cap', '', d)} \
 	${@bb.utils.contains('STARTUPDEMO', 'resistive', ' demogeam6ul engicam-startup-demogeam6ul', '', d)} \
     "
 
@@ -82,7 +79,7 @@ IMAGE_INSTALL_append_mx6ul = " \
 IMAGE_INSTALL_append += " \
 	binutils \
 	psplash \
-        engicam-mtd-script \        
+        engicam-mtd-script \
         mtd-utils imx-kobs mtd-utils-ubifs \
 "
 

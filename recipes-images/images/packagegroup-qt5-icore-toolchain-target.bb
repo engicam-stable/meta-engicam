@@ -25,7 +25,6 @@ RDEPENDS_${PN} += " \
     packagegroup-core-standalone-sdk-target \
     libsqlite3-dev \    
     qtbase-dev \
-    qtbase-fonts \
     qtbase-mkspecs \
     qtbase-plugins \
     qtbase-staticdev \
@@ -39,7 +38,6 @@ RDEPENDS_${PN} += " \
     qttranslations-qtconnectivity \
     qtdeclarative-dev \
     qtdeclarative-mkspecs \
-    qtdeclarative-plugins \
     ${@bb.utils.contains('DISTRO_FEATURES', 'opengl', 'qtdeclarative-qmlplugins', '', d)} \
     qtdeclarative-staticdev \
     qttranslations-qmlviewer \

@@ -1,15 +1,12 @@
 meta-engicam
 ============
 
-Preliminary Yocto engicam meta layer for morty yocto
+Preliminary Yocto engicam meta layer for pyro yocto
 
 __Version:__ 1.0.0
 
 ## Engicam available machine :##
 
-* geamx6ul
-* isiot-geamx6ul
-* gealmx6ull
 * icoremx6solo
 * icoremx6duallite
 * icoremx6dual

@@ -2,15 +2,15 @@
 LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://COPYING;md5=d7810fab7487fb0aad327b76f1be7cd7"
 
-include linux-fslc.inc 
+include linux-fslc.inc
 require recipes-kernel/linux/linux-imx.inc
 require recipes-kernel/linux/linux-dtb.inc
 
 # Put a local version until we have a true SRCREV to point to
-SRC_URI = "git://github.com/engicam-stable/engicam-4.1-2.0.x-imx.git;protocol=git;branch=som_release \
+SRC_URI = "git://github.com/engicam-stable/engicam-4.1-2.0.x-imx.git;protocol=git;branch=som-release \
            file://defconfig"
 
-SRCREV = "6b88a37b6348a2ba10fd92a6819dc0ecb4693d1b"
+SRCREV = "a86f3af0367cf7e5f9fbaa26ef2937a64f368012"
 
 S = "${WORKDIR}/git"
 
@@ -22,7 +22,7 @@ KERNEL_EXTRA_ARGS_mx6 += "LOADADDR=0x10008000"
 
 KERNEL_EXTRA_ARGS_mx6ull += "LOADADDR=0x80008000"
 
-KERNEL_EXTRA_ARGS_mx6ul += "LOADADDR=0x80008000" 
+KERNEL_EXTRA_ARGS_mx6ul += "LOADADDR=0x80008000"
 
 LINUX_VERSION_EXTENSION="-engicam"
 

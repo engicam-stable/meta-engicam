@@ -5,7 +5,7 @@ LIC_FILES_CHKSUM = "file://${WORKDIR}/copyright;md5=608bed987af1b677f1378e29e487
 
 inherit allarch
 
-DEPENDS += "u-boot-eng-fw-utils"
+#DEPENDS += "u-boot-eng-fw-utils"
 
 SRC_URI = "file://prboot.sh \
            file://prfs.sh \

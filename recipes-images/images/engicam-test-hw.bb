@@ -69,14 +69,3 @@ IMAGE_INSTALL_append = " \
 	evtest \
 "
 
-#ALSA PACKAGES
-IMAGE_INSTALL_append = " \
-	alsa-lib	\                                    
-	alsa-oss	\
-	alsa-plugins	\
-	alsa-state	\                                         
-	alsa-tools	\                                         
-	alsa-utils	\                                         
-	alsa-utils-scripts	\                                                                         
-	imx-alsa-plugins	\                                    
-"
