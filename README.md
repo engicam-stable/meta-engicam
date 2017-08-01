@@ -1,35 +1,68 @@
 meta-engicam
 ============
 
-yocto engicam meta layer
+Yocto engicam meta layer for krogoth yocto
 
-Default parameter built for engicam starterkit. Image available for SODIMM and RQS6Q7 standards modules. Please refer to engicam board user manual for setup a different board.
+__Version:__ 1.0.0
 
-Engicam availbale machine are:
+## Engicam available machine :##
 
-icoreM6duallite/icorem6dual/icorem6quad/icorem6solo/icorem6solo512
-rqsm6dual/rqsm6duallight/rqsm6quad/rqsm6solo
+* geamx6ul
+* gealmx6ull
+* isiot-geamx6ul
+* icoremx6solo
+* icoremx6duallite
+* icoremx6dual
+* icoremx6quad
+* icoremx6solorqs
+* icoremx6dualliterqs
+* icoremx6dualrqs
+* icoremx6quadrqs
+
+## Engicam available images:
+
+* engicam-test-hw
+* engicam-demo-qt
 
 
-Engicam images:
+__Before start :__
 
-engicam-dev-fb-qt5
-engicam-dev-fb-qt5-demo
-engicam-image-minimal-nand
-engicam-image-minimal-mtdutils
-engicam-image-gstreamer
-core-image-minimal
+Install the fsl-bsp-platform.
 
-#Before start
-Before start remind to place the floder to this path in the virtual machine or to replace your meta-engicam previus folder
+Essential Yocto Project host packages are:
+sudo apt-get install gawk wget git-core diffstat unzip texinfo gcc-multilib build-essential chrpath socat libsdl1.2-dev
 
-/home/user/yocto_daisy/fsl-community-bsp/sources/meta-engicam
+i.MX layers host packages for a Ubuntu 12.04 or 14.04 host setup are:
+sudo apt-get install libsdl1.2-dev xterm sed cvs subversion coreutils texi2html docbook-utils python-pysqlite2 help2man make gcc g++ desktop-file-utils \
+libgl1-mesa-dev libglu1-mesa-dev mercurial autoconf automake groff curl lzop asciidoc
 
-After that remind to replace our engicam configuration script 
+i.MX layers host packages for a Ubuntu 12.04 host setup only are:
+sudo apt-get install uboot-mkimage
 
-cp /home/user/yocto_daisy/fsl-community-bsp/ sources/meta-engicam/tools/engicam-setup-environment /home/user/yocto_daisy/fsl-community-bsp/
+i.MX layers host packages for a Ubuntu 14.04 host setup only are:
+sudo apt-get install u-boot-tools
 
-#Building an image
+mkdir ~/bin (this step may not be needed if the bin folder already exists)
+curl http://commondatastorage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
+chmod a+x ~/bin/repo
+export PATH=~/bin:$PATH
+
+git config --global user.name "Your Name"
+git config --global user.email "Your Email"
+git config --list
+
+mkdir fsl-release-bsp
+cd fsl-release-bsp
+repo init -u git://git.freescale.com/imx/fsl-arm-yocto-bsp.git -b imx-4.1-krogoth
+repo sync
+
+after repo tool end all tasks copy the meta-engicam  layer on sources folder.
+
+
+## Quick start
+
+### How to build image :
+
 Create or open an existing build environment
 
 MACHINE=<icoreM6 machine name> sources engicam-setup-environment <build directory>
@@ -40,88 +73,110 @@ bitbake <image name>
 
 The result of building process will be added in tmp/deploy/images/<machine name>
 
-#Flash on sdcard:
+### Flash sdcard card image:
 
-sudo dd if=imagename.sdcard of=/dev/sdXX  bs=1M && sync
+sudo dd if=imagename.sdcard of=/dev/sdX  bs=10M && sync
 
 example:
-sudo dd if=engicam-image-gstreamer-icorem6solo.sdcard of=/dev/sdb  bs=1M && sync
+sudo dd if=engicam-test-hw-icorem6solo.sdcard of=/dev/sdb  bs=10M && sync
 
 
-#Flash on nand
+## Flash nand image
 
-create and write an sdcard for nand programming with command:
 
-bitbake engicam-image-minimal-mtdutils
-sudo dd if=engicam-image-minimal-mtdutils.sdcard of=/dev/sdb  bs=1M && sync
+### Before start
 
-after that, create a nand flash image , es. bitbake engicam-image-minimal-nand (remenber to set the UBOOT_CONFIG = "nand" on the machine file) and copy the files u-boot.bin, uImage, .dtb and rootfs.tar.bz2 in the sd card filesystem partition 
+Create and write a sdcard wth engicam-test-hw:
 
-boot the board by sdcard, at hte end of the boot run the program script:
+bitbake engicam-test-hw
+sudo dd if=engicam-test-hw.sdcard of=/dev/sdb  bs=10M && sync
 
-prboot.sh
-prkernel.sh
-prfs.sh
+after that, create flash image , es.
+bitbake engicam-demo-qt (remenber to set the UBOOT_CONFIG = "nand" on the machine file)
 
-Or following this instruction for having additional details about the writing procedure
+and copy the files:
+* u-boot.imx
+* uImage
+* starterkit.dtb
+* rootfs.tar.bz2
 
-#programming u-boot
+in the sd card filesystem partition.
 
-pad the uboot image with the dd command:
+## Programmind nand flash
 
-dd if= u-boot.bin of=/mnt/u-boot_my.imx bs=512 seek=2 
+### Programming u-boot on nand flash:
 
-and flash it:
+1. boot linux
+2. copy the uImage kernel file on target
+3. pad the uboot image with the dd command
+
+##shell##
+dd if= u-boot.imx of=/mnt/u-boot_my.imx bs=512 seek=2
+#########
+
+4. now flash the padded u-boo with command :
+
+##shell##
 flash_erase /dev/mtd0 0 0
 kobs-ng init -v /mnt/u-boot_my.imx
+#########
 
+### Programming kernel on nand flash:
 
-#kernel programming
+1. boot linux
+2. copy the uImage kernel file on target
+3. on terminal launch the following command :
+
+##shell##
 flash_erase /dev/mtd1 0 0
 nandwrite /dev/mtd1 -p uImage
+#########
 
-#kernel device tree programming
+### Programming devicetree on nand flash:
+1. boot linux
+2. copy the _device tree file.dtb_ on target
+3. on terminal launch the following command :
+
+##shell##
 flash_erase /dev/mtd2 0 0
 nandwrite /dev/mtd2 -p  device_tree_file.dtb
+#########
 
-#rootfs programming: 
+### Programming rootfs on nand flash:
+1. boot linux
+2. copy the  on target
+3. on terminal launch the following command :
+
+##shell##
 ubiformat /dev/mtd3
 ubiattach /dev/ubi_ctrl -m 3
 ubimkvol /dev/ubi0 -N rootfs -s240000000
 mkdir /rootfs
 mount -t ubifs ubi0:rootfs /rootfs
-tar xvf rootfs.tar.bz2 -C /rootfs 
+tar xvf rootfs.tar.bz2 -C /rootfs
 sync
+#########
 
-reboot the system by nand
+________________________________________________________________________________
 
-#u-boot bootcmd SODIMM
-In the u-boot bootloader are available two default bootargs and bootcmd for run the kernel and read the filesystem from SD card or NAND memory. 
-Type from the u-boot promt the command "run bootcmd_mmc" from read fs and kernel from the SD card or type run "bootcmd_ubi for" for read fs and kernel from nand.
+## Nand flash programming from u-boot
 
-If you build your YOCTO image in sd configuration you will atuomatically read it form sd otherwhise you will automatically read it from nand memory. But if you would like to switch you can stop in the u-boot prompt and switch between the two mode.
-
-#u-boot bootcmd RQS6Q7
-At the same time on RQS7Q7 modules you can switch between external SD card and internal eMMC memory. You can switch between the two mode by type in u-boot promt this two command "run bootcmd_mmc" and "run bootcmd_emmc"
-If you open or close the jumper you will automatically boot from external sd if you close the jumper and if you keep the jumper open by internal eMMC memory.
-
-============
-#Nand flash programming from u-boot
+Check the u-boot variables mtdids and mtdpars.
 
 set mtdids 'nand0=gpmi-nand'
 set mtdparts 'mtdparts=gpmi-nand:4m(boot),8m(kernel),1m(dtb),-(rootfs)'
 
-#uImage
+### Programming kernel
 tftp 12000000 uImage
 nand erase 0x00400000 0x00800000
 nand write 12000000 0x00400000 0x00800000
 
-#DTB:
+### Programming device tree
 tftp 12000000 uImage.dtb
 nand erase 0x00c00000 0x00100000
 nand write 12000000 0x00c00000 0x00100000
 
-#FS:
+### Programming root filesystem
 nand erase.part rootfs
 tftp 12000000 rootfs.ubifs
 ubi part rootfs
@@ -130,6 +185,40 @@ ubi write 12000000 rootfs ${filesize}
 ubifsmount ubi0:rootfs
 ubifsls
 
-============
-For all other information please refer to Engicam YOCTO BSP manual
+# SDK generation
 
+bitbake engicam-demo-qt -c populate_sdk
+
+#Install the toolchain
+./tmp/deploy/sdk/poky-glibc-x86_64-engicam-demo-qt-cortexa9hf-neon-toolchain-2.1.1.sh
+using the default directory
+
+________________________________________________________________________________
+
+### Programming i.Coremx6 1.5
+
+### Flash sdcard card image:
+
+sudo dd if=imagename.sdcard of=/dev/sdX  bs=10M && sync
+
+example:
+sudo dd if=engicam-test-hw-icorem6solo.sdcard of=/dev/sdb  bs=10M && sync
+
+### Copy operating system on sdcard :
+sudo cp uImage /media/hostname/a1418232-4ab3-4353-a5b0-15d4f32a8b62/
+sudo cp <machine name>-icore-mipi.dtb /media/hostname/a1418232-4ab3-4353-a5b0-15d4f32a8b62/
+sudo cp rootfs.tar.bz2 /media/hostname/a1418232-4ab3-4353-a5b0-15d4f32a8b62/
+sudo cp u-boot-emmc-2016.07-r0.imx /media/hostname/a1418232-4ab3-4353-a5b0-15d4f32a8b62/u-boot.imx
+
+### Starting operating system by sdcard:
+1.Close the connetctor JM1 on the carrier
+2.Insert sdcard in the carrier board
+3.Power on system
+4.To stop in the u-boot by pressing any key on the keyboard
+5.setenv fdt_file icoremx6dl-icore-mipi.dtb
+6.boot
+
+### Programming module:
+emmc_fs_ker_dtb.sh / <machine name>-icore-mipi.dtb -p
+emmc_boot.sh /
+ 

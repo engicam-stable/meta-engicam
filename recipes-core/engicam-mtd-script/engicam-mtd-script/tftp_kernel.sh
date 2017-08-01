@@ -1,28 +1,43 @@
+#!/bin/sh
+
+FILETOW=uImage
+
+print_help() {
+   echo "Usage: "
+   echo "$0 <FILE NAME>"
+   echo "If FILE NAME is not specified try with $FILETOW"
+}
+
+if [ -z "$1" ]
+then
+    echo "No file specified ... using default "
+else
+    if [ $1 == "-h" ]
+    then
+      	print_help
+      	exit 0
+    else
+        FILETOW=$1
+    fi
+fi
+
 if env | grep -q ^serverip=; then
-	tftp -g -r uImage -l uImage $serverip
-	if [ -f uImage ]; then
-	 echo "Download uImage"
-	 tftp -g -r uImage.dtb -l uImage.dtb $serverip
-	 if [ -f uImage.dtb ]; then
-		echo "Download uImage.dtb"
+	echo "Download uImage wait a while..."
+	tftp -g -r $FILETOW  $serverip
+  if [ $? -eq 1 ]; then
+     echo "TFTP Error check network config"
+     exit
+  fi
 
-		#kernel programming:
-		flash_erase /dev/mtd1 0 0
-		nandwrite /dev/mtd1 -p uImage
-
-		#kernel device tree programming:
-		flash_erase /dev/mtd2 0 0
-		nandwrite /dev/mtd2 -p  uImage.dtb
-
-		rm uImage
-		rm uImage.dtb
-	 else
-		rm uImage
-		echo "Unable to download uImage.dtb"
-	 fi
-	else
-	 echo "Unable to download uImage"
-	fi
+  if [ -f $FILETOW ]; then
+  		#kernel device tree programming:
+  		echo "kernel programming..."
+  		flash_erase /dev/mtd1 0 0
+  		nandwrite /dev/mtd1 -p  $FILETOW
+      echo "done"
+  else
+  		echo "Unable to download $FILETOW"
+  fi
 else
 	echo "Serverip not setted:"
 	echo "    export serverip=192.168.XXX.XXX"

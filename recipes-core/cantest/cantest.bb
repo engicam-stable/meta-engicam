@@ -3,7 +3,7 @@ DESCRIPTION = "This package provides basic fuction for cantest programming"
 LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://${WORKDIR}/copyright;md5=3dd6192d306f582dee7687da3d8748ab"
 SECTION = "console/tools"
-DEPENDS = "linux-imx"
+DEPENDS = "virtual/kernel"
 PR = "r1"
 
 SRC_URI = "file://can.h \
