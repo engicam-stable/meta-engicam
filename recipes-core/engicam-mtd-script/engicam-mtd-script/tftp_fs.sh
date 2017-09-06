@@ -33,7 +33,7 @@ if env | grep -q ^serverip=; then
 	if [ -f $FILETOW ]; then
 		ubiformat /dev/mtd3
 		ubiattach /dev/ubi_ctrl -m 3
-		if cat /proc/mtd | grep -q 1f500000; then
+		if cat /proc/mtd | grep -q 1f300000; then
 			ubimkvol /dev/ubi0 -N rootfs -s495000000
 		else
 			ubimkvol /dev/ubi0 -N rootfs -s240000000
