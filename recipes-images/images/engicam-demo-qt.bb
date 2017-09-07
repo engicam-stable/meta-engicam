@@ -20,7 +20,7 @@ IMAGE_INSTALL_append_mx6 = " \
 
 #PACKAGES QT
 IMAGE_INSTALL_append_mx6 = " \
-    	qtbase-dev \
+   	qtbase-dev \
 	qtbase-mkspecs \
 	qtbase-plugins \
 	qtbase-staticdev \
@@ -59,6 +59,7 @@ IMAGE_INSTALL_append_mx6ul = " \
 	qtbase-mkspecs \
 	qtbase-plugins \
 	qtbase-staticdev \
+	qtgraphicaleffects \	
 	qtdeclarative-dev \
 	qtdeclarative-mkspecs \
 	qtdeclarative-qmlplugins \
@@ -90,6 +91,10 @@ IMAGE_INSTALL_append += " \
 	tslib-conf \
 	tslib-tests \
 	tslib-calibrate \
+"
+#fonts
+IMAGE_INSTALL_append += " \
+	packagegroup-fonts-truetype \
 "
 
 IMAGE_INSTALL_remove ="qt3d nativesdk-qt3d qt3d-native ruby-native"

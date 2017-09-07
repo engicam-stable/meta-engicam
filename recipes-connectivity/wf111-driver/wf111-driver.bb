@@ -14,7 +14,7 @@ do_compile () {
     cd ${WORKDIR}/wf111-linux-driver_5.2.2-r2_armv7-a    
     unset LDFLAG    
     echo ${EXTRA_CFLAGS}
-    make install_static KDIR=${STAGING_KERNEL_BUILDDIR} ARCH=arm  CROSS_COMPILE=arm-poky-linux-gnueabi-
+    make install_static KDIR=${STAGING_KERNEL_BUILDDIR} ARCH=arm  CROSS_COMPILE=arm-fslc-linux-gnueabi-
 }
 
 do_install (){

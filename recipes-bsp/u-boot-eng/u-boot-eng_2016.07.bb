@@ -12,9 +12,8 @@ LIC_FILES_CHKSUM = "file://Licenses/README;md5=a2c678cfd4a4d97135585cad908541c6"
 
 PROVIDES += "u-boot"
 
-SRC_URI = "git://github.com/engicam-stable/u-boot-eng-2016.07.git;protocol=git;branch=som_release"
+include u-boot-eng.inc
 
-SRCREV = "a82d1a81e39e359fdfa613a734f1cf3eb36b9ee2"
 
 S = "${WORKDIR}/git"
 

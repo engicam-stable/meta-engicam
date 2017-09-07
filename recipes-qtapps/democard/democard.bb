@@ -4,7 +4,7 @@ SECTION = "applications"
 LICENSE = "CLOSED"
 
 DEPENDS += "qtbase qtdeclarative"
-RDEPENDS_${PN} = "qtdeclarative-qmlplugins qtgraphicaleffects-qmlplugins"
+RDEPENDS_${PN} = "qtdeclarative-qmlplugins qtgraphicaleffects"
 
 SRC_URI = " \
 	file://democard-1.0 \

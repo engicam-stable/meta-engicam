@@ -7,10 +7,10 @@ require recipes-kernel/linux/linux-imx.inc
 require recipes-kernel/linux/linux-dtb.inc
 
 # Put a local version until we have a true SRCREV to point to
-SRC_URI = "git://github.com/engicam-stable/engicam-4.1-2.0.x-imx.git;protocol=git;branch=som-release \
+SRC_URI = "git://github.com/engicam-stable/engicam-linux-fslc.git;protocol=git;branch=som_release \
            file://defconfig"
 
-SRCREV = "a86f3af0367cf7e5f9fbaa26ef2937a64f368012"
+SRCREV = "22d706887f8c1556dcd22b1ff00fb9d76ea65394"
 
 S = "${WORKDIR}/git"
 

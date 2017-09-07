@@ -10,7 +10,7 @@ SERIAL_CONSOLE = "115200 ttymxc3"
 MACHINE_FEATURES += "wifi"
 KERNEL_IMAGETYPE = "uImage"
 
-PREFERRED_PROVIDER_virtual/kernel = "linux-engicam-imx"
+PREFERRED_PROVIDER_virtual/kernel = "engicam-linux-fslc"
 PREFERRED_PROVIDER_u-boot = "u-boot-eng"
 PREFERRED_PROVIDER_virtual/bootloader = "u-boot-eng"
 

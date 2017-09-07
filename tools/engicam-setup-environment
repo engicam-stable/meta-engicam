@@ -106,7 +106,7 @@ if [ -z "$SDKMACHINE" ]; then
 fi
 
 if [ -z "$DISTRO" ]; then
-    DISTRO='poky'
+    DISTRO='fslc-framebuffer'
 fi
 
 OEROOT=$PWD/sources/poky
@@ -155,6 +155,7 @@ if [ ! -e conf/local.conf.sample ]; then
 
 BB_NUMBER_THREADS = '$NCPU'
 PARALLEL_MAKE = '-j $NCPU'
+PACKAGE_CLASSES = "package_ipk"
 
 DL_DIR ?= "\${BSPDIR}/downloads/"
 
@@ -162,6 +163,7 @@ UBOOT_CONFIG="sd"
 
 PACKAGECONFIG_append_pn-qtbase = " tslib "
 PACKAGECONFIG_append_pn-qtbase = " linuxfb "
+PACKAGECONFIG_append_pn-qtbase = " fontconfig "
 
 EOF
 
@@ -169,6 +171,10 @@ if [ "$MACHINE" == "geamx6ul" ] || [ "$MACHINE" == "isiot-geamx6ul" ] || [ "$MAC
     cat >> conf/local.conf <<EOF
 IMAGE_ROOTFS_SIZE = "2097152"
 IMAGE_OVERHEAD_FACTOR = "1.0"
+PACKAGECONFIG_remove_pn-qtbase  = " gl "
+PACKAGECONFIG_remove_pn-qtbase  = " gles2 "
+QT_CONFIG_FLAGS_remove = " -eglfs " 
+QT_CONFIG_FLAGS_append =" -no-opengl "
 DISTRO_FEATURES_remove = " x11 wayland opengl gl"
 STARTUPDEMO = "resistive"
 EOF
@@ -229,7 +235,7 @@ EOF
 
     sleep 4
 
-    more -d $CWD/sources/meta-fsl-arm/EULA
+    more -d $CWD/sources/meta-freescale/EULA
     echo
     REPLY=
     while [ -z "$REPLY" ]; do
@@ -265,10 +271,8 @@ You can now run 'bitbake <target>'
 
 Common targets are:
     core-image-minimal
-    meta-toolchain
-    meta-toolchain-sdk
-    adt-installer
-    meta-ide-support
+    engicam-demo-qt
+    engicam-test-hw
 
 EOF
 

@@ -7,10 +7,14 @@ __Version:__ 1.0.0
 
 ## Engicam available machine :##
 
+* geamx6ul
+* isiot-geamx6ul
+* gealmx6ull
 * icoremx6solo
 * icoremx6duallite
 * icoremx6dual
 * icoremx6quad
+* microgea
 
 
 ## Engicam available images:
