@@ -16,6 +16,13 @@ __Version:__ 1.0.0
 * icoremx6quad
 * microgea
 
+## NOTE ##
+
+please check the
+
+doc/test 
+
+folder for supported peripherals and boards
 
 ## Engicam available images:
 
@@ -43,7 +50,11 @@ MACHINE=<icoreM6 machine name> sources engicam-setup-environment <build director
 
 Accept the license and then build the image
 
-bitbake <image name>
+bitbake __image name__
+
+example:
+
+bitbake engicam-test-hw
 
 The result of building process will be added in tmp/deploy/images/<machine name>
 
@@ -52,7 +63,7 @@ The result of building process will be added in tmp/deploy/images/<machine name>
 sudo dd if=imagename.sdcard of=/dev/sdXX  bs=1M && sync
 
 example:
-sudo dd if=engicam-image-gstreamer-icorem6solo.sdcard of=/dev/sdb  bs=1M && sync
+sudo dd if=engicam-test-hw.sdcard of=/dev/sdb  bs=1M && sync
 
 
 ## Flash nand image
@@ -69,7 +80,7 @@ sudo dd if=engicam-test-hw.sdcard of=/dev/sdb  bs=1M && sync
 
 after that, create flash image , es.
 ```
-bitbake engicam-demo-qt (remenber to set the UBOOT_CONFIG = "nand" on the machine file)
+bitbake engicam-demo-qt (remember to set the UBOOT_CONFIG = "nand" on the machine file)
 ```
 
 and copy the files:

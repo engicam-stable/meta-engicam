@@ -15,7 +15,7 @@ USE_RUBY = " \
     qtquick1-qmlplugins \
     qttranslations-qtquick1 \
     qtwebkit-dev \
-    qtwebkit-mkspecs \ 
+    qtwebkit-mkspecs \
 "
 
 # Requires Wayland to work
@@ -36,7 +36,6 @@ RDEPENDS_${PN} += " \
     packagegroup-core-standalone-sdk-target \
     libsqlite3-dev \
     qtbase-dev \
-    qtbase-fonts \
     qtbase-mkspecs \
     qtbase-plugins \
     qtbase-staticdev \

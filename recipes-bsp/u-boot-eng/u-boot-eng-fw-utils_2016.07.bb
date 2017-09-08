@@ -9,6 +9,7 @@ include u-boot-eng.inc
 S = "${WORKDIR}/git"
 
 inherit fsl-u-boot-localversion
+SRC_URI += "file://default-gcc.patch"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 COMPATIBLE_MACHINE = "(mx6|mx6ul)"
@@ -16,8 +17,10 @@ COMPATIBLE_MACHINE = "(mx6|mx6ul)"
 S = "${WORKDIR}/git"
 
 INSANE_SKIP_${PN} = "already-stripped"
-EXTRA_OEMAKE_class-target = 'CROSS_COMPILE=${TARGET_PREFIX} CC="${CC} ${CFLAGS} ${LDFLAGS}" V=1'
+
+EXTRA_OEMAKE_class-target = 'CROSS_COMPILE=${TARGET_PREFIX} CC="${CC} ${CFLAGS} ${LDFLAGS}" HOSTCC="${BUILD_CC} ${BUILD_CFLAGS} ${BUILD_LDFLAGS}" V=1'
 EXTRA_OEMAKE_class-cross = 'ARCH=${TARGET_ARCH} CC="${CC} ${CFLAGS} ${LDFLAGS}" V=1'
+
 
 inherit uboot-config
 

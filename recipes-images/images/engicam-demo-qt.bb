@@ -5,44 +5,54 @@ LICENSE = "MIT"
 inherit core-image
 inherit distro_features_check
 inherit populate_sdk
-inherit populate_sdk_${@bb.utils.contains('MACHINE', 'geam6ul', 'qt5_geam6ul', 'qt5_icore', d)}
+inherit populate_sdk_${@bb.utils.contains('MACHINE', 'icoremx6', 'qt5_icore', 'qt5_geam6ul', d)}
 
 EXTRA_IMAGE_FEATURES = " debug-tweaks ssh-server-openssh tools-debug \
 			"
-
-###############RECIPES iMX6##########################
-
-SOC_IMAGE_INSTALL_mx6 = "packagegroup-fsl-tools-gpu kernel-module-imx-gpu-viv"
-
-IMAGE_INSTALL_append_mx6 = " \
-  	firmware-imx \
-"
-
-#PACKAGES QT
-IMAGE_INSTALL_append_mx6 = " \
-   	qtbase-dev \
+IMAGE_INSTALL_append  = " \
+	qtbase-dev \
 	qtbase-mkspecs \
 	qtbase-plugins \
 	qtbase-staticdev \
-	qtconnectivity-dev \
-	qtconnectivity-mkspecs \
-	qtconnectivity-qmlplugins \
+	packagegroup-qt5-qtcreator-debug \
 	qtdeclarative-dev \
 	qtdeclarative-mkspecs \
+	qtdeclarative-qmlplugins \
 	qtdeclarative-staticdev \
-	qtgraphicaleffects-qmlplugins \
-	qtimageformats-dev \
 	qtimageformats-plugins \
-	qtscript-dev \
-	qtscript-mkspecs \
-	qtmultimedia \
 	qtsvg-dev \
 	qtsvg-mkspecs \
 	qtsvg-plugins \
 	qtxmlpatterns-dev \
 	qtxmlpatterns-mkspecs \
-	packagegroup-qt5-qtcreator-debug \
 	engicam-emmc-script \
+	tslib \
+	evtest \
+	tslib-conf \
+	tslib-tests \
+	tslib-calibrate \
+	packagegroup-fonts-truetype \
+	binutils \
+	psplash \
+	engicam-mtd-script \
+	mtd-utils imx-kobs mtd-utils-ubifs \
+	qtimageformats-dev \
+	u-boot-eng-fw-utils \
+"
+
+###############RECIPES iMX6##########################
+
+IMAGE_INSTALL_append_icoremx6 = " \
+  packagegroup-fsl-tools-gpu kernel-module-imx-gpu-viv \
+  firmware-imx \
+	qtconnectivity-dev \
+	qtconnectivity-mkspecs \
+	qtconnectivity-qmlplugins \
+	qtgraphicaleffects-qmlplugins \
+	qtimageformats-plugins \
+	qtscript-dev \
+	qtscript-mkspecs \
+	qtmultimedia \
 	packagegroup-fsl-gstreamer1.0-full \
 	${@bb.utils.contains('STARTUPDEMO', 'resistive', ' democard engicam-startup-demo-resistive', '', d)} \
 	${@bb.utils.contains('STARTUPDEMO', 'capacitive', ' democard engicam-startup-demo-capacitive', '', d)} \
@@ -53,48 +63,29 @@ IMAGE_INSTALL_append_mx6 = " \
 ###############RECIPES GEAM6UL##############
 
 #PACKAGES QT
-IMAGE_INSTALL_append_mx6ul = " \
-	packagegroup-qt5-qtcreator-debug \
-	qtbase-dev \
-	qtbase-mkspecs \
-	qtbase-plugins \
-	qtbase-staticdev \
-	qtgraphicaleffects \	
-	qtdeclarative-dev \
-	qtdeclarative-mkspecs \
-	qtdeclarative-qmlplugins \
-	qtdeclarative-staticdev \
-	qtimageformats-dev \
-	qtimageformats-plugins \
-	qtsvg-dev \
-	qtsvg-mkspecs \
-	qtsvg-plugins \
-        qtquick1 \
+IMAGE_INSTALL_append_geamx6ul = " \
+  qtquick1 \
 	${@bb.utils.contains('STARTUPDEMO', 'capacitive', ' demogeam6ul engicam-startup-demogeam6ul-cap', '', d)} \
 	${@bb.utils.contains('STARTUPDEMO', 'resistive', ' demogeam6ul engicam-startup-demogeam6ul', '', d)} \
-    "
+"
 
 #################################################
 
-#PACKAGE DEBUG
-IMAGE_INSTALL_append += " \
-	binutils \
-	psplash \
-        engicam-mtd-script \
-        mtd-utils imx-kobs mtd-utils-ubifs \
+#PACKAGES QT
+IMAGE_INSTALL_append_microgea = " \
+	qtgraphicaleffects \
+	qtimageformats-dev \
+  qtquick1 \
+	${@bb.utils.contains('STARTUPDEMO', 'capacitive', ' demogeam6ul engicam-startup-demogeam6ul-cap', '', d)} \
+	${@bb.utils.contains('STARTUPDEMO', 'resistive', ' demogeam6ul engicam-startup-demogeam6ul', '', d)} \
 "
-
-#PACKAGE TSLIB+EVTEST
-IMAGE_INSTALL_append += " \
-	tslib \
-	evtest \
-	tslib-conf \
-	tslib-tests \
-	tslib-calibrate \
-"
-#fonts
-IMAGE_INSTALL_append += " \
-	packagegroup-fonts-truetype \
+#PACKAGES QT
+IMAGE_INSTALL_append_isiot = " \
+	qtgraphicaleffects \
+	qtimageformats-dev \
+  qtquick1 \
+	${@bb.utils.contains('STARTUPDEMO', 'capacitive', ' demogeam6ul engicam-startup-demogeam6ul-cap', '', d)} \
+	${@bb.utils.contains('STARTUPDEMO', 'resistive', ' demogeam6ul engicam-startup-demogeam6ul', '', d)} \
 "
 
 IMAGE_INSTALL_remove ="qt3d nativesdk-qt3d qt3d-native ruby-native"
