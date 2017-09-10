@@ -44,13 +44,6 @@ RDEPENDS_${PN} += " \
     qttranslations-qtconfig \
     qttranslations-qthelp \
     qttranslations-qtconnectivity \
-    qtdeclarative-dev \
-    qtdeclarative-mkspecs \
-    qtdeclarative-plugins \
-    qtdeclarative-qmlplugins \
-    qtdeclarative-staticdev \
-    qttranslations-qmlviewer \
-    qttranslations-qtdeclarative \
     qtenginio-dev \
     qtenginio-mkspecs \
     qtenginio-qmlplugins \
