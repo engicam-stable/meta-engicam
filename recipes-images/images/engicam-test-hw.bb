@@ -41,6 +41,10 @@ IMAGE_INSTALL_append = " \
 	tslib-tests \
 	tslib-calibrate \
 	evtest \
+	alsa-utils \
+	alsa-tools \
+	alsa-state \
+	fbset \
 "
 
 IMAGE_INSTALL_append_icoremx6 = " \
