@@ -11,7 +11,7 @@ Creation of engicam-test-hw image for sdcard booting and same image for nand pro
 
 **Board Type:** Startekit
 
-**SOM Type:**  
+**SOM Type:**  icoremx6solo
 
 --------------------------------------------------------------------------------------------------------
 
@@ -23,14 +23,14 @@ Creation of engicam-test-hw image for sdcard booting and same image for nand pro
 
 | Status  |  Test |
 |---------|-------|
-| OK   |Nand Enviroment saving   |
-| OK   |Sdcard  Enviroment saving |
-| OK   |Emmc  Enviroment saving |
-| OK   |Ethernet  |
-| OK   |Boot from nand   |
-| OK   |Boot from sdcard  |
-| OK   |Boot from emmc  |
-| OK   |Nand flash Programming from ethernet   |
+| OK    |Nand Enviroment saving   |
+| OK    |Sdcard  Enviroment saving |
+| OK    |Emmc  Enviroment saving |
+| OK    |Ethernet  |
+| OK    |Boot from nand   |
+| OK    |Boot from sdcard  |
+| OK    |Boot from emmc  |
+| OK    |Nand flash Programming from ethernet   |
 | N/A   |U-boot logo   |
 
 
@@ -70,31 +70,31 @@ no logo showed
 
 | Status  |  Test |
 |---------|-------|
-|OK  |Ethernet|
-|OK  |MAC Address|
-|OK  |USB|
-|OK  |MMC card|
-|OK  |Display|
+|OK |Ethernet|
+|OK |MAC Address|
+|OK |USB|
+|OK |MMC card|
+|OK |Display|
 |N/A |Second Ethernet|
-|N/A |CMOS Input|
+|TBT |CMOS Input|
 |TBT |UART 232|
 |TBT |UART 485|
 |OK  |Linux Console|
 |TBT |CANBUS1|
 |TBT |CANBUS2|
-|N/A |HDMI|
+|TBT |HDMI|
 |OK  |Touchscreen|
 |OK  |Audio|
 |TBT |USB  OTG|
-|N/A |SATA|
-|N/A |PCI Express|
-|N/A |LVDS 0|
-|N/A |LVDS 1|
+|TBT |SATA|
+|TBT |PCI Express|
+|TBT |LVDS 0|
+|TBT |LVDS 1|
 |OK  |Backlight Control|
 |TBT |Kobs-ng for u-boot programmnig|
-|N/A |Test VPU|
-|N/A |Test GPU|
-|OK  |WF111|
+|OK  |Test VPU| (da mettere cma a 128MB)
+|TBT |Test GPU|
+|TBT |WF111|
 
 **Tests NOTE:**
 
@@ -118,7 +118,7 @@ cmp /mnt/bigfile /mnt/bigfile2
 
 **MMC Card**
 
-mount /dev/mmcblk0p2 /mnt/
+ mount /dev/mmcblk0p2 /mnt/
 dd if=/dev/zero of=/mnt/bigfile bs=1024 count=1024
 
 dd if=/dev/zero of=/mnt/bigfile2 bs=1024 count=1024
@@ -169,7 +169,7 @@ test with 2 starter kit with cantest
 
 **Touchscreen**
 
-With tslib or evtest
+With tslib
 
 **Audio**
 
@@ -186,6 +186,3 @@ gplay of big buck bunny
 
 **Test GPU**
 Launch of demo-qt-application
-
-**Test WF111**
-iwlist wlan0 scanning

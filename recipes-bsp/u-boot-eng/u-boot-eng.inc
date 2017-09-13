@@ -1,4 +1,3 @@
 SRC_URI = "git://github.com/engicam-stable/u-boot-eng-2016.07.git;protocol=git;branch=som_release"
 
-SRCREV = "d45eeaa07c67f288b39967f70eadef1c9fa9e5fd"
-
+SRCREV = "5462768579790785eb8d4a7a0456d0d115ecd04d"

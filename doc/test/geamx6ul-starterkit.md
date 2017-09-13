@@ -27,15 +27,15 @@ Creation of engicam-test-hw image for sdcard booting and same image for nand pro
 
 | Status  |  Test |
 |---------|-------|
-| TBT   |Nand Enviroment saving   |
+| OK   |Nand Enviroment saving   |
 | OK   |Sdcard  Enviroment saving |
-| NA   |Emmc  Enviroment saving |
+| OK   |Emmc  Enviroment saving |
 | OK   |Ethernet  |
-| TBT   |Boot from nand   |
+| OK   |Boot from nand   |
 | OK   |Boot from sdcard  |
-| TBT   |Boot from emmc  |
-| TBT   |Nand flash Programming from ethernet   |
-| NA   |U-boot logo   |
+| OK   |Boot from emmc  |
+| OK   |Nand flash Programming from ethernet   |
+| N/A |U-boot logo   |
 
 
 **Tests NOTE:**
@@ -87,7 +87,7 @@ no logo showed
 |TBT |CANBUS1|
 |TBT |CANBUS2|
 |NA |HDMI|
-|TBT |Audio|
+|OK |Audio|
 |TBT |USB  OTG|
 |NA |SATA|
 |NA |PCI Express|

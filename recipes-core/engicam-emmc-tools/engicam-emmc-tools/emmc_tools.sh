@@ -1,7 +1,7 @@
 #!/bin/bash
 # EMMC programmer
 
-ver="ver. 1.7, 2016-09-08"
+ver="ver. 1.8, 2017-08-10"
 filebytftp=false
 
 function error
@@ -43,11 +43,11 @@ t
 1
 c
 w 
-q" | fdisk /dev/mmcblk1 
+q" | fdisk $1
 error $?
 
 echo "Format emmc"
-mkdosfs /dev/mmcblk1p1
+mkdosfs $1p1
 error $?
 
 sync
@@ -67,37 +67,42 @@ function usage
 	
 	if [ "$1" == "emmc_fs" ];
 	then
-		echo "Usage: ${1}${ext} [-h]  $path"
+		echo "Usage: ${1}${ext} [-h] <emmc_device> $path"
 	fi
 
 	if [ "$1" == "emmc_ker_dtb" ];
 	then
-		echo "Usage: ${1}${ext} [-h]  $path <dtb name>"
+		echo "Usage: ${1}${ext} [-h] <emmc_device> $path <dtb name>"
 	fi
-
+	
+	if [ "$1" == "emmc_fs_ker" ];
+	then
+		echo "Usage: ${1}${ext} [-h] <emmc_device> $path [-p]"
+	fi
+	
 	if [ "$1" == "emmc_fs_ker_dtb" ];
 	then
-		echo "Usage: ${1}${ext} [-h] $path <dtb name> [-p]"
+		echo "Usage: ${1}${ext} [-h] <emmc_device> $path <dtb name> [-p]"
 	fi
 	
 	if [ "$1" == "emmc_ker" ];
 	then
-		echo "Usage: ${1}${ext} [-h] $path"
+		echo "Usage: ${1}${ext} [-h] <emmc_device> $path"
 	fi
 
 	if [ "$1" == "emmc_dtb" ];
 	then
-		echo "Usage: ${1}${ext} [-h] $path <dtb name>"
+		echo "Usage: ${1}${ext} [-h] <emmc_device> $path <dtb name>"
 	fi
 
 	if [ "$1" == "emmc_boot" ];
 	then
-		echo "Usage: ${1}${ext} [-h] $path"
+		echo "Usage: ${1}${ext} [-h] <emmc_device> $path"
 	fi
 	
 	if [ "$1" == "emmc_sdcard" ];
 	then
-		echo "Usage: ${1}${ext} [-h] <path file.sdcard>"
+		echo "Usage: ${1}${ext} [-h] <emmc_device>  <path file.sdcard>"
 	fi
 	
 	if [ "$filebytftp" == true ];
@@ -139,109 +144,112 @@ function check_file
 function write_fs
 {
 	# Format filesystem
-	mkfs.ext4 /dev/mmcblk1p2
+	mkfs.ext4 -F $1p2
 	error $?
 
-	rm -rf /tmp/mmcblk1p2
-	mkdir /tmp/mmcblk1p2
+	tempdir="/tmp/emmc"
+	rm -rf $tempdir
+	mkdir $tempdir
 	
-	echo "Mount /dev/mmcblk1p2"
-	mount /dev/mmcblk1p2 /tmp/mmcblk1p2
+	echo "Mount $1p2"
+	mount $1p2 $tempdir
 	if [ $? -eq 0 ];
 	then
 		
 		echo "Extract filesystem"
-		tar xvf $1 -C /tmp/mmcblk1p2
+		tar xvf $2 -C $tempdir
 	
 		echo "Umount device"
-		umount /tmp/mmcblk1p2
+		umount $tempdir
 		echo "sync"
 		sync
 	
 		echo "Done"
 	else
-		echo "ERROR: Unable to mount /dev/mmcblk1p2"
+		echo "ERROR: Unable to mount $1p2"
 	fi
 	
 	if [ "$filebytftp" == true ];
 	then
-		rm -f $1
+		rm -f $2
 	fi
 
-	rm -rf /tmp/rmmcblk1p2
+	rm -rf $tempdir
 }
 
 function write_ker
 {
-	rm -rf /tmp/mmcblk1p1
-	mkdir /tmp/mmcblk1p1
+	tempdir="/tmp/emmc"
+	rm -rf $tempdir
+	mkdir $tempdir
 	
-	echo "Mount /dev/mmcblk1p1"
-	mount /dev/mmcblk1p1 /tmp/mmcblk1p1
+	echo "Mount $1p1"
+	mount $1p1 $tempdir
 	if [ $? -eq 0 ];
 	then
 		
-		echo "Copy $1"
-		cp $1 /tmp/mmcblk1p1
+		echo "Copy $2"
+		cp $2 $tempdir
 	
 		echo "Umount device"
-		umount /tmp/mmcblk1p1
+		umount $tempdir
 		echo "sync"
 		sync
 	
 		echo "Done"
 	else
-		echo "ERROR: Unable to mount /dev/mmcblk1p1"
+		echo "ERROR: Unable to mount $1p1"
 	fi
 	
 	if [ "$filebytftp" == true ];
 	then
-		rm -f $1
+		rm -f $2
 	fi
 
-	rm -rf /tmp/mmcblk1p1
+	rm -rf $tempdir
 }
 
 function write_dtb
 {
-	rm -rf /tmp/mmcblk1p1
-	mkdir /tmp/mmcblk1p1
+	tempdir="/tmp/emmc"	
+	rm -rf $tempdir
+	mkdir $tempdir
 	
-	echo "Mount /dev/mmcblk1p1"
-	mount /dev/mmcblk1p1 /tmp/mmcblk1p1
+	echo "Mount $1p1"
+	mount $1p1 $tempdir
 	if [ $? -eq 0 ];
 	then
 		
-		echo "Copy $1"
-		cp $1 /tmp/mmcblk1p1
+		echo "Copy $2"
+		cp $2 $tempdir
 	
 		echo "Umount device"
-		umount /tmp/mmcblk1p1
+		umount $tempdir
 		echo "sync"
 		sync
 	
 		echo "Done"
 	else
-		echo "ERROR: Unable to mount /dev/mmcblk1p1"
+		echo "ERROR: Unable to mount $1p1"
 	fi
 	
 	if [ "$filebytftp" == true ];
 	then
-		rm -f $1
+		rm -f $2
 	fi
 
-	rm -rf /tmp/mmcblk1p1
+	rm -rf $tempdir
 }
 
 function write_boot
 {
-	dd if=$1 of=/dev/mmcblk1 bs=512 seek=2
+	dd if=$2 of=$1 bs=512 seek=2
 	error $?
 	sync
 	
 	if [ "$filebytftp" == true ];
 	then
-		rm -f $1
+		rm -f $2
 	fi
 	
 	echo "Done"
@@ -249,7 +257,7 @@ function write_boot
 
 function write_sdcard
 {
-	dd if=$1 | pv | dd of=/dev/mmcblk1 bs=16M
+	dd if=$2 | pv | dd of=$1 bs=16M
 	sync
 	
 	echo "Done"
@@ -301,6 +309,13 @@ then
 	usage $command
 fi
 
+if [ ! -b "$1" ]
+then
+	usage $command
+else
+	DEVICE=$1
+fi
+
 # Check env & sintax
 dtbfile=""
 pathfile="."
@@ -314,23 +329,6 @@ then
 	
 	if grep -q "dtb" <<< "$command" ;
 	then
-		if [ "$1" == "" -o "$1" == "-p" ]; # No dtb name specified
-		then
-			usage $command
-		else
-			dtbfile=$1
-		fi
-	fi
-else
-	if [ "$1" == "" ]; # No path specified
-	then
-		usage $command
-	else
-		pathfile=$1
-	fi
-
-	if grep -q "dtb" <<< "$command" ; 
-	then
 		if [ "$2" == "" -o "$2" == "-p" ]; # No dtb name specified
 		then
 			usage $command
@@ -338,15 +336,25 @@ else
 			dtbfile=$2
 		fi
 	fi
+else
+	if [ "$2" == "" ]; # No path specified
+	then
+		usage $command
+	else
+		pathfile=$2
+	fi
+
+	if grep -q "dtb" <<< "$command" ; 
+	then
+		if [ "$3" == "" -o "$3" == "-p" ]; # No dtb name specified
+		then
+			usage $command
+		else
+			dtbfile=$3
+		fi
+	fi
 fi
 
-# Check block device
-if [ ! -b "/dev/mmcblk1" ];
-then
-	echo "ERROR: device /dev/mmcblk1 not found"
-	exit
-fi
- 
 # Download files 
 if [ "$filebytftp" == true ]; 
 then
@@ -378,7 +386,7 @@ fi
 # Check files
 if [ "$command" == "emmc_sdcard" ];
 then
-	check_file $1
+	check_file $2
 else
 	if [ "${pathfile: -1}" != "/" ];
 	then
@@ -410,33 +418,33 @@ fi
 if grep -q "fs" <<< "$command" ; # Write filestystem
 then
 
-	if [ "$command" == "emmc_fs_ker_dtb" ]; # Prepare emmc
+	if [ "$command" == "emmc_fs_ker_dtb" -o "$command" == "emmc_fs_ker" ]; # Prepare emmc
 	then
-		if [ "$filebytftp" == true -a "$2" == "-p" ] || [ "$filebytftp" == false -a "$3" == "-p" ]; 
+		if [ "$filebytftp" == true -a "$3" == "-p" ] || [ "$filebytftp" == false -a "$4" == "-p" ]; 
 		then
-			create_emmc
+			create_emmc $DEVICE
 		fi
 	fi
 	
-	write_fs "${pathfile}rootfs.tar.bz2"
+	write_fs $DEVICE "${pathfile}rootfs.tar.bz2"
 fi
 
 if grep -q "ker" <<< "$command" ; # Write kernel
 then
-	write_ker "${pathfile}uImage"
+	write_ker $DEVICE "${pathfile}uImage"
 fi
 
 if grep -q "dtb" <<< "$command" ; # Write dtb
 then
-	write_dtb ${pathfile}${dtbfile}
+	write_dtb $DEVICE ${pathfile}${dtbfile}
 fi
 
 if [ "$command" == "emmc_boot" ]; # Write u-boot
 then
-	write_boot "${pathfile}u-boot.imx"
+	write_boot $DEVICE "${pathfile}u-boot.imx"
 fi
 
 if [ "$command" == "emmc_sdcard" ];
 then
-	write_sdcard $1
+	write_sdcard $DEVICE $2
 fi

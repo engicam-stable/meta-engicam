@@ -5,7 +5,7 @@ include conf/machine/include/imx-base.inc
 include conf/machine/include/tune-cortexa7.inc
 
 
-IMAGE_FSTYPES = "tar.bz2 ext4 sdcard"
+IMAGE_FSTYPES = "tar.bz2 ext4 sdcard ubifs"
 
 MACHINE_FEATURES += "wifi"
 KERNEL_IMAGETYPE = "uImage"

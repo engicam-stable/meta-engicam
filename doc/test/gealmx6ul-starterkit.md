@@ -11,7 +11,7 @@ Creation of engicam-test-hw image for sdcard booting and same image for nand pro
 
 **Board Type:** Startekit
 
-**SOM Type:**  
+**SOM Type:**  gealmx6ul
 
 --------------------------------------------------------------------------------------------------------
 
@@ -23,15 +23,15 @@ Creation of engicam-test-hw image for sdcard booting and same image for nand pro
 
 | Status  |  Test |
 |---------|-------|
-| OK   |Nand Enviroment saving   |
-| OK   |Sdcard  Enviroment saving |
-| OK   |Emmc  Enviroment saving |
-| OK   |Ethernet  |
-| OK   |Boot from nand   |
-| OK   |Boot from sdcard  |
-| OK   |Boot from emmc  |
-| OK   |Nand flash Programming from ethernet   |
-| N/A   |U-boot logo   |
+| OK  |Nand Enviroment saving   |
+| OK  |Sdcard  Enviroment saving |
+| N/A  |Emmc  Enviroment saving |
+| OK  |Ethernet  |
+| OK  |Boot from nand   |
+| OK  |Boot from sdcard  |
+| N/A  |Boot from emmc  |
+| OK  |Nand flash Programming from ethernet   |
+| N/A  |U-boot logo   |
 
 
 **Tests NOTE:**
@@ -74,7 +74,7 @@ no logo showed
 |OK  |MAC Address|
 |OK  |USB|
 |OK  |MMC card|
-|OK  |Display|
+|N/A |Display|
 |N/A |Second Ethernet|
 |N/A |CMOS Input|
 |TBT |UART 232|
@@ -83,18 +83,18 @@ no logo showed
 |TBT |CANBUS1|
 |TBT |CANBUS2|
 |N/A |HDMI|
-|OK  |Touchscreen|
+|N/A |Touchscreen|
 |OK  |Audio|
 |TBT |USB  OTG|
 |N/A |SATA|
 |N/A |PCI Express|
 |N/A |LVDS 0|
 |N/A |LVDS 1|
-|OK  |Backlight Control|
+|N/A |Backlight Control|
 |TBT |Kobs-ng for u-boot programmnig|
 |N/A |Test VPU|
 |N/A |Test GPU|
-|OK  |WF111|
+|N/A |WF111|
 
 **Tests NOTE:**
 
