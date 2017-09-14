@@ -11,7 +11,7 @@ Creation of engicam-test-hw image for sdcard booting and same image for nand pro
 
 **Board Type:** Startekit
 
-**SOM Type:**  icoremx6solo
+**SOM Type:**  icoremx6dual
 
 --------------------------------------------------------------------------------------------------------
 
@@ -81,7 +81,7 @@ no logo showed
 |OK  |UART 485|
 |OK  |Linux Console|
 |OK  |CANBUS1|
-|OK |CANBUS2|
+|OK  |CANBUS2|
 |TBT |HDMI|
 |OK  |Touchscreen|
 |OK  |Audio|
@@ -141,9 +141,14 @@ cat /dev/ttymxc1
 
 write some text on terminal
 
+**UART 485**
+test with 2 starter kit test_serial2
+
+test_serial2 -d /dev/ttymxc2 -b 115200
+
 **CANBUS1**
 
-test with 2 stearter kit with cantest
+test with 2 starter kit with cantest
 
  Configure the bit rate on target:
 / # ip link set can0 type can bitrate 125000

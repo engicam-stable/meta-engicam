@@ -141,6 +141,12 @@ cat /dev/ttymxc1
 
 write some text on terminal
 
+**UART 485**
+test with 2 starter kit test_serial2
+
+test_serial2 -d /dev/ttymxc2 -b 115200
+
+
 **CANBUS1**
 
 test with 2 stearter kit with cantest

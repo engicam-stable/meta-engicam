@@ -11,7 +11,7 @@ Creation of engicam-test-hw image for sdcard booting and same image for nand pro
 
 **Board Type:** Startekit
 
-**SOM Type:**  icoremx6solo
+**SOM Type:**  icoremx6quad
 
 --------------------------------------------------------------------------------------------------------
 
@@ -81,7 +81,7 @@ no logo showed
 |OK  |UART 485|
 |OK  |Linux Console|
 |OK  |CANBUS1|
-|OK |CANBUS2|
+|OK  |CANBUS2|
 |TBT |HDMI|
 |OK  |Touchscreen|
 |OK  |Audio|
