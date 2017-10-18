@@ -5,7 +5,7 @@ LICENSE = "MIT"
 inherit core-image
 inherit distro_features_check
 inherit populate_sdk 
-inherit populate_sdk_${@base_contains('MACHINE', 'geam6ul', 'qt5_geam6ul', 'qt5_icore', d)}
+inherit populate_sdk_${@base_contains('MACHINE', 'geamx6ul', 'qt5_geam6ul', 'qt5_icore', d)}
 
 EXTRA_IMAGE_FEATURES = " debug-tweaks ssh-server-openssh tools-debug \			
 			"
