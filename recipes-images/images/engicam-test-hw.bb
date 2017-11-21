@@ -36,7 +36,7 @@ IMAGE_INSTALL_append = " \
 	wf111-driver \
 	wireless-tools \
 	wpa-supplicant \
-  tslib \
+        tslib \
 	tslib-conf \
 	tslib-tests \
 	tslib-calibrate \
@@ -55,9 +55,18 @@ IMAGE_INSTALL_append_icoremx6 = " \
 "
 
 IMAGE_INSTALL_append_isiot = " \
-  engicam-isiot-startup \
+	engicam-isiot-startup \
 	lwb-bcm4343w-fw \
 	bluez5 \
 	brcm-patchram-plus \
 	obexftp \
 "
+
+IMAGE_INSTALL_append_epd = " \
+	epdc-test \
+	ffmpeg \
+	file \
+	firmware-imx-epdc \
+	engicam-epd-startup \
+" 
+
