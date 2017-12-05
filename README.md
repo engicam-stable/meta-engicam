@@ -146,6 +146,12 @@ sync
 
 ________________________________________________________________________________
 
+## For new nand Micron
+
+Add the following functionality in the local.conf file of the build directory
+
+NANDREV = "2"
+
 ## Nand flash programming from u-boot
 
 Check the u-boot variables mtdids and mtdpars.

@@ -66,7 +66,7 @@ IMAGE_INSTALL_append_epd = " \
 	epdc-test \
 	ffmpeg \
 	file \
-	firmware-imx-epdc \
+	firmware-epdc \
 	engicam-epd-startup \
 " 
 
