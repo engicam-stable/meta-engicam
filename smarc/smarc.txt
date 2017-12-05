@@ -1,0 +1,17 @@
+# U-BOOT
+1) Utilizzare versione 2014 
+
+
+# KERNEL
+Periferiche abilitate
+
+1) USB
+2) USB-OTG
+3) LAN1
+4) LAN2
+5) RS232
+6) CAN1
+7) CAN2
+8) SDCARD
+9) EMMC
+

@@ -179,8 +179,9 @@ ubi write 12000000 rootfs ${filesize}
 ubifsmount ubi0:rootfs
 ubifsls
 ```
-# SDK generation
+# BOOTARGS MICROGEA-EPD
 
-```
-bitbake engicam-demo-qt -c populate_sdk
-```
+setenv fdt_file "microgea-mx6ull-epd.dtb"
+setenv video_type "mxcepdcfb:ED133UT2C1,bpp=16"
+setenv lcd_panel "tce_prevent tps6518x:pass=2,vcom=-1265000"
+setenv bootargs_base "setenv bootargs_tmp console=ttymxc0,115200 cma=64M video=${video_type},${lcd_panel}"

@@ -157,6 +157,8 @@ BB_NUMBER_THREADS = '$NCPU'
 PARALLEL_MAKE = '-j $NCPU'
 PACKAGE_CLASSES = "package_ipk"
 
+LICENSE_FLAGS_WHITELIST = "commercial license"
+
 DL_DIR ?= "\${BSPDIR}/downloads/"
 
 UBOOT_CONFIG="sd"
@@ -167,7 +169,7 @@ PACKAGECONFIG_append_pn-qtbase = " fontconfig "
 
 EOF
 
-if [ "$MACHINE" == "geamx6ul" ] || [ "$MACHINE" == "isiot-geamx6ul" ] || [ "$MACHINE" == "geamx6ull" ] || [ "$MACHINE" == "microgea" ]; then
+if [ "$MACHINE" == "geamx6ul" ] || [ "$MACHINE" == "isiot-geamx6ul" ] || [ "$MACHINE" == "geamx6ull" ] || [ "$MACHINE" == "microgea" ] || [ "$MACHINE" == "microgea-epd" ]; then
     cat >> conf/local.conf <<EOF
 IMAGE_ROOTFS_SIZE = "2097152"
 IMAGE_OVERHEAD_FACTOR = "1.0"
