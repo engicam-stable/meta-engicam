@@ -77,10 +77,10 @@ no logo showed
 |N/A |Display|
 |N/A |Second Ethernet|
 |N/A |CMOS Input|
-|TBT |UART 232|
+|OK  |UART 232|
 |TBT |UART 485|
 |OK  |Linux Console|
-|TBT |CANBUS1|
+|OK  |CANBUS1|
 |TBT |CANBUS2|
 |N/A |HDMI|
 |N/A |Touchscreen|
@@ -140,6 +140,13 @@ read on terminal
 cat /dev/ttymxc1
 
 write some text on terminal
+
+**UART 485**
+test with 2 starter kit test_serial2
+
+test_serial2 -d /dev/ttymxc7 -b 115200
+
+
 
 **CANBUS1**
 

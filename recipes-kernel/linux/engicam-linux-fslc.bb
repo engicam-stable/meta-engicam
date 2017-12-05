@@ -10,7 +10,7 @@ require recipes-kernel/linux/linux-dtb.inc
 SRC_URI = "git://github.com/engicam-stable/engicam-linux-fslc.git;protocol=git;branch=som_release \
            file://defconfig"
 
-SRCREV = "982b0c0b04870ca2c5408e81e67c8ec9386620cb"
+SRCREV = "2fcd9c8b2a57b45efa34e7557ffe3db1552ce13e"
 
 S = "${WORKDIR}/git"
 
@@ -20,10 +20,12 @@ S = "${WORKDIR}/git"
 
 KERNEL_EXTRA_ARGS_mx6 += "LOADADDR=0x10008000"
 
+KERNEL_EXTRA_ARGS_mx6sx += "LOADADDR=0x80008000"
+
 KERNEL_EXTRA_ARGS_mx6ull += "LOADADDR=0x80008000"
 
 KERNEL_EXTRA_ARGS_mx6ul += "LOADADDR=0x80008000"
 
 LINUX_VERSION_EXTENSION="-engicam"
 
-COMPATIBLE_MACHINE = "(mx6|mx6ul)"
+COMPATIBLE_MACHINE = "(mx6|mx6ul|mx6sx)"

@@ -80,8 +80,8 @@ no logo showed
 |TBT |UART 232|
 |TBT |UART 485|
 |OK  |Linux Console|
-|TBT |CANBUS1|
-|TBT |CANBUS2|
+|ON  |CANBUS1|
+|N/A |CANBUS2|
 |N/A |HDMI|
 |OK  |Touchscreen|
 |OK  |Audio|
