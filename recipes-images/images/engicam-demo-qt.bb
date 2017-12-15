@@ -60,6 +60,26 @@ IMAGE_INSTALL_append_icoremx6 = " \
 
 ############################################
 
+###############RECIPES iMX6SX##########################
+
+IMAGE_INSTALL_append_mx6sx = " \
+  firmware-imx \
+	qtconnectivity-dev \
+	qtconnectivity-mkspecs \
+	qtconnectivity-qmlplugins \
+	qtgraphicaleffects-qmlplugins \
+	qtimageformats-plugins \
+	qtdeclarative-dev \
+	qtdeclarative-mkspecs \
+	qtdeclarative-qmlplugins \
+	qtdeclarative-staticdev \
+	qtscript-dev \
+	qtscript-mkspecs \
+	qtmultimedia \
+	${@bb.utils.contains('STARTUPDEMO', 'resistive', ' democard engicam-startup-demo-resistive', '', d)} \
+	${@bb.utils.contains('STARTUPDEMO', 'capacitive', ' democard engicam-startup-demo-capacitive', '', d)} \
+"
+
 ###############RECIPES GEAM6UL##############
 
 #PACKAGES QT
