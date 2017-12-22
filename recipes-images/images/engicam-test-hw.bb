@@ -33,10 +33,9 @@ IMAGE_INSTALL_append = " \
 	v4l-utils \
 	usbutils \
 	cpufrequtils \
-	wf111-driver \
 	wireless-tools \
 	wpa-supplicant \
-        tslib \
+    tslib \
 	tslib-conf \
 	tslib-tests \
 	tslib-calibrate \
@@ -52,6 +51,7 @@ IMAGE_INSTALL_append_icoremx6 = " \
 	gstreamer1.0-plugins-imx \
 	packagegroup-fsl-gstreamer1.0-full \
 	imx-test \
+	wf111-driver \
 "
 
 IMAGE_INSTALL_append_isiot = " \
@@ -60,6 +60,7 @@ IMAGE_INSTALL_append_isiot = " \
 	bluez5 \
 	brcm-patchram-plus \
 	obexftp \
+	wf111-driver \
 "
 
 IMAGE_INSTALL_append_epd = " \
@@ -68,5 +69,6 @@ IMAGE_INSTALL_append_epd = " \
 	file \
 	firmware-epdc \
 	engicam-epd-startup \
-" 
+	wf111-driver \
+"
 
