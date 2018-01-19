@@ -10,7 +10,7 @@ require recipes-kernel/linux/linux-dtb.inc
 SRC_URI = "git://github.com/engicam-stable/engicam-linux-fslc.git;protocol=git;branch=som_release \
            file://defconfig"
 
-SRCREV = "ebaa2c6ee2642b18b2d47dc0ea640124a8525102"
+SRCREV = "20333afdf8a55836ebd0e3c6da97b82e53cf75a5"
 
 S = "${WORKDIR}/git"
 
