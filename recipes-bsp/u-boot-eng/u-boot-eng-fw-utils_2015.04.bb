@@ -7,7 +7,7 @@ DEPENDS = "mtd-utils"
 
 SRC_URI = "git://github.com/engicam-stable/u-boot-eng-2015.git;protocol=git"
 
-SRCREV = "f7d051c27906602d076baeeb89eb67321499f8b2"
+SRCREV = "0bd2d2744c05ed3a76c2efff4de132fedb61d934"
 
 S = "${WORKDIR}/git"
 
