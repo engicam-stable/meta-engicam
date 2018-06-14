@@ -8,6 +8,8 @@ require recipes-kernel/linux/linux-dtb.inc
 
 # Put a local version until we have a true SRCREV to point to
 SRC_URI = "git://github.com/engicam-stable/engicam-linux-fslc.git;protocol=git;branch=smarc \
+		   file://0001-fixed-alias.patch \
+		   file://0002-added-m4-dts.patch \
            file://defconfig"
 
 SRCREV = "d0231da1a2362674009e1aee5b90bb7497faa8f9"
