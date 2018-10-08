@@ -13,6 +13,11 @@ RDEPENDS_${PN}_icoremx6 = " \
     ${VIRTUAL-RUNTIME_qtcreator-debug-ssh-daemon} \
     openssh-sftp-server \
 "
+RDEPENDS_${PN}_icoremx6sx = " \
+    gdbserver \
+    ${VIRTUAL-RUNTIME_qtcreator-debug-ssh-daemon} \
+    openssh-sftp-server \
+"
 RDEPENDS_${PN}_gea = " \
     gdbserver \
     ${VIRTUAL-RUNTIME_qtcreator-debug-ssh-daemon} \

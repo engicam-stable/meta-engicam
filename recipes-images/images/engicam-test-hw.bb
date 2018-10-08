@@ -35,7 +35,7 @@ IMAGE_INSTALL_append = " \
 	cpufrequtils \
 	wireless-tools \
 	wpa-supplicant \
-    tslib \
+        tslib \
 	tslib-conf \
 	tslib-tests \
 	tslib-calibrate \
@@ -44,6 +44,7 @@ IMAGE_INSTALL_append = " \
 	alsa-tools \
 	alsa-state \
 	fbset \
+	opkg \
 "
 
 IMAGE_INSTALL_append_icoremx6 = " \
@@ -77,5 +78,7 @@ IMAGE_INSTALL_append_microdev = " \
         bluez5 \
         brcm-patchram-plus \
         obexftp \
+	hostapd \
+	ppp \
 "
 

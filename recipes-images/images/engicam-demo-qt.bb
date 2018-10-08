@@ -34,6 +34,7 @@ IMAGE_INSTALL_append  = " \
 	mtd-utils imx-kobs mtd-utils-ubifs \
 	qtimageformats-dev \
 	u-boot-eng-fw-utils \
+	opkg \
 "
 
 ###############RECIPES iMX6##########################
@@ -62,7 +63,7 @@ IMAGE_INSTALL_append_icoremx6 = " \
 
 ###############RECIPES iMX6SX##########################
 
-IMAGE_INSTALL_append_mx6sx = " \
+IMAGE_INSTALL_append_icoremx6sx = " \
   firmware-imx \
 	qtconnectivity-dev \
 	qtconnectivity-mkspecs \
