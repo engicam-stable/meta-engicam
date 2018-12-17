@@ -25,7 +25,7 @@ fi
 if [ -f "$FILETOW" ]
 then
    echo "$FILETOW found."
-   FILETOW=$1
+   #FILETOW=$1
 else
    echo "ERROR $FILETOW not found."
    exit 1
