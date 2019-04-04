@@ -73,7 +73,7 @@ IMAGE_INSTALL_append_epd = " \
 	wf111-driver \
 "
 
-IMAGE_INSTALL_append_microdev = " \
+IMAGE_INSTALL_append = " \
         lwb-bcm4343w-fw \
         bluez5 \
         brcm-patchram-plus \
