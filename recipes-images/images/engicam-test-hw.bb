@@ -61,7 +61,6 @@ IMAGE_INSTALL_append_isiot = " \
 	bluez5 \
 	brcm-patchram-plus \
 	obexftp \
-	wf111-driver \
 "
 
 IMAGE_INSTALL_append_epd = " \
