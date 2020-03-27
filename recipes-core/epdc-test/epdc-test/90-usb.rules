@@ -1,2 +1,0 @@
-SUBSYSTEM=="block",ACTION=="add",KERNEL=="sd[a-z][0-9]",RUN+="/usr/bin/killall -TERM mxc_epdc_test",RUN+="/bin/mkdir /mnt/usbdisk",RUN+="/bin/mount /dev/%k /mnt/usbdisk"
-SUBSYSTEM=="block",ACTION=="remove",KERNEL=="sd[a-z][0-9]",RUN+="/usr/bin/killall -TERM mxc_epdc_test",RUN+="/bin/umount /mnt/usbdisk",RUN+="/bin/rmdir /mnt/usbdisk"
