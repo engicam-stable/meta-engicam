@@ -1,6 +1,6 @@
 #!/bin/sh
 
-FILETOW=uImage
+FILETOW=zImage
 
 print_help() {
    echo "Usage: "
@@ -22,7 +22,7 @@ else
 fi
 
 if env | grep -q ^serverip=; then
-	echo "Download uImage wait a while..."
+	echo "Download zImage wait a while..."
 	tftp -g -r $FILETOW  $serverip
   if [ $? -eq 1 ]; then
      echo "TFTP Error check network config"

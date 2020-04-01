@@ -1,6 +1,6 @@
 #!/bin/sh
 
-FILETOW=uImage
+FILETOW=zImage
 
 print_help() {
    echo "Usage: "

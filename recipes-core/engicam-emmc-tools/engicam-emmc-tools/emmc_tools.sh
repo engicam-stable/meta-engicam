@@ -366,8 +366,8 @@ then
 	
 	if grep -q "ker" <<< "$command" ;
 	then
-		rm -f "uImage"
-		download_tftp "uImage"
+		rm -f "zImage"
+		download_tftp "zImage"
 	fi
 	
 	if grep -q "dtb" <<< "$command" ;
@@ -400,7 +400,7 @@ else
 		
 	if grep -q "ker" <<< "$command" ;
 	then
-		check_file "${pathfile}uImage"
+		check_file "${pathfile}zImage"
 	fi
 		
 	if grep -q "dtb" <<< "$command" ;
@@ -431,7 +431,7 @@ fi
 
 if grep -q "ker" <<< "$command" ; # Write kernel
 then
-	write_ker $DEVICE "${pathfile}uImage"
+	write_ker $DEVICE "${pathfile}zImage"
 fi
 
 if grep -q "dtb" <<< "$command" ; # Write dtb

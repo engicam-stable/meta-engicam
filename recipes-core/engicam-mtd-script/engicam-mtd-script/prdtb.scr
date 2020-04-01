@@ -1,6 +1,6 @@
 #!/bin/sh
 
-FILETOW=uImage.dtb
+FILETOW=zImage.dtb
 
 print_help() {
    echo "Usage: "

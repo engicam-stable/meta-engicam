@@ -8,7 +8,7 @@ include conf/machine/include/tune-cortexa7.inc
 IMAGE_FSTYPES = "tar.bz2 ext4 sdcard"
 
 MACHINE_FEATURES += "wifi"
-KERNEL_IMAGETYPE = "uImage"
+KERNEL_IMAGETYPE = "zImage"
 
 PREFERRED_PROVIDER_virtual/kernel = "linux-engicam-imx"
 PREFERRED_PROVIDER_u-boot = "u-boot-eng"

@@ -1,5 +1,5 @@
 if env | grep -q ^serverip=; then
-	filename=uImage
+	filename=zImage
 	dtb=icorem6q-starterkit-rqs.dtb
 	echo "Download " $filename "-" $dtb
 	tftp -g -r $filename -l $filename $serverip

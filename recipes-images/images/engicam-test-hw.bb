@@ -34,7 +34,7 @@ IMAGE_INSTALL_append = " \
 	cpufrequtils \
 	iw \
 	wpa-supplicant \
-  tslib \
+	tslib \
 	tslib-conf \
 	tslib-tests \
 	tslib-calibrate \
@@ -43,16 +43,18 @@ IMAGE_INSTALL_append = " \
 	alsa-tools \
 	alsa-state \
 	fbset \
-	opkg \
+	opkg rng-tools lprng\
 "
 
 
 IMAGE_INSTALL_append_microdev = " \
 	engicam-microdev-startup \
-  lwb-bcm4343w-fw \
-  bluez5 \
-  brcm-patchram-plus \
-  obexftp \
+	bluez5 \
+	brcm-patchram-plus \
+	obexftp \
 	hostapd \
 	ppp \
+	lwb-backports-laird \
+	lwb-bcm4343w-fw \
 "
+

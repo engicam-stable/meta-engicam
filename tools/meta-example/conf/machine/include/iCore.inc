@@ -9,7 +9,7 @@ IMAGE_FSTYPES = "tar.bz2 ext4 sdcard"
 SERIAL_CONSOLE = "115200 ttymxc3"
 
 MACHINE_FEATURES += "wifi"
-KERNEL_IMAGETYPE = "uImage"
+KERNEL_IMAGETYPE = "zImage"
 
 PREFERRED_PROVIDER_virtual/kernel ?= "linux-icore"
 
