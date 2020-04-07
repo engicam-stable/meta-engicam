@@ -1,0 +1,12 @@
+[Unit]
+Description=Start Demo
+
+[Service]
+Restart=always
+Environment="XDG_RUNTIME_DIR=/run/user/0"
+
+WorkingDirectory=//usr/bin
+ExecStart= /usr/bin/democard -platform linuxfb
+
+[Install]
+WantedBy = multi-user.target

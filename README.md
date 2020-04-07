@@ -8,7 +8,15 @@ __Version:__ 1.0.0
 ## Engicam available machine :##
 
 * microgea
+* microgea-y1
+
+## Engicam board DTBs :##
+
+* microdev
+* microdev of 7p
+* microdev of 10p
 
 ## Engicam available images:
 
 * engicam-test-hw
+* engicam-demo-qt
