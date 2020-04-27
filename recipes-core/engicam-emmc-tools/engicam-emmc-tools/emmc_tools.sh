@@ -1,7 +1,7 @@
 #!/bin/bash
 # EMMC programmer
 
-ver="ver. 1.8, 2017-08-10"
+ver="ver. 1.9, 2020-04-27"
 filebytftp=false
 
 function error
@@ -20,6 +20,10 @@ function error
 
 function create_emmc
 {
+echo "create_emmc"
+
+dd if=/dev/zero of=$1 bs=1M count=1
+wipefs --all --force -q $1
 echo "Partitioning emmc"
 echo "o
 n
@@ -102,7 +106,7 @@ function usage
 	
 	if [ "$1" == "emmc_sdcard" ];
 	then
-		echo "Usage: ${1}${ext} [-h] <emmc_device>  <path file.sdcard>"
+		echo "Usage: ${1}${ext} [-h] <emmc_device>  <path file .sdcard/.sdcard.bz2>"
 	fi
 	
 	if [ "$filebytftp" == true ];
@@ -257,10 +261,25 @@ function write_boot
 
 function write_sdcard
 {
-	dd if=$2 | pv | dd of=$1 bs=16M
-	sync
-	
-	echo "Done"
+  filename=$2
+  ext="${filename##*.}"
+
+  if [ "$ext" == "sdcard" ];
+  then
+    dd if=$2 of=$1 bs=16M status=progress
+  elif [ "$ext" == "bz2" ];
+  then
+    bzip2 -cd $2 | dd of=$1 bs=16M status=progress
+  else
+    echo "Not supported format"
+    return
+  fi
+
+  echo "Resize partition"
+  parted $1 resizepart 2 100%
+  resize2fs $1p2
+  echo "Done"  
+  sync	
 }
 
 ############
@@ -268,16 +287,7 @@ function write_sdcard
 ############
 command=$(basename $0)
 
-# Check if booted from sdcard
-boot_from_sdcard=$(grep /dev/mmcblk0p2 /proc/cmdline)
-
-# Commands permitted
-if [ "$boot_from_sdcard" == "" ];
-then
-	declare -a commands=("emmc_ker" "emmc_dtb" "emmc_boot")
-else
-	declare -a commands=("emmc_fs" "emmc_ker_dtb" "emmc_fs_ker_dtb" "emmc_ker" "emmc_dtb" "emmc_boot" "emmc_sdcard")
-fi
+declare -a commands=("emmc_fs" "emmc_ker_dtb" "emmc_fs_ker" "emmc_fs_ker_dtb" "emmc_ker" "emmc_dtb" "emmc_boot" "emmc_sdcard")
 
 # Check the command
 findC=false

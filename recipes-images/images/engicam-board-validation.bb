@@ -2,7 +2,7 @@ DESCRIPTION = "Engicam image for hardware test"
 
 LICENSE = "MIT"
 
-inherit core-image
+require recipes-fsl/images/imx-image-multimedia.bb
 
 EXTRA_IMAGE_FEATURES = " debug-tweaks splash ssh-server-openssh tools-debug tools-testapps hwcodecs "
 

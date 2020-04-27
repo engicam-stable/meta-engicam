@@ -8,7 +8,7 @@ PE = "1"
 
 # We use the revision in order to avoid having to fetch it from the
 # repo during parse
-SRCREV = "2dc7bf9fde826c9fe60aa59d4ede6b074d495ed0"
+SRCREV = "eb36ac2e1669d8e7dd1b23bc302b12e26077ed0c"
 
 UBOOT_SRC = "git://github.com/engicam-stable/u-boot-engicam_2019.04.git;protocol=https"
 SRCBRANCH = "u-boot-engicam_2019.04_4.19.35"
