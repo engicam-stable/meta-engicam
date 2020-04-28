@@ -71,7 +71,7 @@ OK
 |N/A |Second Ethernet|
 |N/A  |CMOS Input|
 |OK |UART 232|
-|TBT |UART 485|
+|OK |UART 485|
 |OK |Linux Console|
 |OK |CANBUS1|
 |OK |CANBUS2|
