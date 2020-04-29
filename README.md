@@ -14,7 +14,7 @@ __Version:__ 1.0.0
 
 * microdev
 * microdev of 7p
-* microdev of 10p
+* microdev of 10p (touch screen is not working)
 
 ## Engicam available images:
 
