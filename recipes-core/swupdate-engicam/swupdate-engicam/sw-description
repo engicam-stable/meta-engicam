@@ -1,0 +1,38 @@
+software =
+{
+  version = "1.0";
+  description = "Update for i.MX8M Mini";
+  mx8mmini = 
+  {
+    hardware-compatibility: [ "1.0" ];
+		scripts: (
+			{
+				filename = "update.sh";
+				type = "preinstall";
+			}
+		);
+    files: (
+      {        
+        filename = "Image-icoremx8mm.bin";
+        device = "/dev/mmcblk2p1";
+        path = "/Image";
+        filesystem = "vfat";
+      },
+      {
+        filename = "icore-imx8mm-ctouch2-amp10-icoremx8mm.dtb";
+        device = "/dev/mmcblk2p1";
+        path = "/icore-imx8mm-ctouch2-amp10.dtb";
+        filesystem = "vfat";
+      }
+    );
+    images: (
+    {
+      name = "rootfs";
+      filename = "engicam-swupdate-icoremx8mm.ext4.gz";
+      device = "/dev/mmcblk2p2";
+      type = "raw";
+      compressed = true;
+    }
+    );
+  }
+}
