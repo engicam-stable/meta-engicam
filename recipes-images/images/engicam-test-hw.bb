@@ -67,20 +67,16 @@ IMAGE_INSTALL_append = " \
   \
   usbutils \
   util-linux \
-  \
-  v4l-utils \
-  \
   wpa-supplicant \
 "
 
 IMAGE_INSTALL_append_microdev = " \
-	engicam-microdev-startup \
 	bluez5 \
-	brcm-patchram-plus \
 	obexftp \
 	hostapd \
 	ppp \
+	brcm-patchram-plus \
 	lwb-backports-laird \
-	lwb-bcm4343w-fw \
+	lwb-etsi-firmware \
 "
 

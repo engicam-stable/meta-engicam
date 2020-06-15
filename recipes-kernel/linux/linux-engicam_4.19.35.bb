@@ -16,7 +16,7 @@ SRCBRANCH = "linux-engicam_4.19.35"
 LOCALVERSION = "-1.1.0"
 KERNEL_SRC ?= "git://github.com/engicam-stable/linux-engicam_4.19.35.git;protocol=https"
 SRC_URI = "${KERNEL_SRC};branch=${SRCBRANCH}"
-SRCREV = "22c43325543f2d37dbeadf3198f08ee4600077e8"
+SRCREV = "2c9c573a8580d3b847f964a1b8f1f4c2f0ae185b"
 
 S = "${WORKDIR}/git"
 
