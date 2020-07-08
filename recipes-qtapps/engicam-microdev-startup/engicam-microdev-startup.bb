@@ -11,7 +11,7 @@ SRC_URI = "file://S99StartUpEngicam.sh \
 do_install () {
 	install -d ${D}${sysconfdir}
 	install -d ${D}${sysconfdir}/rcS.d
-	install -m 0644 ${WORKDIR}/S99StartUpEngicam.sh  ${D}${sysconfdir}/rcS.d/
+	install -m 0755 ${WORKDIR}/S99StartUpEngicam.sh  ${D}${sysconfdir}/rcS.d/
 }
 
 FILES_${PN} = "/etc/rcS.d"

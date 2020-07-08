@@ -74,6 +74,7 @@ IMAGE_INSTALL_append_epd = " \
 
 IMAGE_INSTALL_append_microdev = " \
 	engicam-microdev-startup \
+	engicam-microdev-reboot \
         lwb-bcm4343w-fw \
         bluez5 \
         brcm-patchram-plus \
