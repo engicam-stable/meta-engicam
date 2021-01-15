@@ -1,3 +1,5 @@
-SRC_URI = "git://github.com/engicam-stable/u-boot-eng-2016.07.git;protocol=git;branch=som_release"
+SRC_URI_mx6 = "git://github.com/engicam-stable/u-boot-eng-2016.07.git;protocol=git;branch=som_release"
+SRCREV_mx6 = "${AUTOREV}"
 
-SRCREV = "6fbbb943a79aadeadcdeb8b1652632cb4e8b1930"
+SRC_URI_smarcore = "git://github.com/engicam-stable/u-boot-eng-2016.07.git;protocol=git;branch=smarcsolox"
+SRCREV_smarcore = "${AUTOREV}"

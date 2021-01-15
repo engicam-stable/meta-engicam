@@ -9,7 +9,8 @@ include u-boot-eng.inc
 S = "${WORKDIR}/git"
 
 inherit fsl-u-boot-localversion
-SRC_URI += "file://default-gcc.patch"
+SRC_URI_mx6 += "file://default-gcc.patch"
+SRC_URI_smarcore += "file://default-gcc.patch"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 COMPATIBLE_MACHINE = "(mx6|mx6ul)"
