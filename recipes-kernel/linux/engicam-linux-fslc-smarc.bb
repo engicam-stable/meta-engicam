@@ -7,7 +7,7 @@ require recipes-kernel/linux/linux-imx.inc
 require recipes-kernel/linux/linux-dtb.inc
 
 # Put a local version until we have a true SRCREV to point to
-SRC_URI = "git://github.com/engicam-stable/engicam-linux-fslc.git;protocol=git;branch=smarc \
+SRC_URI = "git://github.com/engicam-stable/engicam-linux-fslc.git;protocol=http;branch=smarc \
 	   file://0002-added-m4-dts.patch \
            file://defconfig"
 

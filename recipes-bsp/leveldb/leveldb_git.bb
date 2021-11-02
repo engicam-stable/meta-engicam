@@ -7,7 +7,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=92d1b128950b11ba8495b64938fc164d"
 SRCREV = "803d69203a62faf50f1b77897310a3a1fcae712b"
 PV = "1.18+git${SRCPV}"
 
-SRC_URI = "git://github.com/google/${BPN}.git \
+SRC_URI = "git://github.com/google/${BPN}.git;protocol=http \
     file://0001-Explicitly-disable-tcmalloc.patch \
 "
 
