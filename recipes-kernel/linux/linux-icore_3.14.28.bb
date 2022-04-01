@@ -9,11 +9,11 @@ DEPENDS += "lzop-native bc-native"
 
 # Put a local version until we have a true SRCREV to point to
 
-SRC_URI = "git://github.com/engicam-stable/engicam-kernel-icore-3.14.28.git;protocol=git \
+SRC_URI = "git://github.com/engicam-stable/engicam-kernel-icore-3.14.28.git;protocol=http \
            file://defconfig \
 "
 
-SRCREV = "76d9a11f1ffddf3aa6326edba135693c6f921b13"
+SRCREV = "cb410da787d06363fd9e3db2ca005963ed551156"
 
 S = "${WORKDIR}/git"
 
