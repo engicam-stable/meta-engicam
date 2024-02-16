@@ -11,7 +11,7 @@ DEPENDS += "lzop-native bc-native"
 SRC_URI = "git://github.com/engicam-stable/engicam-kernel-4.1.15.git;protocol=git;branch=som_release \
            file://defconfig"
 
-SRCREV = "960b2605f579f6cd5986cbe21195115a67f70eab"
+SRCREV = "b1d888c5d303c83a3bf3c4f7f892e74e63b1e644"
 
 S = "${WORKDIR}/git"
 
